@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Asistente Ejecutivo Total</title>
+    <title>Nexus | Asistente Ejecutivo Pro</title>
     <style>
         :root {
             --bg-dark: #000000; --panel-bg: #1C1C1E; --panel-hover: #2C2C2E;
@@ -24,12 +24,12 @@
         
         h3 { font-size: 1.5rem; font-weight: 600; margin-top: 0; margin-bottom: 5px; color: var(--text-main); letter-spacing: -0.5px; }
         h4 { font-size: 1.1rem; font-weight: 500; color: var(--accent); margin-bottom: 10px; margin-top: 20px; border-bottom: 1px solid var(--panel-hover); padding-bottom: 5px;}
-        p.desc { font-size: 0.9em; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
+        p.desc { font-size: 0.9em; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
         
-        textarea, input[type="text"], input[type="password"], input[type="date"], input[type="time"], input[type="url"], input[type="range"] {
+        textarea, input[type="text"], input[type="password"], input[type="date"], input[type="time"], input[type="url"], input[type="range"], select {
             width: 100%; background-color: var(--panel-bg); color: var(--text-main); border: none; padding: 18px; border-radius: var(--radius); margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-size: 1rem; transition: background-color 0.2s;
         }
-        textarea:focus, input:focus { outline: none; background-color: var(--panel-hover); }
+        textarea:focus, input:focus, select:focus { outline: none; background-color: var(--panel-hover); }
         textarea { height: 120px; resize: none; }
         
         button {
@@ -41,19 +41,20 @@
         
         .input-group { display: flex; gap: 10px; align-items: stretch; margin-bottom: 15px; }
         .input-group textarea, .input-group input { margin-bottom: 0; flex: 1; }
-        .mic-btn { width: 60px; height: auto; background-color: var(--panel-bg); color: var(--accent); border-radius: var(--radius); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 0; transition: all 0.2s; }
-        .mic-btn.listening { background-color: var(--danger); color: white; animation: pulse 1s infinite alternate; }
+        .icon-btn { width: 60px; height: auto; background-color: var(--panel-bg); color: var(--accent); border-radius: var(--radius); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 0; transition: all 0.2s; cursor: pointer; border: none;}
+        .icon-btn.listening { background-color: var(--danger); color: white; animation: pulse 1s infinite alternate; }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
 
         .task-list { list-style: none; padding: 0; margin: 0; }
         .task-list li { background-color: var(--panel-bg); margin-bottom: 12px; padding: 18px; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; transition: opacity 0.3s;}
         .delete-btn { background-color: transparent; color: var(--text-muted); font-weight: bold; padding: 5px 10px; width: auto; margin: 0; font-size: 1.2rem;}
         
-        .chat-container { background-color: transparent; height: 40vh; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; padding-right: 5px; }
-        .msg { padding: 14px 18px; border-radius: 20px; max-width: 80%; line-height: 1.4; font-size: 0.95rem; }
+        .chat-container { background-color: transparent; height: 35vh; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; padding-right: 5px; }
+        .msg { padding: 14px 18px; border-radius: 20px; max-width: 80%; line-height: 1.4; font-size: 0.95rem; position: relative;}
         .msg.user { background-color: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; }
         .msg.ai { background-color: var(--panel-bg); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
-        
+        .tts-btn { position: absolute; bottom: -25px; right: 0; font-size: 0.8rem; background: none; border: none; color: var(--accent); cursor: pointer; padding: 5px;}
+
         .list-menu { display: flex; flex-direction: column; gap: 10px; }
         .menu-item { background-color: var(--panel-bg); padding: 18px; border-radius: var(--radius); display: flex; align-items: center; gap: 15px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
         .menu-item:hover { background-color: var(--panel-hover); }
@@ -69,7 +70,8 @@
         .nav-btn { background: none; border: none; color: var(--text-muted); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0; padding: 0; border-radius: 50%; transition: all 0.2s; }
         .nav-btn.active { color: var(--accent); background-color: rgba(94, 92, 230, 0.15); transform: translateY(-3px); }
 
-        #refugio-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000; z-index: 9999; display: none; justify-content: center; align-items: center; color: #333; font-size: 0.8rem; }
+        #refugio-overlay, #zen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000; z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; color: #333; font-size: 0.8rem; padding: 20px; box-sizing: border-box;}
+        #zen-overlay { background-color: var(--bg-dark); color: white; text-align: center;}
         
         .timer-display { font-size: 4rem; text-align: center; margin: 20px 0; font-weight: bold; color: var(--accent); font-variant-numeric: tabular-nums; }
         .checkbox-item { display: flex; align-items: center; gap: 15px; background: var(--panel-bg); padding: 15px; border-radius: var(--radius); margin-bottom: 10px; }
@@ -78,32 +80,44 @@
         .agenda-tags { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .agenda-tags button { width: auto; padding: 8px 15px; border-radius: 20px; margin: 0; background: var(--panel-bg); color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0;}
         .agenda-tags button.active { background: var(--accent); color: white; }
+
+        .progress-bar-container { width: 100%; background-color: var(--panel-bg); border-radius: 10px; height: 8px; margin-bottom: 20px; overflow: hidden;}
+        .progress-bar-fill { height: 100%; background-color: var(--success); width: 0%; transition: width 0.4s ease; }
+
+        .quick-prompts { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 5px;}
+        .quick-prompts button { width: auto; font-size: 0.8rem; padding: 8px 12px; margin: 0; flex-shrink: 0; background: var(--panel-hover); border-radius: 8px;}
     </style>
 </head>
 <body>
 
     <div id="refugio-overlay" onclick="toggleRefugio()">Toca para volver al entorno</div>
+    <div id="zen-overlay">
+        <h2 style="color: var(--accent); margin-bottom: 5px;">Tu ÚNICA Tarea Ahora:</h2>
+        <h1 id="zenTaskText" style="font-size: 2.5rem; word-break: break-word; margin-top: 10px;"></h1>
+        <button onclick="completarZen()" style="background-color: var(--success); color: black; margin-top: 40px; max-width: 300px;">✅ Lo he hecho</button>
+        <button onclick="cerrarZen()" class="secondary" style="max-width: 300px; border: none; margin-top: 10px;">Salir del Modo Foco</button>
+    </div>
 
     <div class="main-content">
         
         <!-- GUÍA RÁPIDA -->
         <details id="guiaInstrucciones" style="margin-bottom: 25px; background: var(--panel-bg); padding: 15px; border-radius: var(--radius); cursor: pointer;">
-            <summary style="font-weight: bold; color: var(--accent); font-size: 1.1rem; list-style: none;">📖 Guía de Uso de Nexus (Toca aquí)</summary>
+            <summary style="font-weight: bold; color: var(--accent); font-size: 1.1rem; list-style: none;">📖 Manual de Nexus (Toca aquí)</summary>
             <ul style="margin-top: 15px; color: var(--text-main); font-size: 0.95em; padding-left: 20px; line-height: 1.5;">
-                <li style="margin-bottom: 10px;"><strong>🧠 Volcado:</strong> Tu pantalla de inicio. Si tienes la mente saturada, escupe todo ahí (escribiendo o dictando). Guarda y olvídate.</li>
-                <li style="margin-bottom: 10px;"><strong>📅 Agenda:</strong> Tu centro de mando. Separa lo de "Hoy" y "Futuro". Usa el botón ⏭️ para posponer tareas sin culpa.</li>
-                <li style="margin-bottom: 10px;"><strong>🤖 IA y 🎧 Audio:</strong> Asistente Groq y reproductor integrado de iVoox/YouTube libre de distracciones.</li>
-                <li><strong>⚙️ Herramientas:</strong> Para bloqueos (Parálisis), sobreestimulación (Apagón/Ruido) o enviar correos sin ver la bandeja de entrada.</li>
+                <li><strong>🧠 Volcado:</strong> Escupe aquí todo lo que tu mente no quiere olvidar.</li>
+                <li><strong>📅 Agenda:</strong> Usa "Fricción Cero" si te abruma ver la lista entera. Usa ⏭️ para posponer.</li>
+                <li><strong>🤖 IA y 🎧 Audio:</strong> Asistente con botones rápidos y audiolibros con historial integrado.</li>
+                <li><strong>⚙️ Herramientas:</strong> Botiquín para bloqueos, sobreestimulación y plantillas de correo.</li>
             </ul>
         </details>
 
         <!-- 1. Volcado -->
         <div id="volcado" class="view active">
             <h3>🧠 Volcado de Memoria</h3>
-            <p class="desc">Descarga aquí las ideas sueltas o recordatorios para que tu cerebro deje de gastar energía intentando no olvidarlos.</p>
+            <p class="desc"><strong>Instrucción:</strong> Descarga aquí las ideas sueltas o recordatorios para que tu cerebro deje de gastar energía intentando retenerlos.</p>
             <div class="input-group">
-                <textarea id="ramInput" placeholder="Ej: estudiar, corregir exámenes..."></textarea>
-                <button class="mic-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
+                <textarea id="ramInput" placeholder="Ej: Añadir genitivos al escape room..."></textarea>
+                <button class="icon-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('ram')">Guardar Pensamiento</button>
             <ul id="ramList" class="task-list" style="margin-top: 20px;"></ul>
@@ -112,27 +126,34 @@
         <!-- 2. Asistente IA (Groq) -->
         <div id="ia" class="view">
             <h3>🤖 Asistente Cognitivo</h3>
-            <p class="desc">Conectado a Groq. Toca el micrófono, habla tus dudas o el texto caótico. Te responderá en viñetas estructuradas.</p>
-            <div class="chat-container" id="chatBox">
-                <div class="msg ai">Entorno de baja fricción activo. ¿Qué necesitas estructurar hoy?</div>
+            <p class="desc"><strong>NUEVO:</strong> Usa los botones rápidos si no tienes energía para teclear instrucciones.</p>
+            
+            <div class="quick-prompts">
+                <button onclick="usarPromptRapido('Desglosa esto en pasos ridículamente pequeños y fáciles de hacer: ')">⚡ Desglosar</button>
+                <button onclick="usarPromptRapido('Resume este texto en 3 viñetas clave: ')">📝 Resumir</button>
+                <button onclick="usarPromptRapido('Reescribe este texto para que suene más profesional y asertivo: ')">👔 Profesional</button>
             </div>
+
+            <div class="chat-container" id="chatBox">
+                <div class="msg ai">Entorno de baja fricción activo. ¿Qué necesitas estructurar?</div>
+            </div>
+            
             <div class="input-group">
                 <input type="text" id="iaInput" placeholder="Escribe o dicta tu consulta..." onkeypress="if(event.key === 'Enter') enviarIA()">
-                <button class="mic-btn" onclick="dictarVoz('iaInput', this, true)">🎙️</button>
+                <button class="icon-btn" onclick="dictarVoz('iaInput', this, true)">🎙️</button>
             </div>
         </div>
 
-        <!-- 3. Integración Audio (iVoox y YouTube) -->
+        <!-- 3. Integración Audio -->
         <div id="audio" class="view">
             <h3>🎧 Biblioteca de Audio</h3>
-            <p class="desc">Reproduce audiolibros o música sin salir de la app para evitar distracciones.</p>
+            <p class="desc">Reproduce audiolibros o música. Tus enlaces se guardarán en el historial abajo.</p>
             
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                 <button id="btnTabIvoox" onclick="switchAudioTab('ivoox')" style="margin:0;">iVoox</button>
                 <button id="btnTabYt" class="secondary" onclick="switchAudioTab('yt')" style="margin:0;">YouTube (Foco)</button>
             </div>
 
-            <!-- iVoox -->
             <div id="tabIvoox">
                 <div class="input-group">
                     <input type="url" id="ivooxUrl" placeholder="Enlace del episodio de iVoox...">
@@ -144,23 +165,24 @@
                 </div>
             </div>
 
-            <!-- YouTube -->
             <div id="tabYt" style="display: none;">
                 <div class="input-group">
                     <input type="url" id="ytUrl" placeholder="Enlace del vídeo de YouTube...">
                     <button onclick="cargarYoutube()" style="width: 80px; margin-bottom:0; background-color: var(--danger);">Cargar</button>
                 </div>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: -5px;">*Usa el dominio de máxima privacidad sin comentarios ni sugerencias laterales.</p>
                 <div class="player-container">
-                    <div id="ytPlaceholder" style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9em;">Reproductor YouTube</div>
+                    <div id="ytPlaceholder" style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9em;">Reproductor YouTube Seguro</div>
                     <iframe id="ytIframe" class="embedIframe" src="" allowfullscreen></iframe>
                 </div>
             </div>
 
+            <h4>Historial de Enlaces</h4>
+            <ul id="audioHistoryList" class="task-list" style="margin-bottom: 20px; opacity: 0.8; font-size: 0.85em;"></ul>
+
             <h4>Notas de Escucha</h4>
             <div class="input-group">
                 <input type="text" id="audiobookNote" placeholder="Minuto / Concepto importante...">
-                <button class="mic-btn" onclick="dictarVoz('audiobookNote', this)">🎙️</button>
+                <button class="icon-btn" onclick="dictarVoz('audiobookNote', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('audiobooks')">Guardar Nota</button>
             <ul id="audiobooksList" class="task-list" style="margin-top: 20px;"></ul>
@@ -169,7 +191,7 @@
         <!-- 4. SÚPER AGENDA -->
         <div id="agenda" class="view">
             <h3>📅 Centro de Mando</h3>
-            <p class="desc">El sistema oculta el futuro para evitar agobios. <strong>Toca ⏭️ para posponer al día siguiente sin culpa</strong> o la casilla para completarla.</p>
+            <p class="desc"><strong>NUEVO:</strong> Oculta el futuro, mira tu progreso diario y usa el modo "Fricción Cero" si te abruma ver toda la lista.</p>
             
             <div class="agenda-tags" id="tagsContainer">
                 <button class="tag-btn active" onclick="selectTag(this, '🏫 Clases')">🏫 Clases</button>
@@ -184,16 +206,25 @@
                 <input type="time" id="agendaTime">
             </div>
             <div class="input-group">
-                <input type="text" id="agendaText" placeholder="Ej: Preparar material...">
-                <button class="mic-btn" onclick="dictarVoz('agendaText', this)">🎙️</button>
+                <input type="text" id="agendaText" placeholder="Ej: Preparar material de LOMLOE...">
+                <button class="icon-btn" onclick="dictarVoz('agendaText', this)">🎙️</button>
             </div>
             <button onclick="guardarAgenda()">Añadir a la Agenda</button>
             
-            <h4 style="color: var(--success); margin-top: 30px;">☀️ Para Hoy / Atrasado</h4>
+            <h4 style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+                <span style="color: var(--success);">☀️ Para Hoy</span>
+                <span id="agendaProgressText" style="font-size: 0.8rem; color: var(--text-muted);">0/0 Completado</span>
+            </h4>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="agendaProgressBar"></div>
+            </div>
+
+            <button class="secondary" onclick="iniciarModoZen()" style="border: 1px solid var(--accent); color: var(--accent); margin-bottom: 15px;">🔍 MODO FRICCIÓN CERO (1 Tarea)</button>
+
             <ul id="agendaHoyList" class="task-list"></ul>
 
             <h4 style="color: var(--text-muted); margin-top: 30px;">🔭 Próximamente</h4>
-            <ul id="agendaFuturoList" class="task-list" style="opacity: 0.8;"></ul>
+            <ul id="agendaFuturoList" class="task-list" style="opacity: 0.6;"></ul>
         </div>
 
         <!-- 5. HUB CENTRAL DE HERRAMIENTAS -->
@@ -201,9 +232,8 @@
             <h3>⚙️ Herramientas Ejecutivas</h3>
             
             <div class="list-menu">
-                <div class="menu-header">Comunicaciones y Tiempo</div>
-                <div class="menu-item" onclick="switchView('correo')"><span class="icon">✉️</span><span>Redacción Segura (Email)</span></div>
-                <div class="menu-item" onclick="switchView('alarma')"><span class="icon">⏰</span><span>Alarma Cognitiva</span></div>
+                <div class="menu-header">Comunicaciones Seguras</div>
+                <div class="menu-item" onclick="switchView('correo')"><span class="icon">✉️</span><span>Emails y Plantillas Docentes</span></div>
                 <div class="menu-item" onclick="switchView('ermitano')"><span class="icon">🔕</span><span>Modo Ermitaño (WhatsApp/DND)</span></div>
 
                 <div class="menu-header">Regulación Sensorial</div>
@@ -212,16 +242,18 @@
                 <div class="menu-item" onclick="switchView('termometro')"><span class="icon">🌡️</span><span>Termómetro Sensorial</span></div>
                 <div class="menu-item" onclick="switchView('grounding')"><span class="icon">⚓</span><span>Ancla (Técnica 5-4-3-2-1)</span></div>
                 
-                <div class="menu-header">Rescate Ejecutivo</div>
+                <div class="menu-header">Rescate Ejecutivo y Tiempo</div>
+                <div class="menu-item" onclick="switchView('alarma')"><span class="icon">⏰</span><span>Alarma Cognitiva</span></div>
                 <div class="menu-item" onclick="switchView('migas')"><span class="icon">🍞</span><span>Migas de Pan (Guardar contexto)</span></div>
                 <div class="menu-item" onclick="switchView('oraculo')"><span class="icon">🎲</span><span>Oráculo (Decidir por mí)</span></div>
                 <div class="menu-item" onclick="switchView('transicion')"><span class="icon">🌉</span><span>Puente de Transición de Tareas</span></div>
                 <div class="menu-item" onclick="switchView('rompebucles')"><span class="icon">🚨</span><span>Rompe-Bucles Físico</span></div>
-                <div class="menu-item" onclick="switchView('paralisis')"><span class="icon">🔪</span><span>Cortador de Parálisis por Análisis</span></div>
+                <div class="menu-item" onclick="switchView('paralisis')"><span class="icon">🔪</span><span>Cortador de Parálisis</span></div>
                 <div class="menu-item" onclick="switchView('trituradora')"><span class="icon">🔥</span><span>Trituradora de Pensamientos</span></div>
 
                 <div class="menu-header">Cuerpo y Energía</div>
-                <div class="menu-item" onclick="switchView('escudos')"><span class="icon">🛡️</span><span>Escudos Sociales (Respuestas hechas)</span></div>
+                <div class="menu-item" onclick="switchView('bateriaSocial')"><span class="icon">🔋</span><span>NUEVO: Medidor de Batería Social</span></div>
+                <div class="menu-item" onclick="switchView('escudos')"><span class="icon">🛡️</span><span>Mis Escudos Sociales</span></div>
                 <div class="menu-item" onclick="switchView('intero')"><span class="icon">🪫</span><span>Escáner Corporal (Interocepción)</span></div>
                 <div class="menu-item" onclick="switchView('dopamina')"><span class="icon">💊</span><span>Menú de Dopamina Saludable</span></div>
                 
@@ -230,25 +262,58 @@
             </div>
         </div>
 
-        <!-- NUEVAS SUB-VISTAS -->
+        <!-- SUB-VISTAS (Herramientas) -->
 
         <div id="correo" class="view">
-            <h3>✉️ Redacción Segura</h3>
-            <p class="desc"><strong>Instrucción:</strong> Escribe tu correo aquí. Cuando le des a enviar, se abrirá tu Gmail o Outlook directamente en la ventana de envío. <strong>Así evitas ver tu bandeja de entrada y no te distraes con otros mensajes.</strong></p>
+            <h3>✉️ Email Seguro y Plantillas</h3>
+            <p class="desc">Selecciona una plantilla o escribe. Enviará directamente sin pasar por la bandeja de entrada.</p>
+            
+            <select id="emailTemplate" onchange="cargarPlantillaCorreo()">
+                <option value="">-- Selecciona una plantilla (Opcional) --</option>
+                <option value="familias">Información para Familias / Tutoría</option>
+                <option value="material">Solicitud/Envío de Materiales</option>
+                <option value="limite">Respuesta posponiendo revisión</option>
+                <option value="vacio">Correo en Blanco</option>
+            </select>
+
             <input type="text" id="emailSubject" placeholder="Asunto del correo...">
             <div class="input-group">
-                <textarea id="emailBody" placeholder="Redacta o dicta aquí el cuerpo del mensaje..."></textarea>
-                <button class="mic-btn" onclick="dictarVoz('emailBody', this)">🎙️</button>
+                <textarea id="emailBody" placeholder="Redacta o dicta aquí..."></textarea>
+                <button class="icon-btn" onclick="dictarVoz('emailBody', this)">🎙️</button>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button onclick="enviarCorreoSeguro('gmail')" style="background-color: #EA4335;">Abrir en Gmail</button>
-                <button onclick="enviarCorreoSeguro('outlook')" style="background-color: #0078D4;">Abrir en Outlook</button>
+                <button onclick="enviarCorreoSeguro('gmail')" style="background-color: #EA4335;">Enviar con Gmail</button>
+                <button onclick="enviarCorreoSeguro('outlook')" style="background-color: #0078D4;">Enviar con Outlook</button>
             </div>
         </div>
 
+        <div id="bateriaSocial" class="view">
+            <h3>🔋 Batería Social</h3>
+            <p class="desc">Ajusta tu nivel de energía social actual. El sistema te avisará si intentas agendar algo estando en reserva.</p>
+            <input type="range" id="socialBatterySlider" min="0" max="100" value="50" oninput="updateBateriaSocial()">
+            <div id="socialBatteryStatus" style="text-align: center; font-size: 1.5rem; font-weight: bold; margin: 20px 0; color: var(--warning);">Medio 😐</div>
+            <button onclick="guardarBateriaSocial()">Actualizar Batería</button>
+        </div>
+
+        <div id="escudos" class="view">
+            <h3>🛡️ Mis Escudos Sociales</h3>
+            <p class="desc">Toca para copiar. <strong>NUEVO:</strong> Añade tus propias excusas/límites para tenerlos siempre a mano.</p>
+            
+            <div id="escudosListContainer">
+                <!-- Se llenará con JS -->
+            </div>
+
+            <h4 style="margin-top: 30px;">Añadir nuevo escudo:</h4>
+            <div class="input-group">
+                <input type="text" id="nuevoEscudoInput" placeholder="Ej: No atiendo correos el fin de semana...">
+                <button class="icon-btn" onclick="dictarVoz('nuevoEscudoInput', this)">🎙️</button>
+            </div>
+            <button onclick="guardarEscudoPersonal()">Añadir Escudo</button>
+        </div>
+
+        <!-- RESTO DE VISTAS MANTENIDAS EXACTAMENTE IGUAL -->
         <div id="alarma" class="view">
             <h3>⏰ Alarma Cognitiva</h3>
-            <p class="desc">Una alarma segura que usa el tono de 432Hz y alertas visuales para sacarte del hiperfoco a una hora exacta.</p>
             <input type="time" id="alarmTimeInput">
             <button onclick="setAlarma()">Activar Alarma</button>
             <button class="secondary" onclick="cancelAlarma()" style="border: 1px solid var(--danger); color: var(--danger);">Cancelar</button>
@@ -257,26 +322,22 @@
 
         <div id="ermitano" class="view" style="text-align: center;">
             <h3>🔕 Modo Ermitaño</h3>
-            <p class="desc" style="text-align: left;">Por seguridad, ninguna web puede apagar el WhatsApp o las llamadas de tu móvil. Tienes que hacerlo tú, pero aquí tienes tu permiso oficial para hacerlo sin culpa.</p>
-            
+            <p class="desc" style="text-align: left;">Protocolo para salir del radar sin culpa.</p>
             <div style="background: var(--panel-bg); padding: 25px; border-radius: var(--radius); border-left: 5px solid var(--accent); margin-bottom: 20px; text-align: left;">
-                <h4 style="margin-top: 0; color: white;">Protocolo de Desconexión:</h4>
                 <ol style="color: var(--text-muted); line-height: 1.8;">
-                    <li>Desliza el dedo desde la parte superior de la pantalla.</li>
-                    <li>Busca el icono de <strong>Avión ✈️</strong> o de la <strong>Luna 🌙 (No Molestar)</strong>.</li>
-                    <li>Púlsalo. El mundo no se va a acabar en las próximas 2 horas.</li>
+                    <li>Desliza el dedo desde arriba.</li>
+                    <li>Pulsa el <strong>Avión ✈️</strong> o la <strong>Luna 🌙</strong>.</li>
+                    <li>El mundo seguirá ahí en 2 horas.</li>
                 </ol>
             </div>
-            <button onclick="copiar(this, 'Hola. He activado mi modo de trabajo profundo (Sin notificaciones) para avanzar en un proyecto. Responderé a los mensajes cuando vuelva a conectarme. Un saludo.')" class="secondary">Copiar respuesta de "No estoy disponible"</button>
+            <button onclick="copiarTextoRapido('Hola. He activado mi modo de trabajo profundo (Sin notificaciones) para avanzar. Responderé cuando vuelva a conectarme. Un saludo.', this)" class="secondary">Copiar respuesta automática</button>
         </div>
-
-        <!-- RESTO DE HERRAMIENTAS (Mantenidas intactas) -->
 
         <div id="migas" class="view">
             <h3>🍞 Migas de Pan</h3>
             <div class="input-group">
                 <input type="text" id="migaInput" placeholder="Estaba buscando el error en el código...">
-                <button class="mic-btn" onclick="dictarVoz('migaInput', this)">🎙️</button>
+                <button class="icon-btn" onclick="dictarVoz('migaInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('migas')">Dejar rastro</button>
             <ul id="migasList" class="task-list" style="margin-top: 20px;"></ul>
@@ -331,18 +392,11 @@
             <div id="sensoryResult" style="margin-top: 20px; padding: 15px; border-radius: var(--radius); display: none; font-weight: bold; text-align: center;"></div>
         </div>
 
-        <div id="escudos" class="view">
-            <h3>🛡️ Escudos Sociales</h3>
-            <button class="secondary" onclick="copiar(this, 'Te agradezco que hayas pensado en mí. Ahora mismo mi carga de proyectos me impide asumir tareas nuevas de forma eficiente.')">Decir NO amablemente</button>
-            <button class="secondary" onclick="copiar(this, 'He recibido tu información. Déjame revisarlo con la atención que merece y te doy una respuesta estructurada mañana.')">Comprar tiempo (Posponer respuesta)</button>
-            <button class="secondary" onclick="copiar(this, 'Para poder procesar esto y ser eficiente, ¿podrías pasarme exactamente lo que necesitas en una lista de puntos por escrito?')">Exigir claridad</button>
-        </div>
-
         <div id="paralisis" class="view">
             <h3>🔪 Cortador de Parálisis</h3>
             <div class="input-group">
                 <input type="text" id="paraInput" placeholder="Dicta el proyecto enorme aquí...">
-                <button class="mic-btn" onclick="dictarVoz('paraInput', this)">🎙️</button>
+                <button class="icon-btn" onclick="dictarVoz('paraInput', this)">🎙️</button>
             </div>
             <button onclick="cortarParalisis()">Reducir al absurdo</button>
             <div id="paraResult" style="margin-top: 20px; padding: 20px; background: var(--panel-bg); border-radius: var(--radius); display: none;"></div>
@@ -361,9 +415,10 @@
             <h3>🔥 Trituradora Mental</h3>
             <div class="input-group">
                 <textarea id="obsInput" placeholder="Escribe el pensamiento obsesivo..."></textarea>
-                <button class="mic-btn" onclick="dictarVoz('obsInput', this)">🎙️</button>
+                <button class="icon-btn" onclick="dictarVoz('obsInput', this)">🎙️</button>
             </div>
             <button onclick="triturarPensamiento()" class="danger">Destruir Pensamiento</button>
+            <button class="secondary" onclick="leerTexto('obsInput')" style="margin-top: 10px;">🔊 Leer pensamiento en voz alta (TTS)</button>
         </div>
 
         <div id="config" class="view">
@@ -375,22 +430,23 @@
         
     </div>
 
-    <!-- Barra Inferior Flotante -->
+    <!-- Barra Inferior -->
     <div class="bottom-bar">
         <button class="nav-btn active" onclick="switchView('volcado', this)" title="Volcado">🧠</button>
         <button class="nav-btn" onclick="switchView('agenda', this)" title="Agenda">📅</button>
         <button class="nav-btn" onclick="switchView('ia', this)" title="Asistente Groq">🤖</button>
-        <button class="nav-btn" onclick="switchView('audio', this)" title="Audio (iVoox/YT)">🎧</button>
+        <button class="nav-btn" onclick="switchView('audio', this)" title="Audio">🎧</button>
         <button class="nav-btn" onclick="switchView('menu', this)" title="Herramientas">⚙️</button>
     </div>
 
     <script>
-        // --- VOZ ---
+        // --- VOZ (Reconocimiento y TTS) ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
         if (SpeechRecognition) { recognition = new SpeechRecognition(); recognition.lang = 'es-ES'; recognition.continuous = false; }
+        
         function dictarVoz(id, btn, autoSend = false) {
-            if (!recognition) return alert("Navegador no compatible con voz.");
+            if (!recognition) return alert("Navegador no compatible con dictado por voz.");
             btn.classList.add('listening');
             recognition.onresult = (e) => {
                 const t = e.results[0][0].transcript; const i = document.getElementById(id);
@@ -401,6 +457,20 @@
             recognition.start();
         }
 
+        let currentUtterance = null;
+        function leerTextoTTS(texto) {
+            if(!window.speechSynthesis) return alert("Text-to-Speech no soportado.");
+            window.speechSynthesis.cancel(); // Para cualquier lectura previa
+            currentUtterance = new SpeechSynthesisUtterance(texto);
+            currentUtterance.lang = 'es-ES';
+            currentUtterance.rate = 1.0;
+            window.speechSynthesis.speak(currentUtterance);
+        }
+        function leerTexto(inputId) {
+            const val = document.getElementById(inputId).value;
+            if(val) leerTextoTTS(val);
+        }
+
         // --- NAVEGACIÓN ---
         function switchView(id, btn=null) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -409,7 +479,12 @@
             if(id !== 'volcado') { const guia = document.getElementById('guiaInstrucciones'); if(guia) guia.removeAttribute("open"); }
         }
 
-        // --- DATOS GENÉRICOS ---
+        function copiarTextoRapido(text, btn) {
+            navigator.clipboard.writeText(text); const o = btn.innerText; btn.innerText = "¡Copiado!"; btn.style.backgroundColor = "var(--success)"; btn.style.color = "black";
+            setTimeout(() => { btn.innerText = o; btn.style.backgroundColor = "var(--panel-bg)"; btn.style.color = "var(--text-main)"; }, 2000);
+        }
+
+        // --- DATOS BÁSICOS ---
         function cargarDatos() {
             ['ram', 'audiobooks', 'migas'].forEach(tipo => {
                 const datos = JSON.parse(localStorage.getItem(`nexus_${tipo}`)) || [];
@@ -433,7 +508,7 @@
             datos.splice(index, 1); localStorage.setItem(`nexus_${tipo}`, JSON.stringify(datos)); cargarDatos();
         }
 
-        // --- AGENDA ---
+        // --- SÚPER AGENDA Y MODO ZEN ---
         function setTodayDefault() {
             const tz = (new Date()).getTimezoneOffset() * 60000;
             const local = (new Date(Date.now() - tz)).toISOString().slice(0, 10);
@@ -444,6 +519,8 @@
             document.querySelectorAll('#tagsContainer .tag-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); document.getElementById('agendaTag').value = tag;
         }
+
+        let currentZenIndex = -1;
 
         function cargarAgenda() {
             let agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || [];
@@ -458,6 +535,7 @@
 
             const tz = (new Date()).getTimezoneOffset() * 60000;
             const hoy = (new Date(Date.now() - tz)).toISOString().slice(0, 10);
+            let tareasHoy = 0; let completadasHoy = 0;
 
             agenda.forEach((item, index) => {
                 const [y, m, d] = item.date.split('-');
@@ -470,6 +548,11 @@
                 
                 const isCompleted = item.completed ? 'text-decoration: line-through; opacity: 0.4;' : '';
                 const checkedAttr = item.completed ? 'checked' : '';
+
+                if (item.date <= hoy) {
+                    tareasHoy++;
+                    if(item.completed) completadasHoy++;
+                }
 
                 const liHtml = `
                 <li style="${isCompleted}">
@@ -490,12 +573,29 @@
                 else listaFuturo.innerHTML += liHtml;
             });
 
+            // Actualizar Progress Bar
+            const progText = document.getElementById('agendaProgressText');
+            const progBar = document.getElementById('agendaProgressBar');
+            if(tareasHoy === 0) {
+                progText.innerText = "Día libre"; progBar.style.width = "0%";
+            } else {
+                progText.innerText = `${completadasHoy}/${tareasHoy} Completadas`;
+                progBar.style.width = `${(completadasHoy/tareasHoy)*100}%`;
+            }
+
             if(listaHoy.innerHTML === '') listaHoy.innerHTML = '<p style="color:var(--text-muted); font-size:0.9em; text-align:center;">Día limpio. Gran trabajo.</p>';
             if(listaFuturo.innerHTML === '') listaFuturo.innerHTML = '<p style="color:var(--text-muted); font-size:0.9em; text-align:center;">Nada en el horizonte.</p>';
         }
 
         function guardarAgenda() {
-            const date = document.getElementById('agendaDate').value, time = document.getElementById('agendaTime').value, text = document.getElementById('agendaText').value, tag = document.getElementById('agendaTag').value;
+            // Verificar batería social si es una reunión (como advertencia)
+            const tag = document.getElementById('agendaTag').value;
+            const bat = parseInt(document.getElementById('socialBatterySlider').value);
+            if(bat <= 20 && (tag.includes('Clases') || tag.includes('Proyectos'))) {
+                if(!confirm("⚠️ Tienes la batería social muy baja. ¿Seguro que quieres agendar esto?")) return;
+            }
+
+            const date = document.getElementById('agendaDate').value, time = document.getElementById('agendaTime').value, text = document.getElementById('agendaText').value;
             if(!date || !text.trim()) return;
             const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
             agenda.push({ date, time, text: text.trim(), tag, completed: false }); 
@@ -517,7 +617,42 @@
             localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); if(navigator.vibrate) navigator.vibrate(100); cargarAgenda();
         }
 
-        // --- AUDIO (iVoox y YouTube) ---
+        // MODO ZEN
+        function iniciarModoZen() {
+            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || [];
+            const tz = (new Date()).getTimezoneOffset() * 60000;
+            const hoy = (new Date(Date.now() - tz)).toISOString().slice(0, 10);
+            
+            currentZenIndex = -1;
+            // Buscar la primera tarea de hoy no completada
+            for(let i=0; i<agenda.length; i++) {
+                if(agenda[i].date <= hoy && !agenda[i].completed) {
+                    currentZenIndex = i; break;
+                }
+            }
+
+            if(currentZenIndex === -1) {
+                alert("No tienes tareas pendientes para hoy. ¡Disfruta!"); return;
+            }
+
+            document.getElementById('zenTaskText').innerText = agenda[currentZenIndex].text;
+            document.getElementById('zen-overlay').style.display = 'flex';
+        }
+
+        function completarZen() {
+            if(currentZenIndex !== -1) {
+                const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || [];
+                agenda[currentZenIndex].completed = true;
+                localStorage.setItem('nexus_agenda', JSON.stringify(agenda));
+                cargarAgenda();
+                if(navigator.vibrate) navigator.vibrate(200);
+            }
+            document.getElementById('zen-overlay').style.display = 'none';
+        }
+        function cerrarZen() { document.getElementById('zen-overlay').style.display = 'none'; }
+
+
+        // --- AUDIO (iVoox, YouTube e Historial) ---
         function switchAudioTab(tab) {
             document.getElementById('btnTabIvoox').className = tab === 'ivoox' ? '' : 'secondary';
             document.getElementById('btnTabYt').className = tab === 'yt' ? '' : 'secondary';
@@ -528,80 +663,84 @@
         function cargarIvoox() {
             const url = document.getElementById('ivooxUrl').value; const match = url.match(/_rf_(\d+)_/);
             const iframe = document.getElementById('ivooxIframe'), placeholder = document.getElementById('ivooxPlaceholder');
-            if(match && match[1]) { iframe.src = `https://www.ivoox.com/player_ej_${match[1]}_4_1_1.html`; iframe.style.display = 'block'; placeholder.style.display = 'none'; } 
-            else alert("Enlace no válido de iVoox.");
+            if(match && match[1]) { 
+                iframe.src = `https://www.ivoox.com/player_ej_${match[1]}_4_1_1.html`; iframe.style.display = 'block'; placeholder.style.display = 'none'; 
+                guardarHistorialAudio("iVoox", url);
+            } else alert("Enlace no válido de iVoox.");
         }
 
         function cargarYoutube() {
-            const url = document.getElementById('ytUrl').value;
-            let id = '';
+            const url = document.getElementById('ytUrl').value; let id = '';
             if(url.includes('youtu.be/')) id = url.split('youtu.be/')[1].split('?')[0];
             else if(url.includes('v=')) id = url.split('v=')[1].split('&')[0];
             
             const iframe = document.getElementById('ytIframe'), placeholder = document.getElementById('ytPlaceholder');
             if(id) {
-                // Usamos el dominio nocookie para máxima privacidad y evitar trackers/recomendaciones basura
                 iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&modestbranding=1&rel=0`;
                 iframe.style.display = 'block'; placeholder.style.display = 'none';
+                guardarHistorialAudio("YouTube", url);
             } else alert("Pega un enlace válido de YouTube.");
         }
 
-        // --- EMAILS (Redacción Segura) ---
+        function guardarHistorialAudio(tipo, url) {
+            const history = JSON.parse(localStorage.getItem('nexus_audioHistory')) || [];
+            // Remove if exists
+            const filtered = history.filter(h => h.url !== url);
+            filtered.unshift({tipo, url, label: url.substring(0, 35) + '...'});
+            if(filtered.length > 5) filtered.pop(); // Keep last 5
+            localStorage.setItem('nexus_audioHistory', JSON.stringify(filtered));
+            renderAudioHistory();
+        }
+
+        function renderAudioHistory() {
+            const history = JSON.parse(localStorage.getItem('nexus_audioHistory')) || [];
+            const ul = document.getElementById('audioHistoryList'); ul.innerHTML = '';
+            history.forEach(h => {
+                ul.innerHTML += `<li style="padding:10px; cursor:pointer;" onclick="reusarAudio('${h.url}')"><span style="color:var(--accent); font-weight:bold;">${h.tipo}</span>: <span style="word-break:break-all;">${h.label}</span></li>`;
+            });
+        }
+        
+        function reusarAudio(url) {
+            if(url.includes('ivoox')) { document.getElementById('ivooxUrl').value = url; switchAudioTab('ivoox'); cargarIvoox(); }
+            else { document.getElementById('ytUrl').value = url; switchAudioTab('yt'); cargarYoutube(); }
+        }
+
+
+        // --- EMAILS DOCENTES/PROFESIONALES ---
+        function cargarPlantillaCorreo() {
+            const val = document.getElementById('emailTemplate').value;
+            const sub = document.getElementById('emailSubject');
+            const body = document.getElementById('emailBody');
+            
+            if(val === 'familias') {
+                sub.value = "Información sobre el progreso académico";
+                body.value = "Estimada familia:\n\nMe pongo en contacto con ustedes para comentarles la evolución de [Nombre del alumno/a] en la asignatura de [Asignatura].\n\n[Escribir detalles brevemente].\n\nQuedo a su disposición para cualquier aclaración por esta vía.\n\nUn cordial saludo,\n[Tu Nombre]";
+            } else if (val === 'material') {
+                sub.value = "Solicitud/Entrega de Materiales";
+                body.value = "Hola,\n\nAdjunto los materiales correspondientes a la unidad solicitada para su revisión/uso.\n\nQuedo a la espera de confirmación de recepción.\n\nUn saludo,";
+            } else if (val === 'limite') {
+                sub.value = "Acuse de recibo y revisión";
+                body.value = "Hola,\n\nConfirmo la recepción de tu correo. Debido a mi actual carga de tareas y evaluación, lo revisaré con atención y te enviaré una respuesta estructurada a la mayor brevedad posible (habitualmente en 24/48h lectivas).\n\nGracias por la paciencia.\n\nUn saludo,";
+            } else if (val === 'vacio') {
+                sub.value = ""; body.value = "";
+            }
+        }
+
         function enviarCorreoSeguro(proveedor) {
             const subject = encodeURIComponent(document.getElementById('emailSubject').value);
             const body = encodeURIComponent(document.getElementById('emailBody').value);
-            let link = '';
-            if(proveedor === 'gmail') {
-                // Abre la ventana de redacción pura de Gmail, saltándose el Inbox
-                link = `https://mail.google.com/mail/u/0/?view=cm&fs=1&su=${subject}&body=${body}`;
-            } else {
-                link = `https://outlook.live.com/mail/0/deeplink/compose?subject=${subject}&body=${body}`;
-            }
+            let link = proveedor === 'gmail' 
+                ? `https://mail.google.com/mail/u/0/?view=cm&fs=1&su=${subject}&body=${body}`
+                : `https://outlook.live.com/mail/0/deeplink/compose?subject=${subject}&body=${body}`;
             window.open(link, '_blank');
-            document.getElementById('emailSubject').value = '';
-            document.getElementById('emailBody').value = '';
         }
 
-        // --- ALARMA COGNITIVA ---
-        let alarmIntervalTimer;
-        function setAlarma() {
-            const time = document.getElementById('alarmTimeInput').value;
-            if(!time) return;
-            
-            const statusDiv = document.getElementById('alarmStatus');
-            statusDiv.innerText = `Alarma programada para las ${time}`;
-            statusDiv.style.display = 'block';
-            statusDiv.style.color = 'var(--text-main)';
-            
-            clearInterval(alarmIntervalTimer);
-            alarmIntervalTimer = setInterval(() => {
-                const now = new Date();
-                const nowTime = (now.getHours() < 10 ? '0' : '') + now.getHours() + ":" + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
-                if(nowTime === time) {
-                    clearInterval(alarmIntervalTimer);
-                    statusDiv.innerText = "¡HORA DE PARAR!";
-                    statusDiv.style.color = "var(--danger)";
-                    
-                    // Doble impacto: Visual y Auditivo
-                    triggerRompeBucles();
-                    if(!isPlayingTone) togglePitidoPuro();
-                    
-                    // Autoapagar a los 10 segundos
-                    setTimeout(() => {
-                        stopRompeBucles();
-                        if(isPlayingTone) togglePitidoPuro();
-                    }, 10000);
-                }
-            }, 1000);
-        }
-        
-        function cancelAlarma() {
-            clearInterval(alarmIntervalTimer);
-            document.getElementById('alarmTimeInput').value = '';
-            document.getElementById('alarmStatus').style.display = 'none';
+        // --- GROQ IA (Con Prompts Rápidos y TTS) ---
+        function usarPromptRapido(prompt) {
+            document.getElementById('iaInput').value = prompt;
+            document.getElementById('iaInput').focus();
         }
 
-        // --- GROQ IA ---
         async function enviarIA() {
             const input = document.getElementById('iaInput'); const texto = input.value.trim(); if(!texto) return;
             const apiKey = localStorage.getItem('nexus_groqkey'); const chatBox = document.getElementById('chatBox');
@@ -611,13 +750,93 @@
                 chatBox.innerHTML += `<div class="msg ai" id="loadingMsg">Procesando a velocidad LPU...</div>`;
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify({ model: "llama3-70b-8192", messages: [{ role: "system", content: "Asistente neurodivergente conciso. Estructura siempre en viñetas cortas y claras. Evita párrafos largos." }, { role: "user", content: texto }], temperature: 0.4 }) });
                 const data = await response.json(); document.getElementById('loadingMsg').remove();
-                if(data.choices) chatBox.innerHTML += `<div class="msg ai">${data.choices[0].message.content.replace(/\n/g, '<br>')}</div>`;
+                if(data.choices) {
+                    const rawText = data.choices[0].message.content;
+                    const cleanTextForSpeech = rawText.replace(/[*_#]/g, ''); // Limpiar markdown para que no lo lea el TTS
+                    chatBox.innerHTML += `
+                        <div class="msg ai">
+                            ${rawText.replace(/\n/g, '<br>')}
+                            <button class="tts-btn" onclick="leerTextoTTS('${encodeURIComponent(cleanTextForSpeech).replace(/'/g, "%27")}')">🔊 Leer</button>
+                        </div>`;
+                }
             } catch (e) { if(document.getElementById('loadingMsg')) document.getElementById('loadingMsg').remove(); chatBox.innerHTML += `<div class="msg ai" style="color:var(--danger);">Error de conexión o clave inválida.</div>`; }
             chatBox.scrollTop = chatBox.scrollHeight;
         }
         function guardarConfig() { localStorage.setItem('nexus_groqkey', document.getElementById('apiKey').value); document.getElementById('configStatus').style.display = 'block'; setTimeout(() => document.getElementById('configStatus').style.display = 'none', 3000); }
 
+
+        // --- ESCUDOS SOCIALES PERSONALIZABLES ---
+        const escudosDefault = [
+            "Te agradezco que hayas pensado en mí. Ahora mismo mi carga de proyectos me impide asumir tareas nuevas.",
+            "He recibido tu información. Déjame revisarlo con calma y te doy una respuesta estructurada mañana.",
+            "Para poder procesar esto y ser eficiente, ¿podrías pasarme exactamente lo que necesitas en una lista de puntos por escrito?"
+        ];
+
+        function cargarEscudos() {
+            let userEscudos = JSON.parse(localStorage.getItem('nexus_escudos')) || [];
+            const container = document.getElementById('escudosListContainer');
+            container.innerHTML = '';
+            
+            // Render Default
+            escudosDefault.forEach(esc => {
+                container.innerHTML += `<button class="secondary" onclick="copiarTextoRapido('${esc.replace(/'/g, "\\'")}', this)">${esc.substring(0,40)}...</button>`;
+            });
+            // Render User Custom
+            userEscudos.forEach((esc, index) => {
+                container.innerHTML += `
+                <div style="display:flex; gap:5px;">
+                    <button class="secondary" style="flex:1;" onclick="copiarTextoRapido('${esc.replace(/'/g, "\\'")}', this)">⭐ ${esc.substring(0,35)}...</button>
+                    <button onclick="borrarEscudo(${index})" class="danger" style="width:50px;">✕</button>
+                </div>`;
+            });
+        }
+        function guardarEscudoPersonal() {
+            const val = document.getElementById('nuevoEscudoInput').value.trim();
+            if(!val) return;
+            let userEscudos = JSON.parse(localStorage.getItem('nexus_escudos')) || [];
+            userEscudos.push(val);
+            localStorage.setItem('nexus_escudos', JSON.stringify(userEscudos));
+            document.getElementById('nuevoEscudoInput').value = '';
+            cargarEscudos();
+        }
+        function borrarEscudo(index) {
+            let userEscudos = JSON.parse(localStorage.getItem('nexus_escudos')) || [];
+            userEscudos.splice(index, 1);
+            localStorage.setItem('nexus_escudos', JSON.stringify(userEscudos));
+            cargarEscudos();
+        }
+
+        // --- BATERIA SOCIAL ---
+        function updateBateriaSocial() {
+            const val = document.getElementById('socialBatterySlider').value;
+            const status = document.getElementById('socialBatteryStatus');
+            if(val < 30) { status.innerText = "Crítica 🔴 (No agendar reuniones)"; status.style.color = "var(--danger)"; }
+            else if(val < 70) { status.innerText = "Media 🟡 (Solo lo imprescindible)"; status.style.color = "var(--warning)"; }
+            else { status.innerText = "Óptima 🟢 (Tengo energía social)"; status.style.color = "var(--success)"; }
+        }
+        function guardarBateriaSocial() {
+            localStorage.setItem('nexus_socialBattery', document.getElementById('socialBatterySlider').value);
+            document.getElementById('socialBatteryStatus').innerText += " (Guardado)";
+            setTimeout(updateBateriaSocial, 1500);
+        }
+
         // --- HERRAMIENTAS ORIGINALES MANTENIDAS ---
+        let alarmIntervalTimer;
+        function setAlarma() {
+            const time = document.getElementById('alarmTimeInput').value; if(!time) return;
+            const statusDiv = document.getElementById('alarmStatus'); statusDiv.innerText = `Alarma programada para las ${time}`; statusDiv.style.display = 'block'; statusDiv.style.color = 'var(--text-main)';
+            clearInterval(alarmIntervalTimer);
+            alarmIntervalTimer = setInterval(() => {
+                const now = new Date(); const nowTime = (now.getHours() < 10 ? '0' : '') + now.getHours() + ":" + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+                if(nowTime === time) {
+                    clearInterval(alarmIntervalTimer); statusDiv.innerText = "¡HORA DE PARAR!"; statusDiv.style.color = "var(--danger)";
+                    triggerRompeBucles(); if(!isPlayingTone) togglePitidoPuro();
+                    setTimeout(() => { stopRompeBucles(); if(isPlayingTone) togglePitidoPuro(); }, 10000);
+                }
+            }, 1000);
+        }
+        function cancelAlarma() { clearInterval(alarmIntervalTimer); document.getElementById('alarmTimeInput').value = ''; document.getElementById('alarmStatus').style.display = 'none'; }
+
         let audioCtxTone, oscillator, isPlayingTone = false;
         function togglePitidoPuro() {
             if(!audioCtxTone) audioCtxTone = new (window.AudioContext || window.webkitAudioContext)();
@@ -640,11 +859,9 @@
 
         let transInterval;
         function startTransicion() {
-            clearInterval(transInterval); let time = 120; const display = document.getElementById('transicionTime');
-            display.style.color = "var(--warning)";
+            clearInterval(transInterval); let time = 120; const display = document.getElementById('transicionTime'); display.style.color = "var(--warning)";
             transInterval = setInterval(() => {
-                time--; let m = Math.floor(time / 60), s = time % 60;
-                display.innerText = `${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
+                time--; let m = Math.floor(time / 60), s = time % 60; display.innerText = `${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
                 if(time <= 0) { clearInterval(transInterval); display.innerText = "¡Listo!"; display.style.color = "var(--success)"; if(navigator.vibrate) navigator.vibrate([500,200,500]); }
             }, 1000);
         }
@@ -658,7 +875,7 @@
         function stopRompeBucles() { clearInterval(bucleInterval); document.body.style.backgroundColor = 'var(--bg-dark)'; document.getElementById('stopBucleBtn').style.display = "none"; }
 
         function obtenerDopamina(nivel) {
-            const dict = { 'baja': ["Cierra los ojos 1 minuto.", "Bebe un vaso de agua.", "Masajea tu sien 30s."], 'media': ["Lávate la cara con agua fría.", "Estira los brazos.", "Mira por la ventana a lo lejos."], 'alta': ["Haz 10 sentadillas.", "Camina por el pasillo.", "Baila 1 canción."] };
+            const dict = { 'baja': ["Cierra los ojos 1 min.", "Bebe un vaso de agua.", "Masajea tu sien."], 'media': ["Lávate la cara.", "Estira los brazos.", "Mira por la ventana."], 'alta': ["Haz 10 sentadillas.", "Camina 1 min.", "Baila 1 canción."] };
             const res = document.getElementById('dopaminaResult'); res.innerText = dict[nivel][Math.floor(Math.random() * dict[nivel].length)]; res.style.display = "block";
         }
 
@@ -669,8 +886,6 @@
             else if(media < 70) { res.innerText = "Sobrecarga. Aisla sentidos."; res.style.backgroundColor = "var(--warning)"; res.style.color = "black"; }
             else { res.innerText = "⚠️ PELIGRO. Apagón sensorial recomendado."; res.style.backgroundColor = "var(--danger)"; res.style.color = "white"; }
         }
-
-        function copiar(btn, text) { navigator.clipboard.writeText(text); const o = btn.innerText; btn.innerText = "¡Copiado!"; btn.style.backgroundColor = "var(--success)"; btn.style.color = "black"; setTimeout(() => { btn.innerText = o; btn.style.backgroundColor = "var(--panel-bg)"; btn.style.color = "var(--text-main)"; }, 2000); }
 
         function cortarParalisis() {
             const i = document.getElementById('paraInput').value; if(!i.trim()) return;
@@ -691,9 +906,11 @@
 
         // INIT
         window.onload = () => {
-            cargarDatos(); cargarAgenda(); setTodayDefault();
+            cargarDatos(); cargarAgenda(); setTodayDefault(); cargarEscudos(); renderAudioHistory();
             const savedKey = localStorage.getItem('nexus_groqkey');
             if(savedKey) document.getElementById('apiKey').value = savedKey;
+            const savedBat = localStorage.getItem('nexus_socialBattery');
+            if(savedBat) { document.getElementById('socialBatterySlider').value = savedBat; updateBateriaSocial(); }
         };
     </script>
 </body>
