@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Asistente Ejecutivo Pro</title>
+    <title>Nexus | El Búho de Minerva</title>
     <style>
         :root {
             --bg-dark: #000000; --panel-bg: #1C1C1E; --panel-hover: #2C2C2E;
@@ -52,7 +52,7 @@
         .chat-container { background-color: transparent; height: 35vh; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; padding-right: 5px; }
         .msg { padding: 14px 18px; border-radius: 20px; max-width: 80%; line-height: 1.4; font-size: 0.95rem; position: relative;}
         .msg.user { background-color: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg.ai { background-color: var(--panel-bg); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .msg.ai { background-color: var(--panel-bg); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); border-left: 3px solid var(--warning); }
         .tts-btn { position: absolute; bottom: -25px; right: 0; font-size: 0.8rem; background: none; border: none; color: var(--accent); cursor: pointer; padding: 5px;}
 
         .list-menu { display: flex; flex-direction: column; gap: 10px; }
@@ -86,16 +86,55 @@
 
         .quick-prompts { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 5px;}
         .quick-prompts button { width: auto; font-size: 0.8rem; padding: 8px 12px; margin: 0; flex-shrink: 0; background: var(--panel-hover); border-radius: 8px;}
+
+        /* --- ESTILOS DEL BÚHO Y MENTOR ESTOICO --- */
+        #floating-mentor {
+            position: fixed; bottom: 100px; right: 20px; z-index: 1001;
+            width: 55px; height: 55px; background: var(--panel-hover);
+            border: 2px solid var(--warning); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 159, 10, 0.3);
+            transition: transform 0.3s; animation: floatOwl 4s ease-in-out infinite;
+        }
+        #floating-mentor:hover { transform: scale(1.1); background: var(--panel-bg); }
+        @keyframes floatOwl { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
+        
+        #mentor-bubble {
+            position: fixed; bottom: 165px; right: 20px; z-index: 1001;
+            background: var(--panel-bg); border: 1px solid var(--warning);
+            border-radius: var(--radius); padding: 18px; width: 260px;
+            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            transform-origin: bottom right; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .mentor-text { font-size: 0.95rem; color: var(--text-main); margin-bottom: 15px; font-style: italic; line-height: 1.4;}
+        .mentor-text strong { color: var(--warning); font-style: normal;}
+        .mentor-options { display: flex; flex-direction: column; gap: 8px; }
+        .mentor-options button { padding: 10px; font-size: 0.85rem; margin: 0; background: var(--panel-hover); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px;}
+        .mentor-options button:hover { background: var(--accent); border-color: var(--accent);}
     </style>
 </head>
 <body>
 
+    <!-- OVERLAYS (Refugio y Zen) -->
     <div id="refugio-overlay" onclick="toggleRefugio()">Toca para volver al entorno</div>
     <div id="zen-overlay">
         <h2 style="color: var(--accent); margin-bottom: 5px;">Tu ÚNICA Tarea Ahora:</h2>
         <h1 id="zenTaskText" style="font-size: 2.5rem; word-break: break-word; margin-top: 10px;"></h1>
         <button onclick="completarZen()" style="background-color: var(--success); color: black; margin-top: 40px; max-width: 300px;">✅ Lo he hecho</button>
         <button onclick="cerrarZen()" class="secondary" style="max-width: 300px; border: none; margin-top: 10px;">Salir del Modo Foco</button>
+    </div>
+
+    <!-- EL BÚHO DE MINERVA (Mentor Flotante) -->
+    <div id="floating-mentor" onclick="toggleMentor()">🦉</div>
+    <div id="mentor-bubble">
+        <div class="mentor-text" id="mentorMessage"><strong>Salve, magister.</strong> La mente ansiosa sufre antes de que sea necesario. ¿Cómo puedo aligerar tu carga?</div>
+        <div class="mentor-options">
+            <button onclick="mentorAction('oraculo')">🎲 Decidir por mí</button>
+            <button onclick="mentorAction('trituradora')">🔥 Triturar obsesión</button>
+            <button onclick="mentorAction('respirar')">🫁 Ejercicio estoico (Ancla)</button>
+            <button onclick="toggleMentor()" style="background: transparent; color: var(--danger); border: none; font-weight: normal; margin-top: 5px;">Cerrar diálogo</button>
+        </div>
     </div>
 
     <div class="main-content">
@@ -105,48 +144,48 @@
             <summary style="font-weight: bold; color: var(--accent); font-size: 1.1rem; list-style: none;">📖 Manual de Nexus (Toca aquí)</summary>
             <ul style="margin-top: 15px; color: var(--text-main); font-size: 0.95em; padding-left: 20px; line-height: 1.5;">
                 <li><strong>🧠 Volcado:</strong> Escupe aquí todo lo que tu mente no quiere olvidar.</li>
-                <li><strong>📅 Agenda:</strong> Usa "Fricción Cero" si te abruma ver la lista entera. Usa ⏭️ para posponer.</li>
-                <li><strong>🤖 IA y 🎧 Audio:</strong> Asistente con botones rápidos y audiolibros con historial integrado.</li>
-                <li><strong>⚙️ Herramientas:</strong> Botiquín para bloqueos, sobreestimulación y plantillas de correo.</li>
+                <li><strong>📅 Agenda:</strong> Usa "Fricción Cero" si te abruma ver la lista. Usa ⏭️ para posponer.</li>
+                <li><strong>🤖 IA y 🎧 Audio:</strong> El Búho sabio te asiste. Escucha música/iVoox sin distracciones.</li>
+                <li><strong>🦉 El Búho Flotante:</strong> Tócalo en cualquier momento para aterrizar tu mente o usar herramientas rápidas.</li>
             </ul>
         </details>
 
         <!-- 1. Volcado -->
         <div id="volcado" class="view active">
             <h3>🧠 Volcado de Memoria</h3>
-            <p class="desc"><strong>Instrucción:</strong> Descarga aquí las ideas sueltas o recordatorios para que tu cerebro deje de gastar energía intentando retenerlos.</p>
+            <p class="desc"><strong>Instrucción:</strong> Descarga aquí las ideas sueltas o recordatorios. Tu cerebro puede dejar de gastar energía intentando retenerlos.</p>
             <div class="input-group">
-                <textarea id="ramInput" placeholder="Ej: Añadir genitivos al escape room..."></textarea>
+                <textarea id="ramInput" placeholder="Ej: Añadir declinaciones al escape room, revisar a 4º de ESO..."></textarea>
                 <button class="icon-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
             </div>
-            <button onclick="guardarDato('ram')">Guardar Pensamiento</button>
+            <button onclick="guardarDato('ram')">Guardar Pensamiento en el Templo</button>
             <ul id="ramList" class="task-list" style="margin-top: 20px;"></ul>
         </div>
 
-        <!-- 2. Asistente IA (Groq) -->
+        <!-- 2. Asistente IA (Búho de Minerva) -->
         <div id="ia" class="view">
-            <h3>🤖 Asistente Cognitivo</h3>
-            <p class="desc"><strong>NUEVO:</strong> Usa los botones rápidos si no tienes energía para teclear instrucciones.</p>
+            <h3>🦉 El Búho de Minerva (IA)</h3>
+            <p class="desc">Tu consejero filosófico y analítico. Usa los botones rápidos si no tienes energía para teclear instrucciones.</p>
             
             <div class="quick-prompts">
-                <button onclick="usarPromptRapido('Desglosa esto en pasos ridículamente pequeños y fáciles de hacer: ')">⚡ Desglosar</button>
+                <button onclick="usarPromptRapido('Desglosa este proyecto en pasos ridículamente pequeños y fáciles de hacer: ')">⚡ Desglosar</button>
                 <button onclick="usarPromptRapido('Resume este texto en 3 viñetas clave: ')">📝 Resumir</button>
-                <button onclick="usarPromptRapido('Reescribe este texto para que suene más profesional y asertivo: ')">👔 Profesional</button>
+                <button onclick="usarPromptRapido('Reescribe este texto para que suene estoico, profesional y asertivo: ')">👔 Profesional</button>
             </div>
 
             <div class="chat-container" id="chatBox">
-                <div class="msg ai">Entorno de baja fricción activo. ¿Qué necesitas estructurar?</div>
+                <div class="msg ai">Salve, magister. Soy tu consejero. Entorno de baja fricción activo. ¿Qué caos estructural vamos a ordenar hoy?</div>
             </div>
             
             <div class="input-group">
-                <input type="text" id="iaInput" placeholder="Escribe o dicta tu consulta..." onkeypress="if(event.key === 'Enter') enviarIA()">
+                <input type="text" id="iaInput" placeholder="Escribe o dicta tu consulta al oráculo..." onkeypress="if(event.key === 'Enter') enviarIA()">
                 <button class="icon-btn" onclick="dictarVoz('iaInput', this, true)">🎙️</button>
             </div>
         </div>
 
         <!-- 3. Integración Audio -->
         <div id="audio" class="view">
-            <h3>🎧 Biblioteca de Audio</h3>
+            <h3>🎧 Biblioteca Acústica</h3>
             <p class="desc">Reproduce audiolibros o música. Tus enlaces se guardarán en el historial abajo.</p>
             
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
@@ -176,7 +215,7 @@
                 </div>
             </div>
 
-            <h4>Historial de Enlaces</h4>
+            <h4>Pergaminos Anteriores (Historial)</h4>
             <ul id="audioHistoryList" class="task-list" style="margin-bottom: 20px; opacity: 0.8; font-size: 0.85em;"></ul>
 
             <h4>Notas de Escucha</h4>
@@ -191,7 +230,7 @@
         <!-- 4. SÚPER AGENDA -->
         <div id="agenda" class="view">
             <h3>📅 Centro de Mando</h3>
-            <p class="desc"><strong>NUEVO:</strong> Oculta el futuro, mira tu progreso diario y usa el modo "Fricción Cero" si te abruma ver toda la lista.</p>
+            <p class="desc">Mira tu progreso diario y usa el modo "Fricción Cero" si te abruma ver la lista completa.</p>
             
             <div class="agenda-tags" id="tagsContainer">
                 <button class="tag-btn active" onclick="selectTag(this, '🏫 Clases')">🏫 Clases</button>
@@ -209,7 +248,7 @@
                 <input type="text" id="agendaText" placeholder="Ej: Preparar material de LOMLOE...">
                 <button class="icon-btn" onclick="dictarVoz('agendaText', this)">🎙️</button>
             </div>
-            <button onclick="guardarAgenda()">Añadir a la Agenda</button>
+            <button onclick="guardarAgenda()">Añadir al Pergamino</button>
             
             <h4 style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
                 <span style="color: var(--success);">☀️ Para Hoy</span>
@@ -219,7 +258,7 @@
                 <div class="progress-bar-fill" id="agendaProgressBar"></div>
             </div>
 
-            <button class="secondary" onclick="iniciarModoZen()" style="border: 1px solid var(--accent); color: var(--accent); margin-bottom: 15px;">🔍 MODO FRICCIÓN CERO (1 Tarea)</button>
+            <button class="secondary" onclick="iniciarModoZen()" style="border: 1px solid var(--warning); color: var(--warning); margin-bottom: 15px;">🔍 MODO FRICCIÓN CERO (1 Tarea)</button>
 
             <ul id="agendaHoyList" class="task-list"></ul>
 
@@ -248,11 +287,11 @@
                 <div class="menu-item" onclick="switchView('oraculo')"><span class="icon">🎲</span><span>Oráculo (Decidir por mí)</span></div>
                 <div class="menu-item" onclick="switchView('transicion')"><span class="icon">🌉</span><span>Puente de Transición de Tareas</span></div>
                 <div class="menu-item" onclick="switchView('rompebucles')"><span class="icon">🚨</span><span>Rompe-Bucles Físico</span></div>
-                <div class="menu-item" onclick="switchView('paralisis')"><span class="icon">🔪</span><span>Cortador de Parálisis</span></div>
+                <div class="menu-item" onclick="switchView('paralisis')"><span class="icon">🔪</span><span>Cortador de Parálisis por Análisis</span></div>
                 <div class="menu-item" onclick="switchView('trituradora')"><span class="icon">🔥</span><span>Trituradora de Pensamientos</span></div>
 
                 <div class="menu-header">Cuerpo y Energía</div>
-                <div class="menu-item" onclick="switchView('bateriaSocial')"><span class="icon">🔋</span><span>NUEVO: Medidor de Batería Social</span></div>
+                <div class="menu-item" onclick="switchView('bateriaSocial')"><span class="icon">🔋</span><span>Medidor de Batería Social</span></div>
                 <div class="menu-item" onclick="switchView('escudos')"><span class="icon">🛡️</span><span>Mis Escudos Sociales</span></div>
                 <div class="menu-item" onclick="switchView('intero')"><span class="icon">🪫</span><span>Escáner Corporal (Interocepción)</span></div>
                 <div class="menu-item" onclick="switchView('dopamina')"><span class="icon">💊</span><span>Menú de Dopamina Saludable</span></div>
@@ -266,13 +305,13 @@
 
         <div id="correo" class="view">
             <h3>✉️ Email Seguro y Plantillas</h3>
-            <p class="desc">Selecciona una plantilla o escribe. Enviará directamente sin pasar por la bandeja de entrada.</p>
+            <p class="desc">Selecciona una plantilla o escribe. Se enviará directamente sin pasar por la bandeja de entrada, evitando distracciones con otros mensajes.</p>
             
             <select id="emailTemplate" onchange="cargarPlantillaCorreo()">
                 <option value="">-- Selecciona una plantilla (Opcional) --</option>
                 <option value="familias">Información para Familias / Tutoría</option>
                 <option value="material">Solicitud/Envío de Materiales</option>
-                <option value="limite">Respuesta posponiendo revisión</option>
+                <option value="limite">Respuesta posponiendo revisión (Protección)</option>
                 <option value="vacio">Correo en Blanco</option>
             </select>
 
@@ -297,7 +336,7 @@
 
         <div id="escudos" class="view">
             <h3>🛡️ Mis Escudos Sociales</h3>
-            <p class="desc">Toca para copiar. <strong>NUEVO:</strong> Añade tus propias excusas/límites para tenerlos siempre a mano.</p>
+            <p class="desc">Toca para copiar. Añade tus propias excusas/límites estoicos para tenerlos siempre a mano.</p>
             
             <div id="escudosListContainer">
                 <!-- Se llenará con JS -->
@@ -308,10 +347,9 @@
                 <input type="text" id="nuevoEscudoInput" placeholder="Ej: No atiendo correos el fin de semana...">
                 <button class="icon-btn" onclick="dictarVoz('nuevoEscudoInput', this)">🎙️</button>
             </div>
-            <button onclick="guardarEscudoPersonal()">Añadir Escudo</button>
+            <button onclick="guardarEscudoPersonal()">Forjar Escudo</button>
         </div>
 
-        <!-- RESTO DE VISTAS MANTENIDAS EXACTAMENTE IGUAL -->
         <div id="alarma" class="view">
             <h3>⏰ Alarma Cognitiva</h3>
             <input type="time" id="alarmTimeInput">
@@ -322,15 +360,15 @@
 
         <div id="ermitano" class="view" style="text-align: center;">
             <h3>🔕 Modo Ermitaño</h3>
-            <p class="desc" style="text-align: left;">Protocolo para salir del radar sin culpa.</p>
+            <p class="desc" style="text-align: left;">Protocolo estoico para salir del radar sin culpa.</p>
             <div style="background: var(--panel-bg); padding: 25px; border-radius: var(--radius); border-left: 5px solid var(--accent); margin-bottom: 20px; text-align: left;">
                 <ol style="color: var(--text-muted); line-height: 1.8;">
                     <li>Desliza el dedo desde arriba.</li>
                     <li>Pulsa el <strong>Avión ✈️</strong> o la <strong>Luna 🌙</strong>.</li>
-                    <li>El mundo seguirá ahí en 2 horas.</li>
+                    <li>El mundo no caerá como el Imperio Romano en 2 horas.</li>
                 </ol>
             </div>
-            <button onclick="copiarTextoRapido('Hola. He activado mi modo de trabajo profundo (Sin notificaciones) para avanzar. Responderé cuando vuelva a conectarme. Un saludo.', this)" class="secondary">Copiar respuesta automática</button>
+            <button onclick="copiarTextoRapido('Salve. He activado mi modo de trabajo profundo (Sin notificaciones) para avanzar. Responderé cuando vuelva a conectarme. Un saludo.', this)" class="secondary">Copiar respuesta de ausencia</button>
         </div>
 
         <div id="migas" class="view">
@@ -346,7 +384,7 @@
         <div id="oraculo" class="view">
             <h3>🎲 Oráculo Ejecutivo</h3>
             <textarea id="oraculoInput" placeholder="Ej: Revisar correos, empezar sintaxis..."></textarea>
-            <button onclick="girarOraculo()">Decidir por mí</button>
+            <button onclick="girarOraculo()">Consultar a los Dioses</button>
             <div id="oraculoResult" style="margin-top: 20px; padding: 20px; background: var(--panel-bg); border-radius: var(--radius); text-align: center; font-size: 1.2rem; display: none; color: var(--accent); font-weight: bold;"></div>
         </div>
 
@@ -440,6 +478,34 @@
     </div>
 
     <script>
+        // --- COMPORTAMIENTO DEL MENTOR FLOTANTE (EL BÚHO) ---
+        const frasesEstoicas = [
+            '<strong>Séneca:</strong> "La mente que está ansiosa por el futuro es miserable. Estructura el ahora."',
+            '<strong>Epicteto:</strong> "No nos afecta lo que sucede, sino lo que pensamos de lo que sucede. Respira."',
+            '<strong>Marco Aurelio:</strong> "Tienes poder sobre tu mente, no sobre los eventos externos. Date cuenta de esto, y encontrarás la fuerza."',
+            '<strong>Séneca:</strong> "Ningún viento es favorable para el barco que no sabe a qué puerto se dirige. Decide tu próximo paso."',
+            'Roma no se construyó en un día, ni se estructuró en una noche. Detente si estás agotado.',
+            '<strong>Ovidio:</strong> "El descanso es el mejor remedio para la mente fatigada."'
+        ];
+
+        function toggleMentor() {
+            const b = document.getElementById('mentor-bubble');
+            if(b.style.display === 'block') {
+                b.style.display = 'none';
+            } else {
+                b.style.display = 'block';
+                document.getElementById('mentorMessage').innerHTML = frasesEstoicas[Math.floor(Math.random() * frasesEstoicas.length)];
+                if(navigator.vibrate) navigator.vibrate(50);
+            }
+        }
+
+        function mentorAction(action) {
+            toggleMentor();
+            if(action === 'oraculo') switchView('oraculo');
+            if(action === 'trituradora') switchView('trituradora');
+            if(action === 'respirar') switchView('grounding');
+        }
+
         // --- VOZ (Reconocimiento y TTS) ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
@@ -460,15 +526,15 @@
         let currentUtterance = null;
         function leerTextoTTS(texto) {
             if(!window.speechSynthesis) return alert("Text-to-Speech no soportado.");
-            window.speechSynthesis.cancel(); // Para cualquier lectura previa
-            currentUtterance = new SpeechSynthesisUtterance(texto);
+            window.speechSynthesis.cancel();
+            currentUtterance = new SpeechSynthesisUtterance(decodeURIComponent(texto));
             currentUtterance.lang = 'es-ES';
             currentUtterance.rate = 1.0;
             window.speechSynthesis.speak(currentUtterance);
         }
         function leerTexto(inputId) {
             const val = document.getElementById(inputId).value;
-            if(val) leerTextoTTS(val);
+            if(val) leerTextoTTS(encodeURIComponent(val));
         }
 
         // --- NAVEGACIÓN ---
@@ -477,6 +543,9 @@
             document.getElementById(id).classList.add('active');
             if(btn) { document.querySelectorAll('.bottom-bar .nav-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
             if(id !== 'volcado') { const guia = document.getElementById('guiaInstrucciones'); if(guia) guia.removeAttribute("open"); }
+            
+            // Ocultar mentor si entramos en modos de foco o si ya está abierto el bubble
+            document.getElementById('mentor-bubble').style.display = 'none';
         }
 
         function copiarTextoRapido(text, btn) {
@@ -573,7 +642,6 @@
                 else listaFuturo.innerHTML += liHtml;
             });
 
-            // Actualizar Progress Bar
             const progText = document.getElementById('agendaProgressText');
             const progBar = document.getElementById('agendaProgressBar');
             if(tareasHoy === 0) {
@@ -588,11 +656,10 @@
         }
 
         function guardarAgenda() {
-            // Verificar batería social si es una reunión (como advertencia)
             const tag = document.getElementById('agendaTag').value;
             const bat = parseInt(document.getElementById('socialBatterySlider').value);
             if(bat <= 20 && (tag.includes('Clases') || tag.includes('Proyectos'))) {
-                if(!confirm("⚠️ Tienes la batería social muy baja. ¿Seguro que quieres agendar esto?")) return;
+                if(!confirm("⚠️ El Búho advierte: Tienes la batería social muy baja. ¿Seguro que quieres agendar esto?")) return;
             }
 
             const date = document.getElementById('agendaDate').value, time = document.getElementById('agendaTime').value, text = document.getElementById('agendaText').value;
@@ -624,19 +691,14 @@
             const hoy = (new Date(Date.now() - tz)).toISOString().slice(0, 10);
             
             currentZenIndex = -1;
-            // Buscar la primera tarea de hoy no completada
             for(let i=0; i<agenda.length; i++) {
-                if(agenda[i].date <= hoy && !agenda[i].completed) {
-                    currentZenIndex = i; break;
-                }
+                if(agenda[i].date <= hoy && !agenda[i].completed) { currentZenIndex = i; break; }
             }
-
-            if(currentZenIndex === -1) {
-                alert("No tienes tareas pendientes para hoy. ¡Disfruta!"); return;
-            }
+            if(currentZenIndex === -1) { alert("No tienes tareas pendientes para hoy. ¡Disfruta!"); return; }
 
             document.getElementById('zenTaskText').innerText = agenda[currentZenIndex].text;
             document.getElementById('zen-overlay').style.display = 'flex';
+            document.getElementById('floating-mentor').style.display = 'none'; // Ocultar búho en modo zen
         }
 
         function completarZen() {
@@ -644,12 +706,14 @@
                 const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || [];
                 agenda[currentZenIndex].completed = true;
                 localStorage.setItem('nexus_agenda', JSON.stringify(agenda));
-                cargarAgenda();
-                if(navigator.vibrate) navigator.vibrate(200);
+                cargarAgenda(); if(navigator.vibrate) navigator.vibrate(200);
             }
-            document.getElementById('zen-overlay').style.display = 'none';
+            cerrarZen();
         }
-        function cerrarZen() { document.getElementById('zen-overlay').style.display = 'none'; }
+        function cerrarZen() { 
+            document.getElementById('zen-overlay').style.display = 'none'; 
+            document.getElementById('floating-mentor').style.display = 'flex';
+        }
 
 
         // --- AUDIO (iVoox, YouTube e Historial) ---
@@ -684,10 +748,9 @@
 
         function guardarHistorialAudio(tipo, url) {
             const history = JSON.parse(localStorage.getItem('nexus_audioHistory')) || [];
-            // Remove if exists
             const filtered = history.filter(h => h.url !== url);
             filtered.unshift({tipo, url, label: url.substring(0, 35) + '...'});
-            if(filtered.length > 5) filtered.pop(); // Keep last 5
+            if(filtered.length > 5) filtered.pop();
             localStorage.setItem('nexus_audioHistory', JSON.stringify(filtered));
             renderAudioHistory();
         }
@@ -735,10 +798,9 @@
             window.open(link, '_blank');
         }
 
-        // --- GROQ IA (Con Prompts Rápidos y TTS) ---
+        // --- GROQ IA (EL BÚHO) ---
         function usarPromptRapido(prompt) {
-            document.getElementById('iaInput').value = prompt;
-            document.getElementById('iaInput').focus();
+            document.getElementById('iaInput').value = prompt; document.getElementById('iaInput').focus();
         }
 
         async function enviarIA() {
@@ -747,23 +809,32 @@
             chatBox.innerHTML += `<div class="msg user">${texto}</div>`; input.value = ''; chatBox.scrollTop = chatBox.scrollHeight;
             if(!apiKey) { chatBox.innerHTML += `<div class="msg ai" style="color:var(--danger);">Falta API Key. Configúrala en Herramientas.</div>`; return; }
             try {
-                chatBox.innerHTML += `<div class="msg ai" id="loadingMsg">Procesando a velocidad LPU...</div>`;
-                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify({ model: "llama3-70b-8192", messages: [{ role: "system", content: "Asistente neurodivergente conciso. Estructura siempre en viñetas cortas y claras. Evita párrafos largos." }, { role: "user", content: texto }], temperature: 0.4 }) });
+                chatBox.innerHTML += `<div class="msg ai" id="loadingMsg">El Búho está pensando...</div>`;
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', { 
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, 
+                    body: JSON.stringify({ 
+                        model: "llama3-70b-8192", 
+                        messages: [
+                            { role: "system", content: "Eres 'El Búho de Minerva', un sabio estoico y asistente neurodivergente conciso para un profesor de Latín y Griego. Estructura SIEMPRE en viñetas cortas. Usa un tono calmado, ocasionalmente usando referencias muy sutiles a la antigua Roma/Grecia o el estoicismo para centrar la mente. Evita párrafos largos." }, 
+                            { role: "user", content: texto }
+                        ], 
+                        temperature: 0.4 
+                    }) 
+                });
                 const data = await response.json(); document.getElementById('loadingMsg').remove();
                 if(data.choices) {
                     const rawText = data.choices[0].message.content;
-                    const cleanTextForSpeech = rawText.replace(/[*_#]/g, ''); // Limpiar markdown para que no lo lea el TTS
+                    const cleanTextForSpeech = rawText.replace(/[*_#]/g, '');
                     chatBox.innerHTML += `
                         <div class="msg ai">
                             ${rawText.replace(/\n/g, '<br>')}
-                            <button class="tts-btn" onclick="leerTextoTTS('${encodeURIComponent(cleanTextForSpeech).replace(/'/g, "%27")}')">🔊 Leer</button>
+                            <button class="tts-btn" onclick="leerTextoTTS('${encodeURIComponent(cleanTextForSpeech).replace(/'/g, "%27")}')">🔊 Leer en voz alta</button>
                         </div>`;
                 }
             } catch (e) { if(document.getElementById('loadingMsg')) document.getElementById('loadingMsg').remove(); chatBox.innerHTML += `<div class="msg ai" style="color:var(--danger);">Error de conexión o clave inválida.</div>`; }
             chatBox.scrollTop = chatBox.scrollHeight;
         }
         function guardarConfig() { localStorage.setItem('nexus_groqkey', document.getElementById('apiKey').value); document.getElementById('configStatus').style.display = 'block'; setTimeout(() => document.getElementById('configStatus').style.display = 'none', 3000); }
-
 
         // --- ESCUDOS SOCIALES PERSONALIZABLES ---
         const escudosDefault = [
@@ -774,14 +845,11 @@
 
         function cargarEscudos() {
             let userEscudos = JSON.parse(localStorage.getItem('nexus_escudos')) || [];
-            const container = document.getElementById('escudosListContainer');
-            container.innerHTML = '';
+            const container = document.getElementById('escudosListContainer'); container.innerHTML = '';
             
-            // Render Default
             escudosDefault.forEach(esc => {
                 container.innerHTML += `<button class="secondary" onclick="copiarTextoRapido('${esc.replace(/'/g, "\\'")}', this)">${esc.substring(0,40)}...</button>`;
             });
-            // Render User Custom
             userEscudos.forEach((esc, index) => {
                 container.innerHTML += `
                 <div style="display:flex; gap:5px;">
@@ -791,19 +859,14 @@
             });
         }
         function guardarEscudoPersonal() {
-            const val = document.getElementById('nuevoEscudoInput').value.trim();
-            if(!val) return;
+            const val = document.getElementById('nuevoEscudoInput').value.trim(); if(!val) return;
             let userEscudos = JSON.parse(localStorage.getItem('nexus_escudos')) || [];
-            userEscudos.push(val);
-            localStorage.setItem('nexus_escudos', JSON.stringify(userEscudos));
-            document.getElementById('nuevoEscudoInput').value = '';
-            cargarEscudos();
+            userEscudos.push(val); localStorage.setItem('nexus_escudos', JSON.stringify(userEscudos));
+            document.getElementById('nuevoEscudoInput').value = ''; cargarEscudos();
         }
         function borrarEscudo(index) {
-            let userEscudos = JSON.parse(localStorage.getItem('nexus_escudos')) || [];
-            userEscudos.splice(index, 1);
-            localStorage.setItem('nexus_escudos', JSON.stringify(userEscudos));
-            cargarEscudos();
+            let userEscudos = JSON.parse(localStorage.getItem('nexus_escudos')) || []; userEscudos.splice(index, 1);
+            localStorage.setItem('nexus_escudos', JSON.stringify(userEscudos)); cargarEscudos();
         }
 
         // --- BATERIA SOCIAL ---
@@ -848,12 +911,12 @@
             document.getElementById('textTone').innerText = isPlayingTone ? "Detener Tono Puro" : "Activar Tono Puro (432Hz)";
             document.getElementById('iconTone').innerText = isPlayingTone ? "⏹️" : "🎛️";
         }
-        function toggleRefugio() { const overlay = document.getElementById('refugio-overlay'); overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; }
+        function toggleRefugio() { const overlay = document.getElementById('refugio-overlay'); overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('floating-mentor').style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; }
         
         function girarOraculo() {
             const input = document.getElementById('oraculoInput').value; if(!input.trim()) return;
             const opciones = input.split(',').map(o => o.trim()).filter(o => o); if(opciones.length === 0) return;
-            const res = document.getElementById('oraculoResult'); res.innerText = "Pensando..."; res.style.display = "block";
+            const res = document.getElementById('oraculoResult'); res.innerText = "Consultando a los dioses..."; res.style.display = "block";
             setTimeout(() => { res.innerText = "👉 " + opciones[Math.floor(Math.random() * opciones.length)]; }, 500);
         }
 
