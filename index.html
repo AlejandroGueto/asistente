@@ -6,166 +6,206 @@
     <title>Nexus | El Búho de Minerva</title>
     <style>
         :root {
-            --bg-dark: #000000; --panel-bg: #1C1C1E; --panel-hover: #2C2C2E;
-            --text-main: #FFFFFF; --text-muted: #8E8E93; --accent: #5E5CE6;
-            --danger: #FF453A; --success: #32D74B; --warning: #FF9F0A; --radius: 16px;
+            --bg-dark: #000000; 
+            --panel-bg: rgba(28, 28, 30, 0.65); 
+            --panel-hover: rgba(44, 44, 46, 0.85);
+            --text-main: #FFFFFF; 
+            --text-muted: #A0A0A5; 
+            --accent: #5E5CE6;
+            --accent-glow: rgba(94, 92, 230, 0.4);
+            --danger: #FF453A; 
+            --success: #32D74B; 
+            --warning: #FF9F0A; 
+            --radius: 20px;
         }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-dark); color: var(--text-main); margin: 0; display: flex; height: 100vh; overflow: hidden; flex-direction: column; -webkit-font-smoothing: antialiased;
+            background-color: var(--bg-dark); 
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, transparent 70%);
+            color: var(--text-main); margin: 0; display: flex; height: 100vh; overflow: hidden; flex-direction: column; -webkit-font-smoothing: antialiased;
         }
         
-        .main-content { flex: 1; padding: 25px 20px 110px 20px; overflow-y: auto; max-width: 700px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .main-content { flex: 1; padding: 25px 20px 110px 20px; overflow-y: auto; max-width: 700px; margin: 0 auto; width: 100%; box-sizing: border-box; scroll-behavior: smooth; }
         
-        .view { display: none; opacity: 0; transition: opacity 0.3s ease; }
-        .view.active { display: block; opacity: 1; animation: slideUp 0.4s ease forwards; }
-        @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .view { display: none; opacity: 0; transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .view.active { display: block; opacity: 1; animation: slideUp 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+        @keyframes slideUp { from { transform: translateY(20px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         
-        h3 { font-size: 1.5rem; font-weight: 600; margin-top: 0; margin-bottom: 5px; color: var(--text-main); letter-spacing: -0.5px; }
-        h4 { font-size: 1.1rem; font-weight: 500; color: var(--accent); margin-bottom: 10px; margin-top: 20px; border-bottom: 1px solid var(--panel-hover); padding-bottom: 5px;}
-        p.desc { font-size: 0.9em; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
+        h3 { font-size: 1.6rem; font-weight: 700; margin-top: 0; margin-bottom: 5px; color: var(--text-main); letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        h4 { font-size: 1.1rem; font-weight: 600; color: var(--accent); margin-bottom: 12px; margin-top: 25px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        p.desc { font-size: 0.95em; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6; background: rgba(94, 92, 230, 0.05); padding: 15px; border-radius: 12px; border-left: 4px solid var(--accent); backdrop-filter: blur(10px); }
         
         textarea, input[type="text"], input[type="password"], input[type="date"], input[type="time"], input[type="url"], input[type="range"], select {
-            width: 100%; background-color: var(--panel-bg); color: var(--text-main); border: none; padding: 18px; border-radius: var(--radius); margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-size: 1rem; transition: background-color 0.2s;
+            width: 100%; background-color: var(--panel-bg); color: var(--text-main); border: 1px solid rgba(255,255,255,0.05); padding: 18px; border-radius: 16px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-size: 1rem; transition: all 0.3s ease; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
-        textarea:focus, input:focus, select:focus { outline: none; background-color: var(--panel-hover); }
+        textarea:focus, input:focus, select:focus { outline: none; background-color: var(--panel-hover); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow), inset 0 2px 4px rgba(0,0,0,0.2); }
         textarea { height: 120px; resize: none; }
         
         button {
-            background-color: var(--accent); color: #fff; border: none; padding: 16px 20px; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 1rem; transition: transform 0.1s, opacity 0.2s; width: 100%; margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent) 0%, #7B78FF 100%); color: #fff; border: none; padding: 16px 20px; border-radius: 16px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); width: 100%; margin-bottom: 10px; box-shadow: 0 4px 15px var(--accent-glow);
         }
-        button:active { transform: scale(0.98); opacity: 0.8; }
-        button.secondary { background-color: var(--panel-bg); color: var(--text-main); }
-        button.danger { background-color: var(--danger); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); filter: brightness(1.1); }
+        button:active { transform: translateY(1px) scale(0.98); box-shadow: 0 2px 8px var(--accent-glow); }
+        button.secondary { background: var(--panel-bg); color: var(--text-main); box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
+        button.secondary:hover { background: var(--panel-hover); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        button.danger { background: linear-gradient(135deg, var(--danger) 0%, #FF6B63 100%); box-shadow: 0 4px 15px rgba(255, 69, 58, 0.3); }
         
         .input-group { display: flex; gap: 10px; align-items: stretch; margin-bottom: 15px; }
         .input-group textarea, .input-group input { margin-bottom: 0; flex: 1; }
-        .icon-btn { width: 60px; height: auto; background-color: var(--panel-bg); color: var(--accent); border-radius: var(--radius); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 0; transition: all 0.2s; cursor: pointer; border: none;}
-        .icon-btn.listening { background-color: var(--danger); color: white; animation: pulse 1s infinite alternate; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+        .icon-btn { width: 60px; height: auto; background-color: var(--panel-bg); color: var(--accent); border-radius: 16px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 0; transition: all 0.3s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .icon-btn:hover { background-color: var(--panel-hover); transform: translateY(-2px); color: #7B78FF; }
+        .icon-btn.listening { background: var(--danger); color: white; animation: micPulse 1s infinite alternate; border-color: transparent; }
+        @keyframes micPulse { from { transform: scale(1); box-shadow: 0 0 10px rgba(255,69,58,0.5); } to { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,69,58,0.8); } }
 
         .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-list li { background-color: var(--panel-bg); margin-bottom: 12px; padding: 18px; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; transition: opacity 0.3s;}
-        .delete-btn { background-color: transparent; color: var(--text-muted); font-weight: bold; padding: 5px 10px; width: auto; margin: 0; font-size: 1.2rem;}
+        .task-list li { background-color: var(--panel-bg); margin-bottom: 12px; padding: 18px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.03); backdrop-filter: blur(10px); }
+        .task-list li:hover { transform: translateX(4px); background-color: var(--panel-hover); border-color: rgba(255,255,255,0.08); }
+        .delete-btn { background-color: transparent; color: var(--text-muted); font-weight: bold; padding: 8px 12px; width: auto; margin: 0; font-size: 1.2rem; border-radius: 10px; transition: all 0.2s; box-shadow: none; border: none;}
+        .delete-btn:hover { background-color: rgba(255,69,58,0.1); color: var(--danger); transform: scale(1.1); }
         
-        .chat-container { background-color: transparent; height: 35vh; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; padding-right: 5px; }
-        .msg { padding: 14px 18px; border-radius: 20px; max-width: 80%; line-height: 1.4; font-size: 0.95rem; position: relative;}
-        .msg.user { background-color: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg.ai { background-color: var(--panel-bg); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); border-left: 3px solid var(--warning); }
-        .tts-btn { position: absolute; bottom: -25px; right: 0; font-size: 0.8rem; background: none; border: none; color: var(--accent); cursor: pointer; padding: 5px;}
+        .chat-container { background-color: transparent; height: 35vh; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; padding-right: 10px; scrollbar-width: thin; }
+        .msg { padding: 16px 20px; border-radius: 20px; max-width: 82%; line-height: 1.5; font-size: 0.95rem; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .msg.user { background: linear-gradient(135deg, var(--accent) 0%, #7B78FF 100%); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg.ai { background-color: var(--panel-bg); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); border-left: 4px solid var(--warning); backdrop-filter: blur(10px); }
+        .tts-btn { position: absolute; bottom: -28px; right: 0; font-size: 0.8rem; background: rgba(94, 92, 230, 0.2); border: none; color: #7B78FF; cursor: pointer; padding: 4px 10px; border-radius: 10px; transition: all 0.2s; backdrop-filter: blur(5px);}
+        .tts-btn:hover { background: rgba(94, 92, 230, 0.4); color: #fff;}
 
-        .list-menu { display: flex; flex-direction: column; gap: 10px; }
-        .menu-item { background-color: var(--panel-bg); padding: 18px; border-radius: var(--radius); display: flex; align-items: center; gap: 15px; cursor: pointer; font-weight: 500; transition: background 0.2s; }
-        .menu-item:hover { background-color: var(--panel-hover); }
-        .menu-item .icon { font-size: 1.5rem; width: 30px; text-align: center; }
-        .menu-header { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); margin-top: 20px; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px;}
+        .list-menu { display: flex; flex-direction: column; gap: 12px; }
+        .menu-item { background-color: var(--panel-bg); padding: 18px 20px; border-radius: 16px; display: flex; align-items: center; gap: 18px; cursor: pointer; font-weight: 500; transition: all 0.3s; border: 1px solid rgba(255,255,255,0.03); backdrop-filter: blur(10px); }
+        .menu-item:hover { background-color: var(--panel-hover); transform: translateY(-2px); border-color: rgba(255,255,255,0.1); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+        .menu-item .icon { font-size: 1.6rem; width: 35px; text-align: center; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+        .menu-header { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-top: 25px; margin-bottom: 8px; font-weight: 800; letter-spacing: 1.5px; padding-left: 5px;}
 
-        .player-container { background: var(--panel-bg); border-radius: var(--radius); padding: 15px; margin-bottom: 20px; }
-        .embedIframe { border-radius: 8px; margin-top: 10px; display: none; width: 100%; height: 200px; border: none; }
+        .player-container { background: var(--panel-bg); border-radius: var(--radius); padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .embedIframe { border-radius: 12px; margin-top: 10px; display: none; width: 100%; height: 200px; border: none; }
 
+        /* Barra de navegación ultrarrápida y moderna */
         .bottom-bar {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background-color: rgba(28, 28, 30, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; display: flex; justify-content: space-between; padding: 10px 20px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; 
+            background-color: rgba(28, 28, 30, 0.75); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
+            border-radius: 35px; display: flex; justify-content: space-around; align-items: center; padding: 10px 15px; z-index: 1000; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1); box-sizing: border-box; border: 1px solid rgba(255,255,255,0.05);
         }
-        .nav-btn { background: none; border: none; color: var(--text-muted); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0; padding: 0; border-radius: 50%; transition: all 0.2s; }
-        .nav-btn.active { color: var(--accent); background-color: rgba(94, 92, 230, 0.15); transform: translateY(-3px); }
+        .nav-btn { 
+            background: transparent; border: none; color: var(--text-muted); width: 55px; height: 55px; 
+            display: flex; align-items: center; justify-content: center; font-size: 1.7rem; margin: 0; padding: 0; 
+            border-radius: 50%; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: none; position: relative;
+        }
+        .nav-btn:hover { color: #fff; transform: translateY(-2px); }
+        .nav-btn.active { color: #fff; background: linear-gradient(135deg, var(--accent) 0%, #7B78FF 100%); transform: translateY(-5px); box-shadow: 0 8px 20px var(--accent-glow); }
 
-        #refugio-overlay, #zen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000; z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; color: #333; font-size: 0.8rem; padding: 20px; box-sizing: border-box;}
-        #zen-overlay { background-color: var(--bg-dark); color: white; text-align: center;}
+        #refugio-overlay, #zen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000; z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; color: #333; font-size: 0.8rem; padding: 20px; box-sizing: border-box; backdrop-filter: blur(10px);}
+        #zen-overlay { background-color: rgba(0,0,0,0.95); color: white; text-align: center;}
         
-        .timer-display { font-size: 4rem; text-align: center; margin: 20px 0; font-weight: bold; color: var(--accent); font-variant-numeric: tabular-nums; }
-        .checkbox-item { display: flex; align-items: center; gap: 15px; background: var(--panel-bg); padding: 15px; border-radius: var(--radius); margin-bottom: 10px; }
-        .checkbox-item input[type="checkbox"] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
+        .timer-display { font-size: 5rem; text-align: center; margin: 20px 0; font-weight: 800; background: linear-gradient(135deg, var(--accent) 0%, #7B78FF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-variant-numeric: tabular-nums; filter: drop-shadow(0 4px 10px rgba(94, 92, 230, 0.3));}
+        .checkbox-item { display: flex; align-items: center; gap: 15px; background: var(--panel-bg); padding: 18px; border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.03); transition: background 0.2s;}
+        .checkbox-item:hover { background: var(--panel-hover);}
+        .checkbox-item input[type="checkbox"] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); cursor: pointer;}
 
-        .agenda-tags { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
-        .agenda-tags button { width: auto; padding: 8px 15px; border-radius: 20px; margin: 0; background: var(--panel-bg); color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0;}
-        .agenda-tags button.active { background: var(--accent); color: white; }
+        .agenda-tags { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none;}
+        .agenda-tags::-webkit-scrollbar { display: none; }
+        .agenda-tags button { width: auto; padding: 10px 18px; border-radius: 20px; margin: 0; background: var(--panel-bg); color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05); box-shadow: none;}
+        .agenda-tags button.active { background: linear-gradient(135deg, var(--accent) 0%, #7B78FF 100%); color: white; border-color: transparent; box-shadow: 0 4px 10px var(--accent-glow);}
 
-        .progress-bar-container { width: 100%; background-color: var(--panel-bg); border-radius: 10px; height: 8px; margin-bottom: 20px; overflow: hidden;}
-        .progress-bar-fill { height: 100%; background-color: var(--success); width: 0%; transition: width 0.4s ease; }
+        .progress-bar-container { width: 100%; background-color: rgba(255,255,255,0.05); border-radius: 10px; height: 10px; margin-bottom: 25px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);}
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--success) 0%, #50E3C2 100%); width: 0%; transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 0 10px rgba(50, 215, 75, 0.5);}
 
-        .quick-prompts { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 5px;}
-        .quick-prompts button { width: auto; font-size: 0.8rem; padding: 8px 12px; margin: 0; flex-shrink: 0; background: var(--panel-hover); border-radius: 8px;}
+        .quick-prompts { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 10px; scrollbar-width: none;}
+        .quick-prompts::-webkit-scrollbar { display: none; }
+        .quick-prompts button { width: auto; font-size: 0.85rem; padding: 10px 16px; margin: 0; flex-shrink: 0; background: var(--panel-hover); border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); box-shadow: none; font-weight: 500;}
+        .quick-prompts button:hover { background: var(--accent); color: white; }
 
-        /* --- ESTILOS DEL BÚHO Y MENTOR ESTOICO --- */
+        /* --- EL BÚHO DE MINERVA (Draggable & Dinámico) --- */
         #floating-mentor {
-            position: fixed; bottom: 100px; right: 20px; z-index: 1001;
-            width: 55px; height: 55px; background: var(--panel-hover);
+            position: fixed; z-index: 1002;
+            /* Inicia en una posición por defecto, pero se sobrescribirá si se mueve */
+            top: calc(100% - 150px); left: calc(100% - 75px);
+            width: 60px; height: 60px; background: rgba(28, 28, 30, 0.8);
             border: 2px solid var(--warning); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 159, 10, 0.3);
-            transition: transform 0.3s; animation: floatOwl 4s ease-in-out infinite;
+            font-size: 2.2rem; cursor: grab; backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(255, 159, 10, 0.4), inset 0 0 10px rgba(255,255,255,0.1);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; 
+            user-select: none; -webkit-user-select: none; touch-action: none;
         }
-        #floating-mentor:hover { transform: scale(1.1); background: var(--panel-bg); }
-        @keyframes floatOwl { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
+        /* Animación de "respiración estoica" 4s (solo se aplica si no se está arrastrando) */
+        #floating-mentor.breathing {
+            animation: breatheOwl 4s ease-in-out infinite;
+        }
+        #floating-mentor:active { cursor: grabbing; transform: scale(0.95); }
+        @keyframes breatheOwl { 0% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.02); } 100% { transform: translateY(0) scale(1); } }
         
         #mentor-bubble {
-            position: fixed; bottom: 165px; right: 20px; z-index: 1001;
-            background: var(--panel-bg); border: 1px solid var(--warning);
-            border-radius: var(--radius); padding: 18px; width: 260px;
-            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-            transform-origin: bottom right; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: fixed; z-index: 1001;
+            background: rgba(28, 28, 30, 0.95); border: 1px solid var(--warning);
+            border-radius: 20px; padding: 20px; width: 280px;
+            display: none; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255, 159, 10, 0.15);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-sizing: border-box;
         }
-        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .mentor-text { font-size: 0.95rem; color: var(--text-main); margin-bottom: 15px; font-style: italic; line-height: 1.4;}
-        .mentor-text strong { color: var(--warning); font-style: normal;}
-        .mentor-options { display: flex; flex-direction: column; gap: 8px; }
-        .mentor-options button { padding: 10px; font-size: 0.85rem; margin: 0; background: var(--panel-hover); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px;}
-        .mentor-options button:hover { background: var(--accent); border-color: var(--accent);}
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .mentor-text { font-size: 0.95rem; color: var(--text-main); margin-bottom: 18px; font-style: italic; line-height: 1.5;}
+        .mentor-text strong { color: var(--warning); font-style: normal; font-size: 1.05em; display: block; margin-bottom: 5px;}
+        .mentor-options { display: flex; flex-direction: column; gap: 10px; }
+        .mentor-options button { padding: 12px; font-size: 0.9rem; margin: 0; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; box-shadow: none; font-weight: 500;}
+        .mentor-options button:hover { background: var(--warning); border-color: var(--warning); color: black;}
     </style>
 </head>
 <body>
 
-    <!-- OVERLAYS (Refugio y Zen) -->
+    <!-- OVERLAYS -->
     <div id="refugio-overlay" onclick="toggleRefugio()">Toca para volver al entorno</div>
     <div id="zen-overlay">
         <h2 style="color: var(--accent); margin-bottom: 5px;">Tu ÚNICA Tarea Ahora:</h2>
-        <h1 id="zenTaskText" style="font-size: 2.5rem; word-break: break-word; margin-top: 10px;"></h1>
-        <button onclick="completarZen()" style="background-color: var(--success); color: black; margin-top: 40px; max-width: 300px;">✅ Lo he hecho</button>
-        <button onclick="cerrarZen()" class="secondary" style="max-width: 300px; border: none; margin-top: 10px;">Salir del Modo Foco</button>
+        <h1 id="zenTaskText" style="font-size: 2.8rem; word-break: break-word; margin-top: 20px; text-shadow: 0 4px 20px rgba(0,0,0,0.8);"></h1>
+        <button onclick="completarZen()" style="background: linear-gradient(135deg, var(--success) 0%, #50E3C2 100%); color: black; margin-top: 50px; max-width: 300px; font-size: 1.2rem; padding: 20px; border-radius: 20px;">✅ Lo he hecho</button>
+        <button onclick="cerrarZen()" class="secondary" style="max-width: 300px; border: none; margin-top: 15px; background: transparent; color: var(--text-muted); box-shadow: none;">Salir del Modo Foco</button>
     </div>
 
-    <!-- EL BÚHO DE MINERVA (Mentor Flotante) -->
-    <div id="floating-mentor" onclick="toggleMentor()">🦉</div>
+    <!-- EL BÚHO DE MINERVA (Draggable) -->
+    <div id="floating-mentor" class="breathing">🦉</div>
     <div id="mentor-bubble">
         <div class="mentor-text" id="mentorMessage"><strong>Salve, magister.</strong> La mente ansiosa sufre antes de que sea necesario. ¿Cómo puedo aligerar tu carga?</div>
         <div class="mentor-options">
             <button onclick="mentorAction('oraculo')">🎲 Decidir por mí</button>
             <button onclick="mentorAction('trituradora')">🔥 Triturar obsesión</button>
             <button onclick="mentorAction('respirar')">🫁 Ejercicio estoico (Ancla)</button>
-            <button onclick="toggleMentor()" style="background: transparent; color: var(--danger); border: none; font-weight: normal; margin-top: 5px;">Cerrar diálogo</button>
+            <button onclick="cerrarMentor()" style="background: transparent; color: var(--danger); border: none; font-weight: normal; margin-top: 5px;">Cerrar diálogo</button>
         </div>
     </div>
 
     <div class="main-content">
         
         <!-- GUÍA RÁPIDA -->
-        <details id="guiaInstrucciones" style="margin-bottom: 25px; background: var(--panel-bg); padding: 15px; border-radius: var(--radius); cursor: pointer;">
-            <summary style="font-weight: bold; color: var(--accent); font-size: 1.1rem; list-style: none;">📖 Manual de Nexus (Toca aquí)</summary>
-            <ul style="margin-top: 15px; color: var(--text-main); font-size: 0.95em; padding-left: 20px; line-height: 1.5;">
-                <li><strong>🧠 Volcado:</strong> Escupe aquí todo lo que tu mente no quiere olvidar.</li>
-                <li><strong>📅 Agenda:</strong> Usa "Fricción Cero" si te abruma ver la lista. Usa ⏭️ para posponer.</li>
-                <li><strong>🤖 IA y 🎧 Audio:</strong> El Búho sabio te asiste. Escucha música/iVoox sin distracciones.</li>
-                <li><strong>🦉 El Búho Flotante:</strong> Tócalo en cualquier momento para aterrizar tu mente o usar herramientas rápidas.</li>
+        <details id="guiaInstrucciones" style="margin-bottom: 25px; background: var(--panel-bg); padding: 18px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; backdrop-filter: blur(10px);">
+            <summary style="font-weight: 700; color: var(--accent); font-size: 1.15rem; list-style: none; display: flex; align-items: center; gap: 10px;">📖 Manual de Nexus (Toca aquí)</summary>
+            <ul style="margin-top: 18px; color: var(--text-main); font-size: 0.95em; padding-left: 20px; line-height: 1.6;">
+                <li style="margin-bottom: 8px;"><strong>🧠 Volcado:</strong> Escupe aquí todo lo que tu mente no quiere olvidar.</li>
+                <li style="margin-bottom: 8px;"><strong>📅 Agenda:</strong> Usa "Fricción Cero" si te abruma ver la lista. Usa ⏭️ para posponer.</li>
+                <li style="margin-bottom: 8px;"><strong>🤖 IA y 🎧 Audio:</strong> Asistente con botones rápidos y reproductor limpio.</li>
+                <li style="margin-bottom: 8px;"><strong>⚙️ Herramientas:</strong> Botiquín para bloqueos, sobreestimulación y plantillas de correo.</li>
+                <li><strong>🦉 El Búho Flotante:</strong> Arrástralo donde quieras. Tócalo para usar atajos estoicos.</li>
             </ul>
         </details>
 
         <!-- 1. Volcado -->
         <div id="volcado" class="view active">
             <h3>🧠 Volcado de Memoria</h3>
-            <p class="desc"><strong>Instrucción:</strong> Descarga aquí las ideas sueltas o recordatorios. Tu cerebro puede dejar de gastar energía intentando retenerlos.</p>
+            <p class="desc">Descarga aquí las ideas sueltas o recordatorios. Tu cerebro puede dejar de gastar energía intentando retenerlos.</p>
             <div class="input-group">
-                <textarea id="ramInput" placeholder="Ej: Añadir declinaciones al escape room, revisar a 4º de ESO..."></textarea>
+                <textarea id="ramInput" placeholder="Ej: Añadir declinaciones al escape room..."></textarea>
                 <button class="icon-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('ram')">Guardar Pensamiento en el Templo</button>
-            <ul id="ramList" class="task-list" style="margin-top: 20px;"></ul>
+            <ul id="ramList" class="task-list" style="margin-top: 25px;"></ul>
         </div>
 
         <!-- 2. Asistente IA (Búho de Minerva) -->
         <div id="ia" class="view">
             <h3>🦉 El Búho de Minerva (IA)</h3>
-            <p class="desc">Tu consejero filosófico y analítico. Usa los botones rápidos si no tienes energía para teclear instrucciones.</p>
+            <p class="desc">Tu consejero analítico. Usa los botones rápidos si no tienes energía para teclear instrucciones.</p>
             
             <div class="quick-prompts">
                 <button onclick="usarPromptRapido('Desglosa este proyecto en pasos ridículamente pequeños y fáciles de hacer: ')">⚡ Desglosar</button>
@@ -188,18 +228,18 @@
             <h3>🎧 Biblioteca Acústica</h3>
             <p class="desc">Reproduce audiolibros o música. Tus enlaces se guardarán en el historial abajo.</p>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button id="btnTabIvoox" onclick="switchAudioTab('ivoox')" style="margin:0;">iVoox</button>
-                <button id="btnTabYt" class="secondary" onclick="switchAudioTab('yt')" style="margin:0;">YouTube (Foco)</button>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button id="btnTabIvoox" onclick="switchAudioTab('ivoox')" style="margin:0; box-shadow: none;">iVoox</button>
+                <button id="btnTabYt" class="secondary" onclick="switchAudioTab('yt')" style="margin:0; box-shadow: none;">YouTube (Foco)</button>
             </div>
 
             <div id="tabIvoox">
                 <div class="input-group">
                     <input type="url" id="ivooxUrl" placeholder="Enlace del episodio de iVoox...">
-                    <button onclick="cargarIvoox()" style="width: 80px; margin-bottom:0;">Cargar</button>
+                    <button onclick="cargarIvoox()" style="width: 90px; margin-bottom:0;">Cargar</button>
                 </div>
                 <div class="player-container">
-                    <div id="ivooxPlaceholder" style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9em;">Reproductor iVoox</div>
+                    <div id="ivooxPlaceholder" style="text-align: center; color: var(--text-muted); padding: 30px 0; font-size: 0.95em;">Reproductor iVoox</div>
                     <iframe id="ivooxIframe" class="embedIframe" src="" scrolling="no"></iframe>
                 </div>
             </div>
@@ -207,16 +247,16 @@
             <div id="tabYt" style="display: none;">
                 <div class="input-group">
                     <input type="url" id="ytUrl" placeholder="Enlace del vídeo de YouTube...">
-                    <button onclick="cargarYoutube()" style="width: 80px; margin-bottom:0; background-color: var(--danger);">Cargar</button>
+                    <button onclick="cargarYoutube()" class="danger" style="width: 90px; margin-bottom:0; background: linear-gradient(135deg, #FF0000 0%, #FF453A 100%);">Cargar</button>
                 </div>
                 <div class="player-container">
-                    <div id="ytPlaceholder" style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9em;">Reproductor YouTube Seguro</div>
+                    <div id="ytPlaceholder" style="text-align: center; color: var(--text-muted); padding: 30px 0; font-size: 0.95em;">Reproductor YouTube Seguro</div>
                     <iframe id="ytIframe" class="embedIframe" src="" allowfullscreen></iframe>
                 </div>
             </div>
 
             <h4>Pergaminos Anteriores (Historial)</h4>
-            <ul id="audioHistoryList" class="task-list" style="margin-bottom: 20px; opacity: 0.8; font-size: 0.85em;"></ul>
+            <ul id="audioHistoryList" class="task-list" style="margin-bottom: 25px; opacity: 0.9; font-size: 0.9em;"></ul>
 
             <h4>Notas de Escucha</h4>
             <div class="input-group">
@@ -236,11 +276,11 @@
                 <button class="tag-btn active" onclick="selectTag(this, '🏫 Clases')">🏫 Clases</button>
                 <button class="tag-btn" onclick="selectTag(this, '💻 Proyectos')">💻 Proyectos</button>
                 <button class="tag-btn" onclick="selectTag(this, '🧘 Personal')">🧘 Personal</button>
-                <button class="tag-btn" onclick="selectTag(this, '⚠️ Urgente')" style="color: var(--warning);">⚠️ Urgente</button>
+                <button class="tag-btn" onclick="selectTag(this, '⚠️ Urgente')" style="color: var(--danger); font-weight: bold;">⚠️ Urgente</button>
             </div>
             <input type="hidden" id="agendaTag" value="🏫 Clases">
 
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 12px;">
                 <input type="date" id="agendaDate">
                 <input type="time" id="agendaTime">
             </div>
@@ -250,20 +290,20 @@
             </div>
             <button onclick="guardarAgenda()">Añadir al Pergamino</button>
             
-            <h4 style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
-                <span style="color: var(--success);">☀️ Para Hoy</span>
-                <span id="agendaProgressText" style="font-size: 0.8rem; color: var(--text-muted);">0/0 Completado</span>
+            <h4 style="display: flex; justify-content: space-between; align-items: center; margin-top: 35px;">
+                <span style="color: var(--success); text-shadow: 0 0 10px rgba(50, 215, 75, 0.4);">☀️ Para Hoy</span>
+                <span id="agendaProgressText" style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">0/0 Completado</span>
             </h4>
             <div class="progress-bar-container">
                 <div class="progress-bar-fill" id="agendaProgressBar"></div>
             </div>
 
-            <button class="secondary" onclick="iniciarModoZen()" style="border: 1px solid var(--warning); color: var(--warning); margin-bottom: 15px;">🔍 MODO FRICCIÓN CERO (1 Tarea)</button>
+            <button class="secondary" onclick="iniciarModoZen()" style="border: 1px solid var(--warning); color: var(--warning); margin-bottom: 20px; font-weight: bold; letter-spacing: 1px;">🔍 MODO FRICCIÓN CERO (1 Tarea)</button>
 
             <ul id="agendaHoyList" class="task-list"></ul>
 
-            <h4 style="color: var(--text-muted); margin-top: 30px;">🔭 Próximamente</h4>
-            <ul id="agendaFuturoList" class="task-list" style="opacity: 0.6;"></ul>
+            <h4 style="color: var(--text-muted); margin-top: 35px;">🔭 Próximamente</h4>
+            <ul id="agendaFuturoList" class="task-list" style="opacity: 0.5;"></ul>
         </div>
 
         <!-- 5. HUB CENTRAL DE HERRAMIENTAS -->
@@ -305,7 +345,7 @@
 
         <div id="correo" class="view">
             <h3>✉️ Email Seguro y Plantillas</h3>
-            <p class="desc">Selecciona una plantilla o escribe. Se enviará directamente sin pasar por la bandeja de entrada, evitando distracciones con otros mensajes.</p>
+            <p class="desc">Selecciona una plantilla o escribe. Se enviará directamente sin pasar por la bandeja de entrada, evitando distracciones.</p>
             
             <select id="emailTemplate" onchange="cargarPlantillaCorreo()">
                 <option value="">-- Selecciona una plantilla (Opcional) --</option>
@@ -320,17 +360,17 @@
                 <textarea id="emailBody" placeholder="Redacta o dicta aquí..."></textarea>
                 <button class="icon-btn" onclick="dictarVoz('emailBody', this)">🎙️</button>
             </div>
-            <div style="display: flex; gap: 10px;">
-                <button onclick="enviarCorreoSeguro('gmail')" style="background-color: #EA4335;">Enviar con Gmail</button>
-                <button onclick="enviarCorreoSeguro('outlook')" style="background-color: #0078D4;">Enviar con Outlook</button>
+            <div style="display: flex; gap: 12px;">
+                <button onclick="enviarCorreoSeguro('gmail')" style="background: linear-gradient(135deg, #EA4335 0%, #D33426 100%); box-shadow: 0 4px 15px rgba(234, 67, 53, 0.4);">Gmail</button>
+                <button onclick="enviarCorreoSeguro('outlook')" style="background: linear-gradient(135deg, #0078D4 0%, #005A9E 100%); box-shadow: 0 4px 15px rgba(0, 120, 212, 0.4);">Outlook</button>
             </div>
         </div>
 
         <div id="bateriaSocial" class="view">
             <h3>🔋 Batería Social</h3>
             <p class="desc">Ajusta tu nivel de energía social actual. El sistema te avisará si intentas agendar algo estando en reserva.</p>
-            <input type="range" id="socialBatterySlider" min="0" max="100" value="50" oninput="updateBateriaSocial()">
-            <div id="socialBatteryStatus" style="text-align: center; font-size: 1.5rem; font-weight: bold; margin: 20px 0; color: var(--warning);">Medio 😐</div>
+            <input type="range" id="socialBatterySlider" min="0" max="100" value="50" oninput="updateBateriaSocial()" style="accent-color: var(--accent);">
+            <div id="socialBatteryStatus" style="text-align: center; font-size: 1.8rem; font-weight: bold; margin: 30px 0; color: var(--warning); text-shadow: 0 2px 10px rgba(255, 159, 10, 0.3);">Medio 😐</div>
             <button onclick="guardarBateriaSocial()">Actualizar Batería</button>
         </div>
 
@@ -338,11 +378,11 @@
             <h3>🛡️ Mis Escudos Sociales</h3>
             <p class="desc">Toca para copiar. Añade tus propias excusas/límites estoicos para tenerlos siempre a mano.</p>
             
-            <div id="escudosListContainer">
+            <div id="escudosListContainer" style="display: flex; flex-direction: column; gap: 10px;">
                 <!-- Se llenará con JS -->
             </div>
 
-            <h4 style="margin-top: 30px;">Añadir nuevo escudo:</h4>
+            <h4 style="margin-top: 35px;">Añadir nuevo escudo:</h4>
             <div class="input-group">
                 <input type="text" id="nuevoEscudoInput" placeholder="Ej: No atiendo correos el fin de semana...">
                 <button class="icon-btn" onclick="dictarVoz('nuevoEscudoInput', this)">🎙️</button>
@@ -352,61 +392,65 @@
 
         <div id="alarma" class="view">
             <h3>⏰ Alarma Cognitiva</h3>
+            <p class="desc">Alarma que usa el tono puro de 432Hz y alertas visuales.</p>
             <input type="time" id="alarmTimeInput">
             <button onclick="setAlarma()">Activar Alarma</button>
-            <button class="secondary" onclick="cancelAlarma()" style="border: 1px solid var(--danger); color: var(--danger);">Cancelar</button>
-            <div id="alarmStatus" style="margin-top: 20px; padding: 15px; border-radius: var(--radius); text-align: center; font-weight: bold; font-size: 1.2rem; display: none; background-color: var(--panel-hover);"></div>
+            <button class="secondary" onclick="cancelAlarma()" style="border: 1px solid var(--danger); color: var(--danger); margin-top: 10px;">Cancelar</button>
+            <div id="alarmStatus" style="margin-top: 25px; padding: 20px; border-radius: var(--radius); text-align: center; font-weight: bold; font-size: 1.2rem; display: none; background-color: var(--panel-hover); border: 1px solid rgba(255,255,255,0.1);"></div>
         </div>
 
         <div id="ermitano" class="view" style="text-align: center;">
             <h3>🔕 Modo Ermitaño</h3>
             <p class="desc" style="text-align: left;">Protocolo estoico para salir del radar sin culpa.</p>
-            <div style="background: var(--panel-bg); padding: 25px; border-radius: var(--radius); border-left: 5px solid var(--accent); margin-bottom: 20px; text-align: left;">
-                <ol style="color: var(--text-muted); line-height: 1.8;">
-                    <li>Desliza el dedo desde arriba.</li>
+            <div style="background: var(--panel-bg); padding: 25px; border-radius: var(--radius); border-left: 5px solid var(--accent); margin-bottom: 25px; text-align: left; backdrop-filter: blur(10px);">
+                <ol style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 20px; font-size: 0.95em;">
+                    <li>Desliza el dedo desde arriba de tu pantalla.</li>
                     <li>Pulsa el <strong>Avión ✈️</strong> o la <strong>Luna 🌙</strong>.</li>
                     <li>El mundo no caerá como el Imperio Romano en 2 horas.</li>
                 </ol>
             </div>
-            <button onclick="copiarTextoRapido('Salve. He activado mi modo de trabajo profundo (Sin notificaciones) para avanzar. Responderé cuando vuelva a conectarme. Un saludo.', this)" class="secondary">Copiar respuesta de ausencia</button>
+            <button onclick="copiarTextoRapido('Salve. He activado mi modo de trabajo profundo (Sin notificaciones) para avanzar. Responderé cuando vuelva a conectarme. Un saludo.', this)" class="secondary" style="border: 1px dashed var(--text-muted);">Copiar respuesta de ausencia</button>
         </div>
 
         <div id="migas" class="view">
             <h3>🍞 Migas de Pan</h3>
+            <p class="desc">Para retomar el contexto exacto tras una interrupción.</p>
             <div class="input-group">
                 <input type="text" id="migaInput" placeholder="Estaba buscando el error en el código...">
                 <button class="icon-btn" onclick="dictarVoz('migaInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('migas')">Dejar rastro</button>
-            <ul id="migasList" class="task-list" style="margin-top: 20px;"></ul>
+            <ul id="migasList" class="task-list" style="margin-top: 25px;"></ul>
         </div>
 
         <div id="oraculo" class="view">
             <h3>🎲 Oráculo Ejecutivo</h3>
+            <p class="desc">Introduce opciones separadas por comas. Que los dioses decidan.</p>
             <textarea id="oraculoInput" placeholder="Ej: Revisar correos, empezar sintaxis..."></textarea>
             <button onclick="girarOraculo()">Consultar a los Dioses</button>
-            <div id="oraculoResult" style="margin-top: 20px; padding: 20px; background: var(--panel-bg); border-radius: var(--radius); text-align: center; font-size: 1.2rem; display: none; color: var(--accent); font-weight: bold;"></div>
+            <div id="oraculoResult" style="margin-top: 25px; padding: 25px; background: var(--panel-bg); border-radius: var(--radius); text-align: center; font-size: 1.3rem; display: none; color: var(--accent); font-weight: bold; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(94, 92, 230, 0.2);"></div>
         </div>
 
         <div id="transicion" class="view">
             <h3>🌉 Puente de Transición</h3>
             <div class="timer-display" id="transicionTime">02:00</div>
             <button onclick="startTransicion()">Iniciar Transición</button>
-            <button class="secondary" onclick="stopTransicion()">Detener</button>
+            <button class="secondary" onclick="stopTransicion()" style="margin-top: 10px;">Detener</button>
         </div>
 
-        <div id="rompebucles" class="view" style="text-align: center; padding-top: 50px;">
+        <div id="rompebucles" class="view" style="text-align: center; padding-top: 40px;">
             <h3>🚨 Rompe-Bucles</h3>
-            <button class="danger" style="height: 150px; font-size: 1.5rem; border-radius: 50px;" onclick="triggerRompeBucles()">SACARME DE AQUÍ</button>
-            <button class="secondary" id="stopBucleBtn" style="display: none; margin-top: 20px;" onclick="stopRompeBucles()">Ya estoy fuera</button>
+            <p class="desc">Forzará estímulos visuales intensos para sacarte del letargo o hiperfoco tóxico.</p>
+            <button class="danger" style="height: 160px; font-size: 1.6rem; border-radius: 50px; margin-top: 20px; box-shadow: 0 10px 30px rgba(255, 69, 58, 0.5);" onclick="triggerRompeBucles()">SACARME DE AQUÍ</button>
+            <button class="secondary" id="stopBucleBtn" style="display: none; margin-top: 30px; border-radius: 30px;" onclick="stopRompeBucles()">Ya estoy fuera</button>
         </div>
 
         <div id="dopamina" class="view">
             <h3>💊 Menú de Dopamina</h3>
-            <button class="secondary" onclick="obtenerDopamina('baja')">Baja Energía (No quiero moverme)</button>
-            <button class="secondary" onclick="obtenerDopamina('media')">Media Energía (Puedo levantarme)</button>
-            <button class="secondary" onclick="obtenerDopamina('alta')">Alta Energía (Necesito movimiento)</button>
-            <div id="dopaminaResult" style="margin-top: 20px; padding: 20px; background: var(--accent); color: white; border-radius: var(--radius); text-align: center; font-size: 1.1rem; display: none;"></div>
+            <button class="secondary" onclick="obtenerDopamina('baja')" style="margin-bottom: 12px;">Baja Energía (No quiero moverme)</button>
+            <button class="secondary" onclick="obtenerDopamina('media')" style="margin-bottom: 12px;">Media Energía (Puedo levantarme)</button>
+            <button class="secondary" onclick="obtenerDopamina('alta')" style="margin-bottom: 12px; border-color: var(--success); color: var(--success);">Alta Energía (Necesito movimiento)</button>
+            <div id="dopaminaResult" style="margin-top: 25px; padding: 25px; background: linear-gradient(135deg, var(--accent) 0%, #7B78FF 100%); color: white; border-radius: var(--radius); text-align: center; font-size: 1.2rem; display: none; font-weight: 600; box-shadow: 0 10px 25px var(--accent-glow);"></div>
         </div>
 
         <div id="intero" class="view">
@@ -415,7 +459,7 @@
             <div class="checkbox-item"><input type="checkbox"> <label>¿Tengo la mandíbula o cuello tensos?</label></div>
             <div class="checkbox-item"><input type="checkbox"> <label>¿Necesito ir al baño pero lo evito?</label></div>
             <div class="checkbox-item"><input type="checkbox"> <label>¿He comido algo nutritivo hoy?</label></div>
-            <button class="secondary" onclick="document.querySelectorAll('.checkbox-item input').forEach(c => c.checked = false)" style="margin-top: 20px;">Limpiar escáner</button>
+            <button class="secondary" onclick="document.querySelectorAll('.checkbox-item input').forEach(c => c.checked = false)" style="margin-top: 25px;">Limpiar escáner</button>
         </div>
 
         <div id="termometro" class="view">
@@ -426,8 +470,8 @@
             <input type="range" id="sensorySound" min="0" max="100" value="0">
             <h4>Tensión Corporal</h4>
             <input type="range" id="sensoryTouch" min="0" max="100" value="0">
-            <button onclick="evaluarSensorial()" style="margin-top: 20px;">Evaluar mi estado</button>
-            <div id="sensoryResult" style="margin-top: 20px; padding: 15px; border-radius: var(--radius); display: none; font-weight: bold; text-align: center;"></div>
+            <button onclick="evaluarSensorial()" style="margin-top: 25px;">Evaluar mi estado</button>
+            <div id="sensoryResult" style="margin-top: 25px; padding: 20px; border-radius: var(--radius); display: none; font-weight: bold; text-align: center; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"></div>
         </div>
 
         <div id="paralisis" class="view">
@@ -437,16 +481,16 @@
                 <button class="icon-btn" onclick="dictarVoz('paraInput', this)">🎙️</button>
             </div>
             <button onclick="cortarParalisis()">Reducir al absurdo</button>
-            <div id="paraResult" style="margin-top: 20px; padding: 20px; background: var(--panel-bg); border-radius: var(--radius); display: none;"></div>
+            <div id="paraResult" style="margin-top: 25px; padding: 25px; background: var(--panel-hover); border-radius: var(--radius); display: none; border-left: 5px solid var(--accent); line-height: 1.5;"></div>
         </div>
 
         <div id="grounding" class="view">
             <h3>⚓ Ancla (5-4-3-2-1)</h3>
-            <div id="groundingText" style="font-size: 1.5rem; text-align: center; margin: 40px 0; color: var(--accent); font-weight: bold;">
+            <div id="groundingText" style="font-size: 1.6rem; text-align: center; margin: 50px 0; color: var(--accent); font-weight: 800; text-shadow: 0 2px 10px var(--accent-glow); line-height: 1.4;">
                 Busca 5 cosas que puedas VER.
             </div>
             <button onclick="nextGrounding()">Siguiente paso</button>
-            <button class="secondary" onclick="resetGrounding()">Reiniciar Ancla</button>
+            <button class="secondary" onclick="resetGrounding()" style="margin-top: 10px;">Reiniciar Ancla</button>
         </div>
 
         <div id="trituradora" class="view">
@@ -456,14 +500,15 @@
                 <button class="icon-btn" onclick="dictarVoz('obsInput', this)">🎙️</button>
             </div>
             <button onclick="triturarPensamiento()" class="danger">Destruir Pensamiento</button>
-            <button class="secondary" onclick="leerTexto('obsInput')" style="margin-top: 10px;">🔊 Leer pensamiento en voz alta (TTS)</button>
+            <button class="secondary" onclick="leerTexto('obsInput')" style="margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;"><span style="font-size: 1.2em;">🔊</span> Leer en voz alta (TTS)</button>
         </div>
 
         <div id="config" class="view">
             <h3>🔑 Configuración API</h3>
+            <p class="desc">Necesaria para activar el Búho de Minerva (Groq IA).</p>
             <input type="password" id="apiKey" placeholder="gsk_...">
             <button onclick="guardarConfig()">Guardar en dispositivo</button>
-            <p id="configStatus" style="color: var(--success); display: none;">Guardado con éxito.</p>
+            <p id="configStatus" style="color: var(--success); display: none; text-align: center; margin-top: 15px; font-weight: bold;">Guardado con éxito.</p>
         </div>
         
     </div>
@@ -472,12 +517,108 @@
     <div class="bottom-bar">
         <button class="nav-btn active" onclick="switchView('volcado', this)" title="Volcado">🧠</button>
         <button class="nav-btn" onclick="switchView('agenda', this)" title="Agenda">📅</button>
-        <button class="nav-btn" onclick="switchView('ia', this)" title="Asistente Groq">🤖</button>
+        <button class="nav-btn" onclick="switchView('ia', this)" title="Búho IA">🤖</button>
         <button class="nav-btn" onclick="switchView('audio', this)" title="Audio">🎧</button>
         <button class="nav-btn" onclick="switchView('menu', this)" title="Herramientas">⚙️</button>
     </div>
 
     <script>
+        // --- DRAGGABLE OWL (Búho de Minerva) ---
+        const owl = document.getElementById('floating-mentor');
+        const bubble = document.getElementById('mentor-bubble');
+        let isDragging = false;
+        let wasDragged = false;
+        let dragStartX, dragStartY;
+        let owlStartX, owlStartY;
+
+        function startDrag(e) {
+            if (e.type === 'touchstart') {
+                dragStartX = e.touches[0].clientX;
+                dragStartY = e.touches[0].clientY;
+            } else {
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+            }
+            owlStartX = owl.offsetLeft;
+            owlStartY = owl.offsetTop;
+            isDragging = true;
+            wasDragged = false;
+            
+            // Remove CSS constraints to allow free movement
+            owl.style.bottom = 'auto';
+            owl.style.right = 'auto';
+            owl.style.transition = 'none'; 
+            owl.classList.remove('breathing');
+            
+            // If bubble is open, hide it during drag to avoid visual mess
+            if(bubble.style.display === 'block') {
+                bubble.style.display = 'none';
+            }
+        }
+
+        function moveDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault(); // Prevent scrolling while dragging owl
+            
+            let clientX, clientY;
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            let dx = clientX - dragStartX;
+            let dy = clientY - dragStartY;
+
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                wasDragged = true;
+            }
+
+            let newLeft = owlStartX + dx;
+            let newTop = owlStartY + dy;
+
+            // Boundaries
+            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - owl.offsetWidth));
+            newTop = Math.max(0, Math.min(newTop, window.innerHeight - owl.offsetHeight));
+
+            owl.style.left = newLeft + 'px';
+            owl.style.top = newTop + 'px';
+        }
+
+        function endDrag() {
+            if(!isDragging) return;
+            isDragging = false;
+            owl.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s';
+            owl.classList.add('breathing');
+        }
+
+        owl.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', moveDrag, {passive: false});
+        document.addEventListener('mouseup', endDrag);
+
+        owl.addEventListener('touchstart', startDrag, {passive: false});
+        document.addEventListener('touchmove', moveDrag, {passive: false});
+        document.addEventListener('touchend', endDrag);
+
+        function positionBubble() {
+            const owlRect = owl.getBoundingClientRect();
+            // Default position: Top-Left of the owl
+            let bTop = owlRect.top - bubble.offsetHeight - 15;
+            let bLeft = owlRect.left - bubble.offsetWidth + owl.offsetWidth;
+            
+            // Adjust if out of bounds
+            if (bTop < 10) bTop = owlRect.bottom + 15; // Put below if hits top
+            if (bLeft < 10) bLeft = 10; // Pad from left
+            if (bLeft + bubble.offsetWidth > window.innerWidth) bLeft = window.innerWidth - bubble.offsetWidth - 10;
+            
+            bubble.style.top = bTop + 'px';
+            bubble.style.left = bLeft + 'px';
+            bubble.style.bottom = 'auto';
+            bubble.style.right = 'auto';
+        }
+
         // --- COMPORTAMIENTO DEL MENTOR FLOTANTE (EL BÚHO) ---
         const frasesEstoicas = [
             '<strong>Séneca:</strong> "La mente que está ansiosa por el futuro es miserable. Estructura el ahora."',
@@ -488,19 +629,33 @@
             '<strong>Ovidio:</strong> "El descanso es el mejor remedio para la mente fatigada."'
         ];
 
+        // Override click to prevent opening if just dragging
+        owl.onclick = function(e) {
+            if (wasDragged) {
+                e.preventDefault();
+                return;
+            }
+            toggleMentor();
+        };
+
         function toggleMentor() {
             const b = document.getElementById('mentor-bubble');
             if(b.style.display === 'block') {
-                b.style.display = 'none';
+                cerrarMentor();
             } else {
                 b.style.display = 'block';
                 document.getElementById('mentorMessage').innerHTML = frasesEstoicas[Math.floor(Math.random() * frasesEstoicas.length)];
+                positionBubble(); // Position relative to current owl location
                 if(navigator.vibrate) navigator.vibrate(50);
             }
         }
+        
+        function cerrarMentor() {
+            document.getElementById('mentor-bubble').style.display = 'none';
+        }
 
         function mentorAction(action) {
-            toggleMentor();
+            cerrarMentor();
             if(action === 'oraculo') switchView('oraculo');
             if(action === 'trituradora') switchView('trituradora');
             if(action === 'respirar') switchView('grounding');
@@ -544,13 +699,12 @@
             if(btn) { document.querySelectorAll('.bottom-bar .nav-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
             if(id !== 'volcado') { const guia = document.getElementById('guiaInstrucciones'); if(guia) guia.removeAttribute("open"); }
             
-            // Ocultar mentor si entramos en modos de foco o si ya está abierto el bubble
-            document.getElementById('mentor-bubble').style.display = 'none';
+            cerrarMentor();
         }
 
         function copiarTextoRapido(text, btn) {
-            navigator.clipboard.writeText(text); const o = btn.innerText; btn.innerText = "¡Copiado!"; btn.style.backgroundColor = "var(--success)"; btn.style.color = "black";
-            setTimeout(() => { btn.innerText = o; btn.style.backgroundColor = "var(--panel-bg)"; btn.style.color = "var(--text-main)"; }, 2000);
+            navigator.clipboard.writeText(text); const o = btn.innerText; btn.innerText = "¡Copiado!"; btn.style.background = "linear-gradient(135deg, var(--success) 0%, #50E3C2 100%)"; btn.style.color = "black";
+            setTimeout(() => { btn.innerText = o; btn.style.background = "var(--panel-bg)"; btn.style.color = "var(--text-main)"; }, 2000);
         }
 
         // --- DATOS BÁSICOS ---
@@ -612,10 +766,10 @@
                 
                 let bgTag = 'var(--panel-hover)'; let colorTag = 'var(--text-muted)';
                 if(item.tag && item.tag.includes('Urgente')) { bgTag = 'var(--danger)'; colorTag = 'white'; }
-                else if(item.tag && item.tag.includes('Proyectos')) { bgTag = 'rgba(94, 92, 230, 0.3)'; colorTag = 'var(--text-main)'; }
-                const tagStr = item.tag ? `<span style="font-size: 0.75em; background: ${bgTag}; color: ${colorTag}; padding: 3px 8px; border-radius: 12px; margin-right: 8px;">${item.tag}</span>` : '';
+                else if(item.tag && item.tag.includes('Proyectos')) { bgTag = 'rgba(94, 92, 230, 0.3)'; colorTag = 'var(--accent)'; }
+                const tagStr = item.tag ? `<span style="font-size: 0.75em; background: ${bgTag}; color: ${colorTag}; padding: 4px 10px; border-radius: 12px; margin-right: 8px;">${item.tag}</span>` : '';
                 
-                const isCompleted = item.completed ? 'text-decoration: line-through; opacity: 0.4;' : '';
+                const isCompleted = item.completed ? 'text-decoration: line-through; opacity: 0.4; filter: grayscale(1);' : '';
                 const checkedAttr = item.completed ? 'checked' : '';
 
                 if (item.date <= hoy) {
@@ -628,12 +782,12 @@
                     <div style="display:flex; align-items:flex-start; gap: 12px; width: 100%;">
                         <input type="checkbox" ${checkedAttr} onchange="toggleCompletarAgenda(${index})" style="margin-top: 5px; transform: scale(1.4); accent-color: var(--accent);">
                         <div style="flex: 1;">
-                            <div style="font-size:0.85em; margin-bottom:6px; display:flex; align-items:center;">${tagStr}${timeStr}<span style="color:var(--text-muted)">${d}/${m}/${y}</span></div>
-                            <div style="line-height:1.3;">${item.text}</div>
+                            <div style="font-size:0.85em; margin-bottom:8px; display:flex; align-items:center;">${tagStr}${timeStr}<span style="color:var(--text-muted)">${d}/${m}/${y}</span></div>
+                            <div style="line-height:1.4;">${item.text}</div>
                         </div>
-                        <div style="display:flex; flex-direction:column; gap:8px; justify-content:center; padding-left: 5px; border-left: 1px solid var(--panel-hover);">
-                            <button class="delete-btn" onclick="posponerAgenda(${index})" style="color: var(--warning); font-size: 1.2rem; padding: 2px;" title="Posponer a mañana">⏭️</button>
-                            <button class="delete-btn" onclick="borrarAgenda(${index})" style="padding: 2px;">✕</button>
+                        <div style="display:flex; flex-direction:column; gap:8px; justify-content:center; padding-left: 5px; border-left: 1px solid rgba(255,255,255,0.05);">
+                            <button class="delete-btn" onclick="posponerAgenda(${index})" style="color: var(--warning); font-size: 1.2rem; padding: 5px;" title="Posponer a mañana">⏭️</button>
+                            <button class="delete-btn" onclick="borrarAgenda(${index})" style="padding: 5px;">✕</button>
                         </div>
                     </div>
                 </li>`;
@@ -694,11 +848,11 @@
             for(let i=0; i<agenda.length; i++) {
                 if(agenda[i].date <= hoy && !agenda[i].completed) { currentZenIndex = i; break; }
             }
-            if(currentZenIndex === -1) { alert("No tienes tareas pendientes para hoy. ¡Disfruta!"); return; }
+            if(currentZenIndex === -1) { alert("El Oráculo dice que no tienes tareas pendientes para hoy. ¡Disfruta!"); return; }
 
             document.getElementById('zenTaskText').innerText = agenda[currentZenIndex].text;
             document.getElementById('zen-overlay').style.display = 'flex';
-            document.getElementById('floating-mentor').style.display = 'none'; // Ocultar búho en modo zen
+            owl.style.display = 'none';
         }
 
         function completarZen() {
@@ -712,9 +866,8 @@
         }
         function cerrarZen() { 
             document.getElementById('zen-overlay').style.display = 'none'; 
-            document.getElementById('floating-mentor').style.display = 'flex';
+            owl.style.display = 'flex';
         }
-
 
         // --- AUDIO (iVoox, YouTube e Historial) ---
         function switchAudioTab(tab) {
@@ -759,7 +912,7 @@
             const history = JSON.parse(localStorage.getItem('nexus_audioHistory')) || [];
             const ul = document.getElementById('audioHistoryList'); ul.innerHTML = '';
             history.forEach(h => {
-                ul.innerHTML += `<li style="padding:10px; cursor:pointer;" onclick="reusarAudio('${h.url}')"><span style="color:var(--accent); font-weight:bold;">${h.tipo}</span>: <span style="word-break:break-all;">${h.label}</span></li>`;
+                ul.innerHTML += `<li style="padding:15px; cursor:pointer;" onclick="reusarAudio('${h.url}')"><span style="color:var(--accent); font-weight:bold; margin-right: 10px;">${h.tipo}</span> <span style="word-break:break-all; color: var(--text-muted); font-size: 0.9em;">${h.label}</span></li>`;
             });
         }
         
@@ -767,7 +920,6 @@
             if(url.includes('ivoox')) { document.getElementById('ivooxUrl').value = url; switchAudioTab('ivoox'); cargarIvoox(); }
             else { document.getElementById('ytUrl').value = url; switchAudioTab('yt'); cargarYoutube(); }
         }
-
 
         // --- EMAILS DOCENTES/PROFESIONALES ---
         function cargarPlantillaCorreo() {
@@ -848,13 +1000,13 @@
             const container = document.getElementById('escudosListContainer'); container.innerHTML = '';
             
             escudosDefault.forEach(esc => {
-                container.innerHTML += `<button class="secondary" onclick="copiarTextoRapido('${esc.replace(/'/g, "\\'")}', this)">${esc.substring(0,40)}...</button>`;
+                container.innerHTML += `<button class="secondary" style="text-align: left;" onclick="copiarTextoRapido('${esc.replace(/'/g, "\\'")}', this)">${esc.substring(0,45)}...</button>`;
             });
             userEscudos.forEach((esc, index) => {
                 container.innerHTML += `
-                <div style="display:flex; gap:5px;">
-                    <button class="secondary" style="flex:1;" onclick="copiarTextoRapido('${esc.replace(/'/g, "\\'")}', this)">⭐ ${esc.substring(0,35)}...</button>
-                    <button onclick="borrarEscudo(${index})" class="danger" style="width:50px;">✕</button>
+                <div style="display:flex; gap:10px;">
+                    <button class="secondary" style="flex:1; text-align: left; border-color: var(--accent);" onclick="copiarTextoRapido('${esc.replace(/'/g, "\\'")}', this)">⭐ ${esc.substring(0,35)}...</button>
+                    <button onclick="borrarEscudo(${index})" class="danger" style="width:60px;">✕</button>
                 </div>`;
             });
         }
@@ -879,20 +1031,22 @@
         }
         function guardarBateriaSocial() {
             localStorage.setItem('nexus_socialBattery', document.getElementById('socialBatterySlider').value);
-            document.getElementById('socialBatteryStatus').innerText += " (Guardado)";
-            setTimeout(updateBateriaSocial, 1500);
+            const status = document.getElementById('socialBatteryStatus');
+            const og = status.innerText;
+            status.innerText += " (Guardado)";
+            setTimeout(() => { status.innerText = og; }, 1500);
         }
 
         // --- HERRAMIENTAS ORIGINALES MANTENIDAS ---
         let alarmIntervalTimer;
         function setAlarma() {
             const time = document.getElementById('alarmTimeInput').value; if(!time) return;
-            const statusDiv = document.getElementById('alarmStatus'); statusDiv.innerText = `Alarma programada para las ${time}`; statusDiv.style.display = 'block'; statusDiv.style.color = 'var(--text-main)';
+            const statusDiv = document.getElementById('alarmStatus'); statusDiv.innerText = `Alarma programada para las ${time}`; statusDiv.style.display = 'block'; statusDiv.style.color = 'var(--accent)';
             clearInterval(alarmIntervalTimer);
             alarmIntervalTimer = setInterval(() => {
                 const now = new Date(); const nowTime = (now.getHours() < 10 ? '0' : '') + now.getHours() + ":" + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
                 if(nowTime === time) {
-                    clearInterval(alarmIntervalTimer); statusDiv.innerText = "¡HORA DE PARAR!"; statusDiv.style.color = "var(--danger)";
+                    clearInterval(alarmIntervalTimer); statusDiv.innerText = "¡EL TIEMPO HA TERMINADO!"; statusDiv.style.color = "var(--danger)";
                     triggerRompeBucles(); if(!isPlayingTone) togglePitidoPuro();
                     setTimeout(() => { stopRompeBucles(); if(isPlayingTone) togglePitidoPuro(); }, 10000);
                 }
@@ -911,7 +1065,11 @@
             document.getElementById('textTone').innerText = isPlayingTone ? "Detener Tono Puro" : "Activar Tono Puro (432Hz)";
             document.getElementById('iconTone').innerText = isPlayingTone ? "⏹️" : "🎛️";
         }
-        function toggleRefugio() { const overlay = document.getElementById('refugio-overlay'); overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('floating-mentor').style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; }
+        function toggleRefugio() { 
+            const overlay = document.getElementById('refugio-overlay'); 
+            overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; 
+            owl.style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; 
+        }
         
         function girarOraculo() {
             const input = document.getElementById('oraculoInput').value; if(!input.trim()) return;
@@ -933,7 +1091,7 @@
         let bucleInterval;
         function triggerRompeBucles() {
             const btn = document.getElementById('stopBucleBtn'); btn.style.display = "inline-block";
-            bucleInterval = setInterval(() => { document.body.style.backgroundColor = document.body.style.backgroundColor === 'white' ? 'var(--bg-dark)' : 'white'; if(navigator.vibrate) navigator.vibrate(300); }, 500);
+            bucleInterval = setInterval(() => { document.body.style.backgroundColor = document.body.style.backgroundColor === '#FFFFFF' ? 'var(--bg-dark)' : '#FFFFFF'; if(navigator.vibrate) navigator.vibrate(300); }, 500);
         }
         function stopRompeBucles() { clearInterval(bucleInterval); document.body.style.backgroundColor = 'var(--bg-dark)'; document.getElementById('stopBucleBtn').style.display = "none"; }
 
@@ -953,7 +1111,7 @@
         function cortarParalisis() {
             const i = document.getElementById('paraInput').value; if(!i.trim()) return;
             const res = document.getElementById('paraResult'); res.style.display = "block";
-            res.innerHTML = `<h4>Único paso a dar:</h4><p>Abre el archivo/herramienta y no escribas NADA. Solo ábrelo y respira.</p>`;
+            res.innerHTML = `<h4 style="margin-top:0; color:var(--accent);">Único paso a dar:</h4><p style="margin-bottom:0;">Abre el archivo/herramienta y no escribas NADA. Solo ábrelo y respira.</p>`;
         }
 
         const groundingSteps = ["Busca 5 cosas que VER 👀", "Busca 4 cosas que TOCAR ✋", "Busca 3 cosas que OÍR 👂", "Busca 2 cosas que OLER 👃", "Busca 1 cosa que SABOREAR 👅", "✅ Terminado. Respira."];
@@ -963,8 +1121,14 @@
 
         function triturarPensamiento() {
             const input = document.getElementById('obsInput'); if(!input.value.trim()) return;
-            input.style.animation = "pulse 1s"; if(navigator.vibrate) navigator.vibrate(200);
-            setTimeout(() => { input.value = ''; input.style.animation = ""; }, 1000);
+            input.style.transform = "scale(0.9) translateY(10px)";
+            input.style.filter = "blur(5px)";
+            if(navigator.vibrate) navigator.vibrate(200);
+            setTimeout(() => { 
+                input.value = ''; 
+                input.style.transform = "none";
+                input.style.filter = "none";
+            }, 600);
         }
 
         // INIT
