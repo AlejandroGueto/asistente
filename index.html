@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Asistente Ejecutivo Total</title>
+    <title>Nexus | Asistente Ejecutivo</title>
     <style>
         :root {
             --bg-dark: #000000; --panel-bg: #1C1C1E; --panel-hover: #2C2C2E;
@@ -103,7 +103,7 @@
             <h3>🧠 Volcado de Memoria</h3>
             <p class="desc"><strong>Instrucción:</strong> Úsalo como una "memoria RAM externa". Descarga aquí las ideas sueltas, tareas inacabadas o recordatorios para que tu cerebro deje de gastar energía intentando no olvidarlos.</p>
             <div class="input-group">
-                <textarea id="ramInput" placeholder="Ej: Añadir genitivos al escape room, revisar a los de 4º..."></textarea>
+                <textarea id="ramInput" placeholder="Ej: estudiar, corregir exámenes..."></textarea>
                 <button class="mic-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('ram')">Guardar Pensamiento</button>
@@ -303,7 +303,7 @@
 
         <div id="trituradora" class="view">
             <h3>🔥 Trituradora Mental</h3>
-            <p class="desc"><strong>Instrucción:</strong> Escribe o dicta aquí un pensamiento rumiante (ej. el miedo a que los alumnos usen IA). Destrúyelo para forzar un cierre psicológico del bucle.</p>
+            <p class="desc"><strong>Instrucción:</strong> Escribe o dicta aquí un pensamiento rumiante. Destrúyelo para forzar un cierre psicológico del bucle.</p>
             <div class="input-group">
                 <textarea id="obsInput" placeholder="Escribe el pensamiento obsesivo..."></textarea>
                 <button class="mic-btn" onclick="dictarVoz('obsInput', this)">🎙️</button>
