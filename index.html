@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Asistente Ejecutivo</title>
+    <title>Nexus | Asistente Ejecutivo Total</title>
     <style>
         :root {
             --bg-dark: #000000; --panel-bg: #1C1C1E; --panel-hover: #2C2C2E;
@@ -61,7 +61,7 @@
         .menu-header { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); margin-top: 20px; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px;}
 
         .player-container { background: var(--panel-bg); border-radius: var(--radius); padding: 15px; margin-bottom: 20px; }
-        #ivooxIframe { border-radius: 8px; margin-top: 10px; display: none; }
+        .embedIframe { border-radius: 8px; margin-top: 10px; display: none; width: 100%; height: 200px; border: none; }
 
         .bottom-bar {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background-color: rgba(28, 28, 30, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; display: flex; justify-content: space-between; padding: 10px 20px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
@@ -75,7 +75,6 @@
         .checkbox-item { display: flex; align-items: center; gap: 15px; background: var(--panel-bg); padding: 15px; border-radius: var(--radius); margin-bottom: 10px; }
         .checkbox-item input[type="checkbox"] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
 
-        /* Estilos nuevos para la Agenda */
         .agenda-tags { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .agenda-tags button { width: auto; padding: 8px 15px; border-radius: 20px; margin: 0; background: var(--panel-bg); color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0;}
         .agenda-tags button.active { background: var(--accent); color: white; }
@@ -87,21 +86,21 @@
 
     <div class="main-content">
         
-        <!-- GUÍA RÁPIDA (Instrucciones) -->
+        <!-- GUÍA RÁPIDA -->
         <details id="guiaInstrucciones" style="margin-bottom: 25px; background: var(--panel-bg); padding: 15px; border-radius: var(--radius); cursor: pointer;">
             <summary style="font-weight: bold; color: var(--accent); font-size: 1.1rem; list-style: none;">📖 Guía de Uso de Nexus (Toca aquí)</summary>
             <ul style="margin-top: 15px; color: var(--text-main); font-size: 0.95em; padding-left: 20px; line-height: 1.5;">
                 <li style="margin-bottom: 10px;"><strong>🧠 Volcado:</strong> Tu pantalla de inicio. Si tienes la mente saturada, escupe todo ahí (escribiendo o dictando). Guarda y olvídate.</li>
-                <li style="margin-bottom: 10px;"><strong>📅 Agenda:</strong> Tu centro de mando. Separa lo de "Hoy" y "Futuro". Si hoy no puedes más, usa el botón ⏭️ para posponer la tarea a mañana sin culpa.</li>
-                <li style="margin-bottom: 10px;"><strong>🤖 IA y 🎧 iVoox:</strong> Asistente que procesa al instante sin rodeos y reproductor de audiolibros integrado para que escuches sin distracciones.</li>
-                <li><strong>⚙️ Herramientas:</strong> Usa este menú si te bloqueas (Parálisis), si te sobreestimulas (Apagón/Ruido) o si necesitas regular tu cuerpo y tu energía.</li>
+                <li style="margin-bottom: 10px;"><strong>📅 Agenda:</strong> Tu centro de mando. Separa lo de "Hoy" y "Futuro". Usa el botón ⏭️ para posponer tareas sin culpa.</li>
+                <li style="margin-bottom: 10px;"><strong>🤖 IA y 🎧 Audio:</strong> Asistente Groq y reproductor integrado de iVoox/YouTube libre de distracciones.</li>
+                <li><strong>⚙️ Herramientas:</strong> Para bloqueos (Parálisis), sobreestimulación (Apagón/Ruido) o enviar correos sin ver la bandeja de entrada.</li>
             </ul>
         </details>
 
         <!-- 1. Volcado -->
         <div id="volcado" class="view active">
             <h3>🧠 Volcado de Memoria</h3>
-            <p class="desc"><strong>Instrucción:</strong> Úsalo como una "memoria RAM externa". Descarga aquí las ideas sueltas, tareas inacabadas o recordatorios para que tu cerebro deje de gastar energía intentando no olvidarlos.</p>
+            <p class="desc">Descarga aquí las ideas sueltas o recordatorios para que tu cerebro deje de gastar energía intentando no olvidarlos.</p>
             <div class="input-group">
                 <textarea id="ramInput" placeholder="Ej: estudiar, corregir exámenes..."></textarea>
                 <button class="mic-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
@@ -113,7 +112,7 @@
         <!-- 2. Asistente IA (Groq) -->
         <div id="ia" class="view">
             <h3>🤖 Asistente Cognitivo</h3>
-            <p class="desc"><strong>Instrucción:</strong> Conectado a la velocidad pura de Groq. Toca el micrófono, habla tus dudas o el texto caótico que quieras ordenar. Te responderá en viñetas estructuradas.</p>
+            <p class="desc">Conectado a Groq. Toca el micrófono, habla tus dudas o el texto caótico. Te responderá en viñetas estructuradas.</p>
             <div class="chat-container" id="chatBox">
                 <div class="msg ai">Entorno de baja fricción activo. ¿Qué necesitas estructurar hoy?</div>
             </div>
@@ -123,18 +122,41 @@
             </div>
         </div>
 
-        <!-- 3. Integración iVoox -->
-        <div id="ivoox" class="view">
+        <!-- 3. Integración Audio (iVoox y YouTube) -->
+        <div id="audio" class="view">
             <h3>🎧 Biblioteca de Audio</h3>
-            <p class="desc"><strong>Instrucción:</strong> Escucha sin entrar a la app original. Pega el enlace de un episodio de iVoox y dale a Cargar. Anota abajo las ideas clave o el minuto donde te quedas para retomarlo luego.</p>
-            <div class="input-group">
-                <input type="url" id="ivooxUrl" placeholder="Enlace del episodio de iVoox...">
-                <button onclick="cargarIvoox()" style="width: 80px; margin-bottom:0;">Cargar</button>
+            <p class="desc">Reproduce audiolibros o música sin salir de la app para evitar distracciones.</p>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button id="btnTabIvoox" onclick="switchAudioTab('ivoox')" style="margin:0;">iVoox</button>
+                <button id="btnTabYt" class="secondary" onclick="switchAudioTab('yt')" style="margin:0;">YouTube (Foco)</button>
             </div>
-            <div class="player-container">
-                <div id="ivooxPlaceholder" style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9em;">El reproductor aparecerá aquí</div>
-                <iframe id="ivooxIframe" src="" width="100%" height="200" frameborder="0" allowfullscreen="" scrolling="no"></iframe>
+
+            <!-- iVoox -->
+            <div id="tabIvoox">
+                <div class="input-group">
+                    <input type="url" id="ivooxUrl" placeholder="Enlace del episodio de iVoox...">
+                    <button onclick="cargarIvoox()" style="width: 80px; margin-bottom:0;">Cargar</button>
+                </div>
+                <div class="player-container">
+                    <div id="ivooxPlaceholder" style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9em;">Reproductor iVoox</div>
+                    <iframe id="ivooxIframe" class="embedIframe" src="" scrolling="no"></iframe>
+                </div>
             </div>
+
+            <!-- YouTube -->
+            <div id="tabYt" style="display: none;">
+                <div class="input-group">
+                    <input type="url" id="ytUrl" placeholder="Enlace del vídeo de YouTube...">
+                    <button onclick="cargarYoutube()" style="width: 80px; margin-bottom:0; background-color: var(--danger);">Cargar</button>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: -5px;">*Usa el dominio de máxima privacidad sin comentarios ni sugerencias laterales.</p>
+                <div class="player-container">
+                    <div id="ytPlaceholder" style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9em;">Reproductor YouTube</div>
+                    <iframe id="ytIframe" class="embedIframe" src="" allowfullscreen></iframe>
+                </div>
+            </div>
+
             <h4>Notas de Escucha</h4>
             <div class="input-group">
                 <input type="text" id="audiobookNote" placeholder="Minuto / Concepto importante...">
@@ -147,7 +169,7 @@
         <!-- 4. SÚPER AGENDA -->
         <div id="agenda" class="view">
             <h3>📅 Centro de Mando</h3>
-            <p class="desc"><strong>Instrucción:</strong> Elige una etiqueta, fecha/hora y dicta la tarea. El sistema ocultará el futuro para evitar agobios. <strong>Toca ⏭️ para posponer al día siguiente sin culpa</strong> si estás cansado, o el recuadro para completarla.</p>
+            <p class="desc">El sistema oculta el futuro para evitar agobios. <strong>Toca ⏭️ para posponer al día siguiente sin culpa</strong> o la casilla para completarla.</p>
             
             <div class="agenda-tags" id="tagsContainer">
                 <button class="tag-btn active" onclick="selectTag(this, '🏫 Clases')">🏫 Clases</button>
@@ -162,7 +184,7 @@
                 <input type="time" id="agendaTime">
             </div>
             <div class="input-group">
-                <input type="text" id="agendaText" placeholder="Ej: Preparar material de Bachillerato...">
+                <input type="text" id="agendaText" placeholder="Ej: Preparar material...">
                 <button class="mic-btn" onclick="dictarVoz('agendaText', this)">🎙️</button>
             </div>
             <button onclick="guardarAgenda()">Añadir a la Agenda</button>
@@ -177,9 +199,13 @@
         <!-- 5. HUB CENTRAL DE HERRAMIENTAS -->
         <div id="menu" class="view">
             <h3>⚙️ Herramientas Ejecutivas</h3>
-            <p class="desc"><strong>Instrucción:</strong> Este es tu botiquín cognitivo. Úsalo cuando necesites forzar un descanso, salir de un bucle de ansiedad, tomar una decisión o gestionar estímulos.</p>
             
             <div class="list-menu">
+                <div class="menu-header">Comunicaciones y Tiempo</div>
+                <div class="menu-item" onclick="switchView('correo')"><span class="icon">✉️</span><span>Redacción Segura (Email)</span></div>
+                <div class="menu-item" onclick="switchView('alarma')"><span class="icon">⏰</span><span>Alarma Cognitiva</span></div>
+                <div class="menu-item" onclick="switchView('ermitano')"><span class="icon">🔕</span><span>Modo Ermitaño (WhatsApp/DND)</span></div>
+
                 <div class="menu-header">Regulación Sensorial</div>
                 <div class="menu-item" onclick="togglePitidoPuro()"><span class="icon" id="iconTone">🎛️</span><span id="textTone">Activar Tono Puro (432Hz)</span></div>
                 <div class="menu-item" onclick="toggleRefugio()"><span class="icon">⬛</span><span>Apagón Sensorial Visual</span></div>
@@ -194,7 +220,7 @@
                 <div class="menu-item" onclick="switchView('paralisis')"><span class="icon">🔪</span><span>Cortador de Parálisis por Análisis</span></div>
                 <div class="menu-item" onclick="switchView('trituradora')"><span class="icon">🔥</span><span>Trituradora de Pensamientos</span></div>
 
-                <div class="menu-header">Cuerpo, Social y Energía</div>
+                <div class="menu-header">Cuerpo y Energía</div>
                 <div class="menu-item" onclick="switchView('escudos')"><span class="icon">🛡️</span><span>Escudos Sociales (Respuestas hechas)</span></div>
                 <div class="menu-item" onclick="switchView('intero')"><span class="icon">🪫</span><span>Escáner Corporal (Interocepción)</span></div>
                 <div class="menu-item" onclick="switchView('dopamina')"><span class="icon">💊</span><span>Menú de Dopamina Saludable</span></div>
@@ -204,13 +230,52 @@
             </div>
         </div>
 
-        <!-- 10 SUB-VISTAS DE HERRAMIENTAS -->
+        <!-- NUEVAS SUB-VISTAS -->
+
+        <div id="correo" class="view">
+            <h3>✉️ Redacción Segura</h3>
+            <p class="desc"><strong>Instrucción:</strong> Escribe tu correo aquí. Cuando le des a enviar, se abrirá tu Gmail o Outlook directamente en la ventana de envío. <strong>Así evitas ver tu bandeja de entrada y no te distraes con otros mensajes.</strong></p>
+            <input type="text" id="emailSubject" placeholder="Asunto del correo...">
+            <div class="input-group">
+                <textarea id="emailBody" placeholder="Redacta o dicta aquí el cuerpo del mensaje..."></textarea>
+                <button class="mic-btn" onclick="dictarVoz('emailBody', this)">🎙️</button>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="enviarCorreoSeguro('gmail')" style="background-color: #EA4335;">Abrir en Gmail</button>
+                <button onclick="enviarCorreoSeguro('outlook')" style="background-color: #0078D4;">Abrir en Outlook</button>
+            </div>
+        </div>
+
+        <div id="alarma" class="view">
+            <h3>⏰ Alarma Cognitiva</h3>
+            <p class="desc">Una alarma segura que usa el tono de 432Hz y alertas visuales para sacarte del hiperfoco a una hora exacta.</p>
+            <input type="time" id="alarmTimeInput">
+            <button onclick="setAlarma()">Activar Alarma</button>
+            <button class="secondary" onclick="cancelAlarma()" style="border: 1px solid var(--danger); color: var(--danger);">Cancelar</button>
+            <div id="alarmStatus" style="margin-top: 20px; padding: 15px; border-radius: var(--radius); text-align: center; font-weight: bold; font-size: 1.2rem; display: none; background-color: var(--panel-hover);"></div>
+        </div>
+
+        <div id="ermitano" class="view" style="text-align: center;">
+            <h3>🔕 Modo Ermitaño</h3>
+            <p class="desc" style="text-align: left;">Por seguridad, ninguna web puede apagar el WhatsApp o las llamadas de tu móvil. Tienes que hacerlo tú, pero aquí tienes tu permiso oficial para hacerlo sin culpa.</p>
+            
+            <div style="background: var(--panel-bg); padding: 25px; border-radius: var(--radius); border-left: 5px solid var(--accent); margin-bottom: 20px; text-align: left;">
+                <h4 style="margin-top: 0; color: white;">Protocolo de Desconexión:</h4>
+                <ol style="color: var(--text-muted); line-height: 1.8;">
+                    <li>Desliza el dedo desde la parte superior de la pantalla.</li>
+                    <li>Busca el icono de <strong>Avión ✈️</strong> o de la <strong>Luna 🌙 (No Molestar)</strong>.</li>
+                    <li>Púlsalo. El mundo no se va a acabar en las próximas 2 horas.</li>
+                </ol>
+            </div>
+            <button onclick="copiar(this, 'Hola. He activado mi modo de trabajo profundo (Sin notificaciones) para avanzar en un proyecto. Responderé a los mensajes cuando vuelva a conectarme. Un saludo.')" class="secondary">Copiar respuesta de "No estoy disponible"</button>
+        </div>
+
+        <!-- RESTO DE HERRAMIENTAS (Mantenidas intactas) -->
 
         <div id="migas" class="view">
             <h3>🍞 Migas de Pan</h3>
-            <p class="desc"><strong>Instrucción:</strong> Si alguien te interrumpe, dicta rápido aquí qué estabas pensando. Al volver, lo lees y retomas tu trabajo al instante sin frustración.</p>
             <div class="input-group">
-                <input type="text" id="migaInput" placeholder="Estaba buscando el error en el código de Moodle...">
+                <input type="text" id="migaInput" placeholder="Estaba buscando el error en el código...">
                 <button class="mic-btn" onclick="dictarVoz('migaInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('migas')">Dejar rastro</button>
@@ -219,15 +284,13 @@
 
         <div id="oraculo" class="view">
             <h3>🎲 Oráculo Ejecutivo</h3>
-            <p class="desc"><strong>Instrucción:</strong> Para cuando no sabes por dónde empezar. Escribe las opciones separadas por comas. El sistema elegirá una y te quitará la fatiga de decidir.</p>
-            <textarea id="oraculoInput" placeholder="Ej: Revisar correos, empezar la unidad de sintaxis, salir a pasear..."></textarea>
+            <textarea id="oraculoInput" placeholder="Ej: Revisar correos, empezar sintaxis..."></textarea>
             <button onclick="girarOraculo()">Decidir por mí</button>
             <div id="oraculoResult" style="margin-top: 20px; padding: 20px; background: var(--panel-bg); border-radius: var(--radius); text-align: center; font-size: 1.2rem; display: none; color: var(--accent); font-weight: bold;"></div>
         </div>
 
         <div id="transicion" class="view">
             <h3>🌉 Puente de Transición</h3>
-            <p class="desc"><strong>Instrucción:</strong> Inicia esto antes de cambiar de tarea. Tienes 2 minutos obligatorios para cerrar pestañas viejas, estirar la espalda, beber agua y resetear la mente.</p>
             <div class="timer-display" id="transicionTime">02:00</div>
             <button onclick="startTransicion()">Iniciar Transición</button>
             <button class="secondary" onclick="stopTransicion()">Detener</button>
@@ -235,14 +298,12 @@
 
         <div id="rompebucles" class="view" style="text-align: center; padding-top: 50px;">
             <h3>🚨 Rompe-Bucles</h3>
-            <p class="desc"><strong>Instrucción:</strong> Úsalo si estás hiperfocalizado de forma tóxica o en parálisis frente al móvil. Forzará estímulos visuales y hápticos para obligarte a parar.</p>
             <button class="danger" style="height: 150px; font-size: 1.5rem; border-radius: 50px;" onclick="triggerRompeBucles()">SACARME DE AQUÍ</button>
             <button class="secondary" id="stopBucleBtn" style="display: none; margin-top: 20px;" onclick="stopRompeBucles()">Ya estoy fuera</button>
         </div>
 
         <div id="dopamina" class="view">
             <h3>💊 Menú de Dopamina</h3>
-            <p class="desc"><strong>Instrucción:</strong> Elige cuánta energía física tienes ahora mismo. Te daré una micro-tarea saludable para generar dopamina sin caer en bucles de redes sociales.</p>
             <button class="secondary" onclick="obtenerDopamina('baja')">Baja Energía (No quiero moverme)</button>
             <button class="secondary" onclick="obtenerDopamina('media')">Media Energía (Puedo levantarme)</button>
             <button class="secondary" onclick="obtenerDopamina('alta')">Alta Energía (Necesito movimiento)</button>
@@ -251,22 +312,20 @@
 
         <div id="intero" class="view">
             <h3>🪫 Interocepción</h3>
-            <p class="desc"><strong>Instrucción:</strong> Cuando estamos programando o estudiando, el cerebro se desconecta del cuerpo. Usa esta lista para chequear tus necesidades físicas reales.</p>
             <div class="checkbox-item"><input type="checkbox"> <label>¿He bebido agua recientemente?</label></div>
-            <div class="checkbox-item"><input type="checkbox"> <label>¿Tengo la mandíbula, los hombros o el cuello tensos?</label></div>
+            <div class="checkbox-item"><input type="checkbox"> <label>¿Tengo la mandíbula o cuello tensos?</label></div>
             <div class="checkbox-item"><input type="checkbox"> <label>¿Necesito ir al baño pero lo evito?</label></div>
-            <div class="checkbox-item"><input type="checkbox"> <label>¿He comido algo nutritivo en las últimas 4h?</label></div>
+            <div class="checkbox-item"><input type="checkbox"> <label>¿He comido algo nutritivo hoy?</label></div>
             <button class="secondary" onclick="document.querySelectorAll('.checkbox-item input').forEach(c => c.checked = false)" style="margin-top: 20px;">Limpiar escáner</button>
         </div>
 
         <div id="termometro" class="view">
             <h3>🌡️ Termómetro Sensorial</h3>
-            <p class="desc"><strong>Instrucción:</strong> Mueve las barras según la sobrecarga que sientas ahora mismo. El sistema evaluará si necesitas aislamiento inmediato.</p>
-            <h4>Luz y Cansancio Visual</h4>
+            <h4>Luz / Visual</h4>
             <input type="range" id="sensoryLight" min="0" max="100" value="0">
             <h4>Ruido Auditivo</h4>
             <input type="range" id="sensorySound" min="0" max="100" value="0">
-            <h4>Tensión Corporal y Táctil</h4>
+            <h4>Tensión Corporal</h4>
             <input type="range" id="sensoryTouch" min="0" max="100" value="0">
             <button onclick="evaluarSensorial()" style="margin-top: 20px;">Evaluar mi estado</button>
             <div id="sensoryResult" style="margin-top: 20px; padding: 15px; border-radius: var(--radius); display: none; font-weight: bold; text-align: center;"></div>
@@ -274,17 +333,15 @@
 
         <div id="escudos" class="view">
             <h3>🛡️ Escudos Sociales</h3>
-            <p class="desc"><strong>Instrucción:</strong> Toca cualquier frase para copiarla y usarla. Ahorra batería social usando estos textos prefabricados para proteger tus límites de forma profesional.</p>
             <button class="secondary" onclick="copiar(this, 'Te agradezco que hayas pensado en mí. Ahora mismo mi carga de proyectos me impide asumir tareas nuevas de forma eficiente.')">Decir NO amablemente</button>
             <button class="secondary" onclick="copiar(this, 'He recibido tu información. Déjame revisarlo con la atención que merece y te doy una respuesta estructurada mañana.')">Comprar tiempo (Posponer respuesta)</button>
-            <button class="secondary" onclick="copiar(this, 'Para poder procesar esto y ser eficiente, ¿podrías pasarme exactamente lo que necesitas en una lista de puntos por escrito?')">Exigir claridad (Reducir caos)</button>
+            <button class="secondary" onclick="copiar(this, 'Para poder procesar esto y ser eficiente, ¿podrías pasarme exactamente lo que necesitas en una lista de puntos por escrito?')">Exigir claridad</button>
         </div>
 
         <div id="paralisis" class="view">
             <h3>🔪 Cortador de Parálisis</h3>
-            <p class="desc"><strong>Instrucción:</strong> Introduce ese proyecto colosal que te aterra y dictalo. Lo reduciremos a un paso tan absurdamente fácil que sea imposible no hacerlo.</p>
             <div class="input-group">
-                <input type="text" id="paraInput" placeholder="Ej: Montar todo el repositorio y programar...">
+                <input type="text" id="paraInput" placeholder="Dicta el proyecto enorme aquí...">
                 <button class="mic-btn" onclick="dictarVoz('paraInput', this)">🎙️</button>
             </div>
             <button onclick="cortarParalisis()">Reducir al absurdo</button>
@@ -293,7 +350,6 @@
 
         <div id="grounding" class="view">
             <h3>⚓ Ancla (5-4-3-2-1)</h3>
-            <p class="desc"><strong>Instrucción:</strong> Úsalo frente a picos de estrés o desconexión. Te guiará paso a paso para reconectar con el mundo físico a través de los sentidos.</p>
             <div id="groundingText" style="font-size: 1.5rem; text-align: center; margin: 40px 0; color: var(--accent); font-weight: bold;">
                 Busca 5 cosas que puedas VER.
             </div>
@@ -303,7 +359,6 @@
 
         <div id="trituradora" class="view">
             <h3>🔥 Trituradora Mental</h3>
-            <p class="desc"><strong>Instrucción:</strong> Escribe o dicta aquí un pensamiento rumiante. Destrúyelo para forzar un cierre psicológico del bucle.</p>
             <div class="input-group">
                 <textarea id="obsInput" placeholder="Escribe el pensamiento obsesivo..."></textarea>
                 <button class="mic-btn" onclick="dictarVoz('obsInput', this)">🎙️</button>
@@ -313,7 +368,6 @@
 
         <div id="config" class="view">
             <h3>🔑 Configuración API</h3>
-            <p class="desc">Pega tu clave de Groq para habilitar el asistente de IA nativo. Se guarda solo en tu móvil de forma segura.</p>
             <input type="password" id="apiKey" placeholder="gsk_...">
             <button onclick="guardarConfig()">Guardar en dispositivo</button>
             <p id="configStatus" style="color: var(--success); display: none;">Guardado con éxito.</p>
@@ -326,7 +380,7 @@
         <button class="nav-btn active" onclick="switchView('volcado', this)" title="Volcado">🧠</button>
         <button class="nav-btn" onclick="switchView('agenda', this)" title="Agenda">📅</button>
         <button class="nav-btn" onclick="switchView('ia', this)" title="Asistente Groq">🤖</button>
-        <button class="nav-btn" onclick="switchView('ivoox', this)" title="iVoox">🎧</button>
+        <button class="nav-btn" onclick="switchView('audio', this)" title="Audio (iVoox/YT)">🎧</button>
         <button class="nav-btn" onclick="switchView('menu', this)" title="Herramientas">⚙️</button>
     </div>
 
@@ -352,12 +406,10 @@
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(btn) { document.querySelectorAll('.bottom-bar .nav-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-            
-            // Ocultar la guía si vamos a otra pestaña para ahorrar espacio
-            if(id !== 'volcado') document.getElementById('guiaInstrucciones').removeAttribute("open");
+            if(id !== 'volcado') { const guia = document.getElementById('guiaInstrucciones'); if(guia) guia.removeAttribute("open"); }
         }
 
-        // --- DATOS GENÉRICOS (RAM, Notas, Migas) ---
+        // --- DATOS GENÉRICOS ---
         function cargarDatos() {
             ['ram', 'audiobooks', 'migas'].forEach(tipo => {
                 const datos = JSON.parse(localStorage.getItem(`nexus_${tipo}`)) || [];
@@ -381,7 +433,7 @@
             datos.splice(index, 1); localStorage.setItem(`nexus_${tipo}`, JSON.stringify(datos)); cargarDatos();
         }
 
-        // --- SÚPER AGENDA (Nueva Lógica) ---
+        // --- AGENDA ---
         function setTodayDefault() {
             const tz = (new Date()).getTimezoneOffset() * 60000;
             const local = (new Date(Date.now() - tz)).toISOString().slice(0, 10);
@@ -390,17 +442,14 @@
 
         function selectTag(btn, tag) {
             document.querySelectorAll('#tagsContainer .tag-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('agendaTag').value = tag;
+            btn.classList.add('active'); document.getElementById('agendaTag').value = tag;
         }
 
         function cargarAgenda() {
             let agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || [];
-            const listaHoy = document.getElementById('agendaHoyList');
-            const listaFuturo = document.getElementById('agendaFuturoList');
+            const listaHoy = document.getElementById('agendaHoyList'), listaFuturo = document.getElementById('agendaFuturoList');
             listaHoy.innerHTML = ''; listaFuturo.innerHTML = '';
 
-            // Orden: Completados al final, luego por fecha, luego por hora.
             agenda.sort((a, b) => {
                 if(a.completed !== b.completed) return a.completed ? 1 : -1;
                 if (a.date !== b.date) return a.date.localeCompare(b.date);
@@ -414,7 +463,6 @@
                 const [y, m, d] = item.date.split('-');
                 const timeStr = item.time ? `<span style="color:var(--text-muted); margin-right:8px; font-weight:bold;">${item.time}</span>` : '';
                 
-                // Estilo de la etiqueta
                 let bgTag = 'var(--panel-hover)'; let colorTag = 'var(--text-muted)';
                 if(item.tag && item.tag.includes('Urgente')) { bgTag = 'var(--danger)'; colorTag = 'white'; }
                 else if(item.tag && item.tag.includes('Proyectos')) { bgTag = 'rgba(94, 92, 230, 0.3)'; colorTag = 'var(--text-main)'; }
@@ -442,57 +490,115 @@
                 else listaFuturo.innerHTML += liHtml;
             });
 
-            // Mensajes vacíos
             if(listaHoy.innerHTML === '') listaHoy.innerHTML = '<p style="color:var(--text-muted); font-size:0.9em; text-align:center;">Día limpio. Gran trabajo.</p>';
             if(listaFuturo.innerHTML === '') listaFuturo.innerHTML = '<p style="color:var(--text-muted); font-size:0.9em; text-align:center;">Nada en el horizonte.</p>';
         }
 
         function guardarAgenda() {
-            const date = document.getElementById('agendaDate').value;
-            const time = document.getElementById('agendaTime').value;
-            const text = document.getElementById('agendaText').value;
-            const tag = document.getElementById('agendaTag').value;
-            
+            const date = document.getElementById('agendaDate').value, time = document.getElementById('agendaTime').value, text = document.getElementById('agendaText').value, tag = document.getElementById('agendaTag').value;
             if(!date || !text.trim()) return;
             const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
             agenda.push({ date, time, text: text.trim(), tag, completed: false }); 
             localStorage.setItem('nexus_agenda', JSON.stringify(agenda));
-            
-            document.getElementById('agendaText').value = ''; 
-            cargarAgenda();
+            document.getElementById('agendaText').value = ''; cargarAgenda();
         }
-
         function borrarAgenda(index) {
-            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
-            agenda.splice(index, 1); 
-            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); 
-            cargarAgenda();
+            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; agenda.splice(index, 1); 
+            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); cargarAgenda();
         }
-
         function toggleCompletarAgenda(index) {
-            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
-            agenda[index].completed = !agenda[index].completed;
-            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); 
-            cargarAgenda();
+            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; agenda[index].completed = !agenda[index].completed;
+            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); cargarAgenda();
         }
-
         function posponerAgenda(index) {
             const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
-            let dateObj = new Date(agenda[index].date);
-            dateObj.setDate(dateObj.getDate() + 1); // Suma un día
-            agenda[index].date = dateObj.toISOString().slice(0, 10);
-            agenda[index].completed = false; // Desmarca si estaba completado
-            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); 
-            if(navigator.vibrate) navigator.vibrate(100);
-            cargarAgenda();
+            let dateObj = new Date(agenda[index].date); dateObj.setDate(dateObj.getDate() + 1); 
+            agenda[index].date = dateObj.toISOString().slice(0, 10); agenda[index].completed = false; 
+            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); if(navigator.vibrate) navigator.vibrate(100); cargarAgenda();
         }
 
-        // --- iVOOX ---
+        // --- AUDIO (iVoox y YouTube) ---
+        function switchAudioTab(tab) {
+            document.getElementById('btnTabIvoox').className = tab === 'ivoox' ? '' : 'secondary';
+            document.getElementById('btnTabYt').className = tab === 'yt' ? '' : 'secondary';
+            document.getElementById('tabIvoox').style.display = tab === 'ivoox' ? 'block' : 'none';
+            document.getElementById('tabYt').style.display = tab === 'yt' ? 'block' : 'none';
+        }
+        
         function cargarIvoox() {
             const url = document.getElementById('ivooxUrl').value; const match = url.match(/_rf_(\d+)_/);
             const iframe = document.getElementById('ivooxIframe'), placeholder = document.getElementById('ivooxPlaceholder');
             if(match && match[1]) { iframe.src = `https://www.ivoox.com/player_ej_${match[1]}_4_1_1.html`; iframe.style.display = 'block'; placeholder.style.display = 'none'; } 
             else alert("Enlace no válido de iVoox.");
+        }
+
+        function cargarYoutube() {
+            const url = document.getElementById('ytUrl').value;
+            let id = '';
+            if(url.includes('youtu.be/')) id = url.split('youtu.be/')[1].split('?')[0];
+            else if(url.includes('v=')) id = url.split('v=')[1].split('&')[0];
+            
+            const iframe = document.getElementById('ytIframe'), placeholder = document.getElementById('ytPlaceholder');
+            if(id) {
+                // Usamos el dominio nocookie para máxima privacidad y evitar trackers/recomendaciones basura
+                iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&modestbranding=1&rel=0`;
+                iframe.style.display = 'block'; placeholder.style.display = 'none';
+            } else alert("Pega un enlace válido de YouTube.");
+        }
+
+        // --- EMAILS (Redacción Segura) ---
+        function enviarCorreoSeguro(proveedor) {
+            const subject = encodeURIComponent(document.getElementById('emailSubject').value);
+            const body = encodeURIComponent(document.getElementById('emailBody').value);
+            let link = '';
+            if(proveedor === 'gmail') {
+                // Abre la ventana de redacción pura de Gmail, saltándose el Inbox
+                link = `https://mail.google.com/mail/u/0/?view=cm&fs=1&su=${subject}&body=${body}`;
+            } else {
+                link = `https://outlook.live.com/mail/0/deeplink/compose?subject=${subject}&body=${body}`;
+            }
+            window.open(link, '_blank');
+            document.getElementById('emailSubject').value = '';
+            document.getElementById('emailBody').value = '';
+        }
+
+        // --- ALARMA COGNITIVA ---
+        let alarmIntervalTimer;
+        function setAlarma() {
+            const time = document.getElementById('alarmTimeInput').value;
+            if(!time) return;
+            
+            const statusDiv = document.getElementById('alarmStatus');
+            statusDiv.innerText = `Alarma programada para las ${time}`;
+            statusDiv.style.display = 'block';
+            statusDiv.style.color = 'var(--text-main)';
+            
+            clearInterval(alarmIntervalTimer);
+            alarmIntervalTimer = setInterval(() => {
+                const now = new Date();
+                const nowTime = (now.getHours() < 10 ? '0' : '') + now.getHours() + ":" + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+                if(nowTime === time) {
+                    clearInterval(alarmIntervalTimer);
+                    statusDiv.innerText = "¡HORA DE PARAR!";
+                    statusDiv.style.color = "var(--danger)";
+                    
+                    // Doble impacto: Visual y Auditivo
+                    triggerRompeBucles();
+                    if(!isPlayingTone) togglePitidoPuro();
+                    
+                    // Autoapagar a los 10 segundos
+                    setTimeout(() => {
+                        stopRompeBucles();
+                        if(isPlayingTone) togglePitidoPuro();
+                    }, 10000);
+                }
+            }, 1000);
+        }
+        
+        function cancelAlarma() {
+            clearInterval(alarmIntervalTimer);
+            document.getElementById('alarmTimeInput').value = '';
+            document.getElementById('alarmStatus').style.display = 'none';
         }
 
         // --- GROQ IA ---
@@ -525,7 +631,6 @@
         }
         function toggleRefugio() { const overlay = document.getElementById('refugio-overlay'); overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; }
         
-        // 10 FUNCIONES HERRAMIENTAS
         function girarOraculo() {
             const input = document.getElementById('oraculoInput').value; if(!input.trim()) return;
             const opciones = input.split(',').map(o => o.trim()).filter(o => o); if(opciones.length === 0) return;
