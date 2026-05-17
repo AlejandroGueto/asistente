@@ -23,8 +23,8 @@
         @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         h3 { font-size: 1.5rem; font-weight: 600; margin-top: 0; margin-bottom: 5px; color: var(--text-main); letter-spacing: -0.5px; }
-        h4 { font-size: 1.1rem; font-weight: 500; color: var(--accent); margin-bottom: 10px; }
-        p.desc { font-size: 0.95em; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; }
+        h4 { font-size: 1.1rem; font-weight: 500; color: var(--accent); margin-bottom: 10px; margin-top: 20px; border-bottom: 1px solid var(--panel-hover); padding-bottom: 5px;}
+        p.desc { font-size: 0.9em; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
         
         textarea, input[type="text"], input[type="password"], input[type="date"], input[type="time"], input[type="url"], input[type="range"] {
             width: 100%; background-color: var(--panel-bg); color: var(--text-main); border: none; padding: 18px; border-radius: var(--radius); margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-size: 1rem; transition: background-color 0.2s;
@@ -38,7 +38,6 @@
         button:active { transform: scale(0.98); opacity: 0.8; }
         button.secondary { background-color: var(--panel-bg); color: var(--text-main); }
         button.danger { background-color: var(--danger); }
-        button.success { background-color: var(--success); color: black;}
         
         .input-group { display: flex; gap: 10px; align-items: stretch; margin-bottom: 15px; }
         .input-group textarea, .input-group input { margin-bottom: 0; flex: 1; }
@@ -47,10 +46,10 @@
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
 
         .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-list li { background-color: var(--panel-bg); margin-bottom: 12px; padding: 18px; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; }
-        .delete-btn { background-color: transparent; color: var(--danger); font-weight: bold; padding: 5px 10px; width: auto; margin: 0; font-size: 1.2rem;}
+        .task-list li { background-color: var(--panel-bg); margin-bottom: 12px; padding: 18px; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; transition: opacity 0.3s;}
+        .delete-btn { background-color: transparent; color: var(--text-muted); font-weight: bold; padding: 5px 10px; width: auto; margin: 0; font-size: 1.2rem;}
         
-        .chat-container { background-color: transparent; height: 45vh; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; padding-right: 5px; }
+        .chat-container { background-color: transparent; height: 40vh; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 15px; padding-right: 5px; }
         .msg { padding: 14px 18px; border-radius: 20px; max-width: 80%; line-height: 1.4; font-size: 0.95rem; }
         .msg.user { background-color: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; }
         .msg.ai { background-color: var(--panel-bg); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
@@ -75,6 +74,11 @@
         .timer-display { font-size: 4rem; text-align: center; margin: 20px 0; font-weight: bold; color: var(--accent); font-variant-numeric: tabular-nums; }
         .checkbox-item { display: flex; align-items: center; gap: 15px; background: var(--panel-bg); padding: 15px; border-radius: var(--radius); margin-bottom: 10px; }
         .checkbox-item input[type="checkbox"] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
+
+        /* Estilos nuevos para la Agenda */
+        .agenda-tags { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .agenda-tags button { width: auto; padding: 8px 15px; border-radius: 20px; margin: 0; background: var(--panel-bg); color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0;}
+        .agenda-tags button.active { background: var(--accent); color: white; }
     </style>
 </head>
 <body>
@@ -83,225 +87,247 @@
 
     <div class="main-content">
         
-        <!-- VISTAS PRINCIPALES ORIGINALES -->
-        
+        <!-- GUÍA RÁPIDA (Instrucciones) -->
+        <details id="guiaInstrucciones" style="margin-bottom: 25px; background: var(--panel-bg); padding: 15px; border-radius: var(--radius); cursor: pointer;">
+            <summary style="font-weight: bold; color: var(--accent); font-size: 1.1rem; list-style: none;">📖 Guía de Uso de Nexus (Toca aquí)</summary>
+            <ul style="margin-top: 15px; color: var(--text-main); font-size: 0.95em; padding-left: 20px; line-height: 1.5;">
+                <li style="margin-bottom: 10px;"><strong>🧠 Volcado:</strong> Tu pantalla de inicio. Si tienes la mente saturada, escupe todo ahí (escribiendo o dictando). Guarda y olvídate.</li>
+                <li style="margin-bottom: 10px;"><strong>📅 Agenda:</strong> Tu centro de mando. Separa lo de "Hoy" y "Futuro". Si hoy no puedes más, usa el botón ⏭️ para posponer la tarea a mañana sin culpa.</li>
+                <li style="margin-bottom: 10px;"><strong>🤖 IA y 🎧 iVoox:</strong> Asistente que procesa al instante sin rodeos y reproductor de audiolibros integrado para que escuches sin distracciones.</li>
+                <li><strong>⚙️ Herramientas:</strong> Usa este menú si te bloqueas (Parálisis), si te sobreestimulas (Apagón/Ruido) o si necesitas regular tu cuerpo y tu energía.</li>
+            </ul>
+        </details>
+
+        <!-- 1. Volcado -->
         <div id="volcado" class="view active">
-            <h3>Volcado</h3>
-            <p class="desc">Vacía la RAM de tu mente.</p>
+            <h3>🧠 Volcado de Memoria</h3>
+            <p class="desc"><strong>Instrucción:</strong> Úsalo como una "memoria RAM externa". Descarga aquí las ideas sueltas, tareas inacabadas o recordatorios para que tu cerebro deje de gastar energía intentando no olvidarlos.</p>
             <div class="input-group">
-                <textarea id="ramInput" placeholder="Ideas, pendientes, tareas..."></textarea>
+                <textarea id="ramInput" placeholder="Ej: Añadir genitivos al escape room, revisar a los de 4º..."></textarea>
                 <button class="mic-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
             </div>
-            <button onclick="guardarDato('ram')">Guardar</button>
+            <button onclick="guardarDato('ram')">Guardar Pensamiento</button>
             <ul id="ramList" class="task-list" style="margin-top: 20px;"></ul>
         </div>
 
+        <!-- 2. Asistente IA (Groq) -->
         <div id="ia" class="view">
-            <h3>Asistente IA</h3>
+            <h3>🤖 Asistente Cognitivo</h3>
+            <p class="desc"><strong>Instrucción:</strong> Conectado a la velocidad pura de Groq. Toca el micrófono, habla tus dudas o el texto caótico que quieras ordenar. Te responderá en viñetas estructuradas.</p>
             <div class="chat-container" id="chatBox">
-                <div class="msg ai">Estructuración limpia y en viñetas. ¿Qué necesitas?</div>
+                <div class="msg ai">Entorno de baja fricción activo. ¿Qué necesitas estructurar hoy?</div>
             </div>
             <div class="input-group">
-                <input type="text" id="iaInput" placeholder="Escribe o dicta..." onkeypress="if(event.key === 'Enter') enviarIA()">
+                <input type="text" id="iaInput" placeholder="Escribe o dicta tu consulta..." onkeypress="if(event.key === 'Enter') enviarIA()">
                 <button class="mic-btn" onclick="dictarVoz('iaInput', this, true)">🎙️</button>
             </div>
         </div>
 
+        <!-- 3. Integración iVoox -->
         <div id="ivoox" class="view">
-            <h3>🎧 iVoox + Notas</h3>
+            <h3>🎧 Biblioteca de Audio</h3>
+            <p class="desc"><strong>Instrucción:</strong> Escucha sin entrar a la app original. Pega el enlace de un episodio de iVoox y dale a Cargar. Anota abajo las ideas clave o el minuto donde te quedas para retomarlo luego.</p>
             <div class="input-group">
-                <input type="url" id="ivooxUrl" placeholder="Pega el enlace de iVoox aquí...">
+                <input type="url" id="ivooxUrl" placeholder="Enlace del episodio de iVoox...">
                 <button onclick="cargarIvoox()" style="width: 80px; margin-bottom:0;">Cargar</button>
             </div>
             <div class="player-container">
                 <div id="ivooxPlaceholder" style="text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9em;">El reproductor aparecerá aquí</div>
                 <iframe id="ivooxIframe" src="" width="100%" height="200" frameborder="0" allowfullscreen="" scrolling="no"></iframe>
             </div>
-            <h4>Notas del Audiolibro</h4>
+            <h4>Notas de Escucha</h4>
             <div class="input-group">
-                <input type="text" id="audiobookNote" placeholder="Minuto / Concepto...">
+                <input type="text" id="audiobookNote" placeholder="Minuto / Concepto importante...">
                 <button class="mic-btn" onclick="dictarVoz('audiobookNote', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('audiobooks')">Guardar Nota</button>
             <ul id="audiobooksList" class="task-list" style="margin-top: 20px;"></ul>
         </div>
 
+        <!-- 4. SÚPER AGENDA -->
         <div id="agenda" class="view">
-            <h3>Agenda</h3>
+            <h3>📅 Centro de Mando</h3>
+            <p class="desc"><strong>Instrucción:</strong> Elige una etiqueta, fecha/hora y dicta la tarea. El sistema ocultará el futuro para evitar agobios. <strong>Toca ⏭️ para posponer al día siguiente sin culpa</strong> si estás cansado, o el recuadro para completarla.</p>
+            
+            <div class="agenda-tags" id="tagsContainer">
+                <button class="tag-btn active" onclick="selectTag(this, '🏫 Clases')">🏫 Clases</button>
+                <button class="tag-btn" onclick="selectTag(this, '💻 Proyectos')">💻 Proyectos</button>
+                <button class="tag-btn" onclick="selectTag(this, '🧘 Personal')">🧘 Personal</button>
+                <button class="tag-btn" onclick="selectTag(this, '⚠️ Urgente')" style="color: var(--warning);">⚠️ Urgente</button>
+            </div>
+            <input type="hidden" id="agendaTag" value="🏫 Clases">
+
             <div style="display: flex; gap: 10px;">
                 <input type="date" id="agendaDate">
                 <input type="time" id="agendaTime">
             </div>
             <div class="input-group">
-                <input type="text" id="agendaText" placeholder="Dicta la tarea o evento...">
+                <input type="text" id="agendaText" placeholder="Ej: Preparar material de Bachillerato...">
                 <button class="mic-btn" onclick="dictarVoz('agendaText', this)">🎙️</button>
             </div>
-            <button onclick="guardarAgenda()">Añadir</button>
-            <ul id="agendaList" class="task-list" style="margin-top: 20px;"></ul>
+            <button onclick="guardarAgenda()">Añadir a la Agenda</button>
+            
+            <h4 style="color: var(--success); margin-top: 30px;">☀️ Para Hoy / Atrasado</h4>
+            <ul id="agendaHoyList" class="task-list"></ul>
+
+            <h4 style="color: var(--text-muted); margin-top: 30px;">🔭 Próximamente</h4>
+            <ul id="agendaFuturoList" class="task-list" style="opacity: 0.8;"></ul>
         </div>
 
-        <!-- HUB CENTRAL DE HERRAMIENTAS -->
+        <!-- 5. HUB CENTRAL DE HERRAMIENTAS -->
         <div id="menu" class="view">
-            <h3>Herramientas</h3>
-            <p class="desc">Ajustes y exoesqueleto cognitivo.</p>
+            <h3>⚙️ Herramientas Ejecutivas</h3>
+            <p class="desc"><strong>Instrucción:</strong> Este es tu botiquín cognitivo. Úsalo cuando necesites forzar un descanso, salir de un bucle de ansiedad, tomar una decisión o gestionar estímulos.</p>
             
             <div class="list-menu">
                 <div class="menu-header">Regulación Sensorial</div>
                 <div class="menu-item" onclick="togglePitidoPuro()"><span class="icon" id="iconTone">🎛️</span><span id="textTone">Activar Tono Puro (432Hz)</span></div>
-                <div class="menu-item" onclick="toggleRefugio()"><span class="icon">⬛</span><span>Apagón Sensorial</span></div>
+                <div class="menu-item" onclick="toggleRefugio()"><span class="icon">⬛</span><span>Apagón Sensorial Visual</span></div>
                 <div class="menu-item" onclick="switchView('termometro')"><span class="icon">🌡️</span><span>Termómetro Sensorial</span></div>
-                <div class="menu-item" onclick="switchView('grounding')"><span class="icon">⚓</span><span>Ancla (Grounding 54321)</span></div>
+                <div class="menu-item" onclick="switchView('grounding')"><span class="icon">⚓</span><span>Ancla (Técnica 5-4-3-2-1)</span></div>
                 
-                <div class="menu-header">Herramientas Ejecutivas</div>
-                <div class="menu-item" onclick="switchView('migas')"><span class="icon">🍞</span><span>Migas de Pan (Retomar contexto)</span></div>
-                <div class="menu-item" onclick="switchView('oraculo')"><span class="icon">🎲</span><span>Oráculo Ejecutivo</span></div>
-                <div class="menu-item" onclick="switchView('transicion')"><span class="icon">🌉</span><span>Puente de Transición</span></div>
-                <div class="menu-item" onclick="switchView('rompebucles')"><span class="icon">🚨</span><span>Rompe-Bucles</span></div>
-                <div class="menu-item" onclick="switchView('paralisis')"><span class="icon">🔪</span><span>Cortador de Parálisis</span></div>
-                <div class="menu-item" onclick="switchView('trituradora')"><span class="icon">🔥</span><span>Trituradora Mental</span></div>
+                <div class="menu-header">Rescate Ejecutivo</div>
+                <div class="menu-item" onclick="switchView('migas')"><span class="icon">🍞</span><span>Migas de Pan (Guardar contexto)</span></div>
+                <div class="menu-item" onclick="switchView('oraculo')"><span class="icon">🎲</span><span>Oráculo (Decidir por mí)</span></div>
+                <div class="menu-item" onclick="switchView('transicion')"><span class="icon">🌉</span><span>Puente de Transición de Tareas</span></div>
+                <div class="menu-item" onclick="switchView('rompebucles')"><span class="icon">🚨</span><span>Rompe-Bucles Físico</span></div>
+                <div class="menu-item" onclick="switchView('paralisis')"><span class="icon">🔪</span><span>Cortador de Parálisis por Análisis</span></div>
+                <div class="menu-item" onclick="switchView('trituradora')"><span class="icon">🔥</span><span>Trituradora de Pensamientos</span></div>
 
-                <div class="menu-header">Cuerpo y Social</div>
-                <div class="menu-item" onclick="switchView('escudos')"><span class="icon">🛡️</span><span>Escudos Sociales</span></div>
-                <div class="menu-item" onclick="switchView('intero')"><span class="icon">🪫</span><span>Escáner de Interocepción</span></div>
-                <div class="menu-item" onclick="switchView('dopamina')"><span class="icon">💊</span><span>Menú de Dopamina</span></div>
+                <div class="menu-header">Cuerpo, Social y Energía</div>
+                <div class="menu-item" onclick="switchView('escudos')"><span class="icon">🛡️</span><span>Escudos Sociales (Respuestas hechas)</span></div>
+                <div class="menu-item" onclick="switchView('intero')"><span class="icon">🪫</span><span>Escáner Corporal (Interocepción)</span></div>
+                <div class="menu-item" onclick="switchView('dopamina')"><span class="icon">💊</span><span>Menú de Dopamina Saludable</span></div>
                 
                 <div class="menu-header">Sistema</div>
-                <div class="menu-item" onclick="switchView('config')"><span class="icon">⚙️</span><span>Configuración API Groq</span></div>
+                <div class="menu-item" onclick="switchView('config')"><span class="icon">🔑</span><span>Configuración API de Groq</span></div>
             </div>
         </div>
 
-        <!-- 10 SUB-VISTAS NUEVAS Y ANTIGUAS -->
+        <!-- 10 SUB-VISTAS DE HERRAMIENTAS -->
 
-        <!-- 1. Migas de Pan -->
         <div id="migas" class="view">
             <h3>🍞 Migas de Pan</h3>
-            <p class="desc">¿Te acaban de interrumpir? Anota rápido qué estabas haciendo para no perder el hilo cuando vuelvas.</p>
+            <p class="desc"><strong>Instrucción:</strong> Si alguien te interrumpe, dicta rápido aquí qué estabas pensando. Al volver, lo lees y retomas tu trabajo al instante sin frustración.</p>
             <div class="input-group">
-                <input type="text" id="migaInput" placeholder="Ej: Estaba revisando la declinación de puer...">
+                <input type="text" id="migaInput" placeholder="Estaba buscando el error en el código de Moodle...">
                 <button class="mic-btn" onclick="dictarVoz('migaInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('migas')">Dejar rastro</button>
             <ul id="migasList" class="task-list" style="margin-top: 20px;"></ul>
         </div>
 
-        <!-- 2. Oráculo -->
         <div id="oraculo" class="view">
             <h3>🎲 Oráculo Ejecutivo</h3>
-            <p class="desc">Evita la fatiga de decisión. Escribe las opciones separadas por comas y el sistema elegirá una.</p>
-            <textarea id="oraculoInput" placeholder="Ej: Corregir exámenes, crear material, descansar..."></textarea>
+            <p class="desc"><strong>Instrucción:</strong> Para cuando no sabes por dónde empezar. Escribe las opciones separadas por comas. El sistema elegirá una y te quitará la fatiga de decidir.</p>
+            <textarea id="oraculoInput" placeholder="Ej: Revisar correos, empezar la unidad de sintaxis, salir a pasear..."></textarea>
             <button onclick="girarOraculo()">Decidir por mí</button>
             <div id="oraculoResult" style="margin-top: 20px; padding: 20px; background: var(--panel-bg); border-radius: var(--radius); text-align: center; font-size: 1.2rem; display: none; color: var(--accent); font-weight: bold;"></div>
         </div>
 
-        <!-- 3. Transición -->
         <div id="transicion" class="view">
             <h3>🌉 Puente de Transición</h3>
-            <p class="desc">Cambiar de tarea quema mucha energía. Toma estos 2 minutos para cerrar pestañas, levantarte, respirar y soltar el contexto anterior.</p>
+            <p class="desc"><strong>Instrucción:</strong> Inicia esto antes de cambiar de tarea. Tienes 2 minutos obligatorios para cerrar pestañas viejas, estirar la espalda, beber agua y resetear la mente.</p>
             <div class="timer-display" id="transicionTime">02:00</div>
             <button onclick="startTransicion()">Iniciar Transición</button>
             <button class="secondary" onclick="stopTransicion()">Detener</button>
         </div>
 
-        <!-- 4. Rompe Bucles -->
         <div id="rompebucles" class="view" style="text-align: center; padding-top: 50px;">
             <h3>🚨 Rompe-Bucles</h3>
-            <p class="desc">Si estás atrapado en el teléfono o en un hiperfoco y no puedes salir físicamente. Toca el botón para un reinicio sensorial.</p>
+            <p class="desc"><strong>Instrucción:</strong> Úsalo si estás hiperfocalizado de forma tóxica o en parálisis frente al móvil. Forzará estímulos visuales y hápticos para obligarte a parar.</p>
             <button class="danger" style="height: 150px; font-size: 1.5rem; border-radius: 50px;" onclick="triggerRompeBucles()">SACARME DE AQUÍ</button>
             <button class="secondary" id="stopBucleBtn" style="display: none; margin-top: 20px;" onclick="stopRompeBucles()">Ya estoy fuera</button>
         </div>
 
-        <!-- 5. Dopamina -->
         <div id="dopamina" class="view">
             <h3>💊 Menú de Dopamina</h3>
-            <p class="desc">Obtén un chute saludable de neurotransmisores según la energía que tengas ahora mismo.</p>
-            <button class="secondary" onclick="obtenerDopamina('baja')">Baja Energía (No me quiero mover)</button>
+            <p class="desc"><strong>Instrucción:</strong> Elige cuánta energía física tienes ahora mismo. Te daré una micro-tarea saludable para generar dopamina sin caer en bucles de redes sociales.</p>
+            <button class="secondary" onclick="obtenerDopamina('baja')">Baja Energía (No quiero moverme)</button>
             <button class="secondary" onclick="obtenerDopamina('media')">Media Energía (Puedo levantarme)</button>
-            <button class="secondary" onclick="obtenerDopamina('alta')">Alta Energía (Necesito acción)</button>
+            <button class="secondary" onclick="obtenerDopamina('alta')">Alta Energía (Necesito movimiento)</button>
             <div id="dopaminaResult" style="margin-top: 20px; padding: 20px; background: var(--accent); color: white; border-radius: var(--radius); text-align: center; font-size: 1.1rem; display: none;"></div>
         </div>
 
-        <!-- 6. Interocepción -->
         <div id="intero" class="view">
             <h3>🪫 Interocepción</h3>
-            <p class="desc">Check-in corporal. El cerebro olvida el cuerpo cuando programa.</p>
+            <p class="desc"><strong>Instrucción:</strong> Cuando estamos programando o estudiando, el cerebro se desconecta del cuerpo. Usa esta lista para chequear tus necesidades físicas reales.</p>
             <div class="checkbox-item"><input type="checkbox"> <label>¿He bebido agua recientemente?</label></div>
-            <div class="checkbox-item"><input type="checkbox"> <label>¿Tengo la mandíbula o cuello tensos?</label></div>
-            <div class="checkbox-item"><input type="checkbox"> <label>¿Necesito ir al baño?</label></div>
-            <div class="checkbox-item"><input type="checkbox"> <label>¿He comido algo nutritivo hoy?</label></div>
-            <button class="secondary" onclick="document.querySelectorAll('.checkbox-item input').forEach(c => c.checked = false)" style="margin-top: 20px;">Reiniciar escáner</button>
+            <div class="checkbox-item"><input type="checkbox"> <label>¿Tengo la mandíbula, los hombros o el cuello tensos?</label></div>
+            <div class="checkbox-item"><input type="checkbox"> <label>¿Necesito ir al baño pero lo evito?</label></div>
+            <div class="checkbox-item"><input type="checkbox"> <label>¿He comido algo nutritivo en las últimas 4h?</label></div>
+            <button class="secondary" onclick="document.querySelectorAll('.checkbox-item input').forEach(c => c.checked = false)" style="margin-top: 20px;">Limpiar escáner</button>
         </div>
 
-        <!-- 7. Termómetro -->
         <div id="termometro" class="view">
             <h3>🌡️ Termómetro Sensorial</h3>
-            <p class="desc">Evalúa tu sobrecarga actual (0 a 100).</p>
-            <h4>Luz / Visual</h4>
+            <p class="desc"><strong>Instrucción:</strong> Mueve las barras según la sobrecarga que sientas ahora mismo. El sistema evaluará si necesitas aislamiento inmediato.</p>
+            <h4>Luz y Cansancio Visual</h4>
             <input type="range" id="sensoryLight" min="0" max="100" value="0">
-            <h4>Ruido / Auditivo</h4>
+            <h4>Ruido Auditivo</h4>
             <input type="range" id="sensorySound" min="0" max="100" value="0">
-            <h4>Tensión Corporal</h4>
+            <h4>Tensión Corporal y Táctil</h4>
             <input type="range" id="sensoryTouch" min="0" max="100" value="0">
-            <button onclick="evaluarSensorial()" style="margin-top: 20px;">Evaluar estado</button>
+            <button onclick="evaluarSensorial()" style="margin-top: 20px;">Evaluar mi estado</button>
             <div id="sensoryResult" style="margin-top: 20px; padding: 15px; border-radius: var(--radius); display: none; font-weight: bold; text-align: center;"></div>
         </div>
 
-        <!-- 8. Escudos Sociales -->
         <div id="escudos" class="view">
             <h3>🛡️ Escudos Sociales</h3>
-            <p class="desc">Toca para copiar al portapapeles y evita gastar energía pensando respuestas.</p>
-            <button class="secondary" onclick="copiar(this, 'Te agradezco que hayas pensado en mí. Ahora mismo mi carga de trabajo no me permite asumirlo.')">Decir NO profesionalmente</button>
-            <button class="secondary" onclick="copiar(this, 'He recibido la información. Déjame procesarlo con calma y te doy una respuesta estructurada mañana.')">Comprar tiempo (Posponer)</button>
-            <button class="secondary" onclick="copiar(this, 'Para poder ayudarte de forma eficiente, ¿podrías enviarme exactamente lo que necesitas en una lista de puntos?')">Pedir claridad (Frenar caos)</button>
+            <p class="desc"><strong>Instrucción:</strong> Toca cualquier frase para copiarla y usarla. Ahorra batería social usando estos textos prefabricados para proteger tus límites de forma profesional.</p>
+            <button class="secondary" onclick="copiar(this, 'Te agradezco que hayas pensado en mí. Ahora mismo mi carga de proyectos me impide asumir tareas nuevas de forma eficiente.')">Decir NO amablemente</button>
+            <button class="secondary" onclick="copiar(this, 'He recibido tu información. Déjame revisarlo con la atención que merece y te doy una respuesta estructurada mañana.')">Comprar tiempo (Posponer respuesta)</button>
+            <button class="secondary" onclick="copiar(this, 'Para poder procesar esto y ser eficiente, ¿podrías pasarme exactamente lo que necesitas en una lista de puntos por escrito?')">Exigir claridad (Reducir caos)</button>
         </div>
 
-        <!-- 9. Parálisis -->
         <div id="paralisis" class="view">
             <h3>🔪 Cortador de Parálisis</h3>
+            <p class="desc"><strong>Instrucción:</strong> Introduce ese proyecto colosal que te aterra y dictalo. Lo reduciremos a un paso tan absurdamente fácil que sea imposible no hacerlo.</p>
             <div class="input-group">
-                <input type="text" id="paraInput" placeholder="Ej: Programar escape room entero...">
+                <input type="text" id="paraInput" placeholder="Ej: Montar todo el repositorio y programar...">
                 <button class="mic-btn" onclick="dictarVoz('paraInput', this)">🎙️</button>
             </div>
             <button onclick="cortarParalisis()">Reducir al absurdo</button>
             <div id="paraResult" style="margin-top: 20px; padding: 20px; background: var(--panel-bg); border-radius: var(--radius); display: none;"></div>
         </div>
 
-        <!-- 10. Grounding -->
         <div id="grounding" class="view">
             <h3>⚓ Ancla (5-4-3-2-1)</h3>
-            <p class="desc">Técnica para aterrizar la ansiedad extrema.</p>
+            <p class="desc"><strong>Instrucción:</strong> Úsalo frente a picos de estrés o desconexión. Te guiará paso a paso para reconectar con el mundo físico a través de los sentidos.</p>
             <div id="groundingText" style="font-size: 1.5rem; text-align: center; margin: 40px 0; color: var(--accent); font-weight: bold;">
                 Busca 5 cosas que puedas VER.
             </div>
             <button onclick="nextGrounding()">Siguiente paso</button>
-            <button class="secondary" onclick="resetGrounding()">Reiniciar</button>
+            <button class="secondary" onclick="resetGrounding()">Reiniciar Ancla</button>
         </div>
 
-        <!-- Trituradora y Config -->
         <div id="trituradora" class="view">
-            <h3>🔥 Trituradora</h3>
+            <h3>🔥 Trituradora Mental</h3>
+            <p class="desc"><strong>Instrucción:</strong> Escribe o dicta aquí un pensamiento rumiante (ej. el miedo a que los alumnos usen IA). Destrúyelo para forzar un cierre psicológico del bucle.</p>
             <div class="input-group">
-                <textarea id="obsInput" placeholder="Pensamiento intrusivo..."></textarea>
+                <textarea id="obsInput" placeholder="Escribe el pensamiento obsesivo..."></textarea>
                 <button class="mic-btn" onclick="dictarVoz('obsInput', this)">🎙️</button>
             </div>
-            <button onclick="triturarPensamiento()" class="danger">Destruir</button>
+            <button onclick="triturarPensamiento()" class="danger">Destruir Pensamiento</button>
         </div>
 
         <div id="config" class="view">
-            <h3>Configuración</h3>
-            <input type="password" id="apiKey" placeholder="Pega tu API Key de Groq...">
+            <h3>🔑 Configuración API</h3>
+            <p class="desc">Pega tu clave de Groq para habilitar el asistente de IA nativo. Se guarda solo en tu móvil de forma segura.</p>
+            <input type="password" id="apiKey" placeholder="gsk_...">
             <button onclick="guardarConfig()">Guardar en dispositivo</button>
             <p id="configStatus" style="color: var(--success); display: none;">Guardado con éxito.</p>
         </div>
         
     </div>
 
-    <!-- Barra Inferior -->
+    <!-- Barra Inferior Flotante -->
     <div class="bottom-bar">
-        <button class="nav-btn active" onclick="switchView('volcado', this)">🧠</button>
-        <button class="nav-btn" onclick="switchView('ia', this)">🤖</button>
-        <button class="nav-btn" onclick="switchView('ivoox', this)">🎧</button>
-        <button class="nav-btn" onclick="switchView('agenda', this)">📅</button>
-        <button class="nav-btn" onclick="switchView('menu', this)">⚙️</button>
+        <button class="nav-btn active" onclick="switchView('volcado', this)" title="Volcado">🧠</button>
+        <button class="nav-btn" onclick="switchView('agenda', this)" title="Agenda">📅</button>
+        <button class="nav-btn" onclick="switchView('ia', this)" title="Asistente Groq">🤖</button>
+        <button class="nav-btn" onclick="switchView('ivoox', this)" title="iVoox">🎧</button>
+        <button class="nav-btn" onclick="switchView('menu', this)" title="Herramientas">⚙️</button>
     </div>
 
     <script>
@@ -326,6 +352,9 @@
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(btn) { document.querySelectorAll('.bottom-bar .nav-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+            
+            // Ocultar la guía si vamos a otra pestaña para ahorrar espacio
+            if(id !== 'volcado') document.getElementById('guiaInstrucciones').removeAttribute("open");
         }
 
         // --- DATOS GENÉRICOS (RAM, Notas, Migas) ---
@@ -352,30 +381,113 @@
             datos.splice(index, 1); localStorage.setItem(`nexus_${tipo}`, JSON.stringify(datos)); cargarDatos();
         }
 
-        // --- AGENDA E iVOOX (Manteniendo funcionalidad original) ---
+        // --- SÚPER AGENDA (Nueva Lógica) ---
         function setTodayDefault() {
             const tz = (new Date()).getTimezoneOffset() * 60000;
             const local = (new Date(Date.now() - tz)).toISOString().slice(0, 10);
             if(!document.getElementById('agendaDate').value) document.getElementById('agendaDate').value = local;
         }
+
+        function selectTag(btn, tag) {
+            document.querySelectorAll('#tagsContainer .tag-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('agendaTag').value = tag;
+        }
+
         function cargarAgenda() {
             let agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || [];
-            const lista = document.getElementById('agendaList'); lista.innerHTML = '';
-            agenda.sort((a, b) => { if (a.date !== b.date) return a.date.localeCompare(b.date); return (a.time || "23:59").localeCompare(b.time || "23:59"); });
-            agenda.forEach((item, index) => {
-                const [y, m, d] = item.date.split('-'); const timeStr = item.time ? `<span style="color:var(--accent); margin-right:8px;">${item.time}</span>` : '';
-                lista.innerHTML += `<li><div><div style="font-size:0.8em; color:var(--text-muted); margin-bottom:4px;">${timeStr}${d}/${m}/${y}</div><div>${item.text}</div></div><button class="delete-btn" onclick="borrarAgenda(${index})">✕</button></li>`;
+            const listaHoy = document.getElementById('agendaHoyList');
+            const listaFuturo = document.getElementById('agendaFuturoList');
+            listaHoy.innerHTML = ''; listaFuturo.innerHTML = '';
+
+            // Orden: Completados al final, luego por fecha, luego por hora.
+            agenda.sort((a, b) => {
+                if(a.completed !== b.completed) return a.completed ? 1 : -1;
+                if (a.date !== b.date) return a.date.localeCompare(b.date);
+                return (a.time || "23:59").localeCompare(b.time || "23:59");
             });
+
+            const tz = (new Date()).getTimezoneOffset() * 60000;
+            const hoy = (new Date(Date.now() - tz)).toISOString().slice(0, 10);
+
+            agenda.forEach((item, index) => {
+                const [y, m, d] = item.date.split('-');
+                const timeStr = item.time ? `<span style="color:var(--text-muted); margin-right:8px; font-weight:bold;">${item.time}</span>` : '';
+                
+                // Estilo de la etiqueta
+                let bgTag = 'var(--panel-hover)'; let colorTag = 'var(--text-muted)';
+                if(item.tag && item.tag.includes('Urgente')) { bgTag = 'var(--danger)'; colorTag = 'white'; }
+                else if(item.tag && item.tag.includes('Proyectos')) { bgTag = 'rgba(94, 92, 230, 0.3)'; colorTag = 'var(--text-main)'; }
+                const tagStr = item.tag ? `<span style="font-size: 0.75em; background: ${bgTag}; color: ${colorTag}; padding: 3px 8px; border-radius: 12px; margin-right: 8px;">${item.tag}</span>` : '';
+                
+                const isCompleted = item.completed ? 'text-decoration: line-through; opacity: 0.4;' : '';
+                const checkedAttr = item.completed ? 'checked' : '';
+
+                const liHtml = `
+                <li style="${isCompleted}">
+                    <div style="display:flex; align-items:flex-start; gap: 12px; width: 100%;">
+                        <input type="checkbox" ${checkedAttr} onchange="toggleCompletarAgenda(${index})" style="margin-top: 5px; transform: scale(1.4); accent-color: var(--accent);">
+                        <div style="flex: 1;">
+                            <div style="font-size:0.85em; margin-bottom:6px; display:flex; align-items:center;">${tagStr}${timeStr}<span style="color:var(--text-muted)">${d}/${m}/${y}</span></div>
+                            <div style="line-height:1.3;">${item.text}</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:8px; justify-content:center; padding-left: 5px; border-left: 1px solid var(--panel-hover);">
+                            <button class="delete-btn" onclick="posponerAgenda(${index})" style="color: var(--warning); font-size: 1.2rem; padding: 2px;" title="Posponer a mañana">⏭️</button>
+                            <button class="delete-btn" onclick="borrarAgenda(${index})" style="padding: 2px;">✕</button>
+                        </div>
+                    </div>
+                </li>`;
+
+                if (item.date <= hoy) listaHoy.innerHTML += liHtml;
+                else listaFuturo.innerHTML += liHtml;
+            });
+
+            // Mensajes vacíos
+            if(listaHoy.innerHTML === '') listaHoy.innerHTML = '<p style="color:var(--text-muted); font-size:0.9em; text-align:center;">Día limpio. Gran trabajo.</p>';
+            if(listaFuturo.innerHTML === '') listaFuturo.innerHTML = '<p style="color:var(--text-muted); font-size:0.9em; text-align:center;">Nada en el horizonte.</p>';
         }
+
         function guardarAgenda() {
-            const date = document.getElementById('agendaDate').value, time = document.getElementById('agendaTime').value, text = document.getElementById('agendaText').value;
+            const date = document.getElementById('agendaDate').value;
+            const time = document.getElementById('agendaTime').value;
+            const text = document.getElementById('agendaText').value;
+            const tag = document.getElementById('agendaTag').value;
+            
             if(!date || !text.trim()) return;
-            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; agenda.push({ date, time, text: text.trim() }); localStorage.setItem('nexus_agenda', JSON.stringify(agenda));
-            document.getElementById('agendaText').value = ''; cargarAgenda();
+            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
+            agenda.push({ date, time, text: text.trim(), tag, completed: false }); 
+            localStorage.setItem('nexus_agenda', JSON.stringify(agenda));
+            
+            document.getElementById('agendaText').value = ''; 
+            cargarAgenda();
         }
+
         function borrarAgenda(index) {
-            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; agenda.splice(index, 1); localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); cargarAgenda();
+            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
+            agenda.splice(index, 1); 
+            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); 
+            cargarAgenda();
         }
+
+        function toggleCompletarAgenda(index) {
+            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
+            agenda[index].completed = !agenda[index].completed;
+            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); 
+            cargarAgenda();
+        }
+
+        function posponerAgenda(index) {
+            const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
+            let dateObj = new Date(agenda[index].date);
+            dateObj.setDate(dateObj.getDate() + 1); // Suma un día
+            agenda[index].date = dateObj.toISOString().slice(0, 10);
+            agenda[index].completed = false; // Desmarca si estaba completado
+            localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); 
+            if(navigator.vibrate) navigator.vibrate(100);
+            cargarAgenda();
+        }
+
+        // --- iVOOX ---
         function cargarIvoox() {
             const url = document.getElementById('ivooxUrl').value; const match = url.match(/_rf_(\d+)_/);
             const iframe = document.getElementById('ivooxIframe'), placeholder = document.getElementById('ivooxPlaceholder');
@@ -388,13 +500,13 @@
             const input = document.getElementById('iaInput'); const texto = input.value.trim(); if(!texto) return;
             const apiKey = localStorage.getItem('nexus_groqkey'); const chatBox = document.getElementById('chatBox');
             chatBox.innerHTML += `<div class="msg user">${texto}</div>`; input.value = ''; chatBox.scrollTop = chatBox.scrollHeight;
-            if(!apiKey) { chatBox.innerHTML += `<div class="msg ai" style="color:var(--danger);">Falta API Key.</div>`; return; }
+            if(!apiKey) { chatBox.innerHTML += `<div class="msg ai" style="color:var(--danger);">Falta API Key. Configúrala en Herramientas.</div>`; return; }
             try {
-                chatBox.innerHTML += `<div class="msg ai" id="loadingMsg">Procesando...</div>`;
-                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify({ model: "llama3-70b-8192", messages: [{ role: "system", content: "Asistente conciso. Estructura en viñetas cortas." }, { role: "user", content: texto }], temperature: 0.5 }) });
+                chatBox.innerHTML += `<div class="msg ai" id="loadingMsg">Procesando a velocidad LPU...</div>`;
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify({ model: "llama3-70b-8192", messages: [{ role: "system", content: "Asistente neurodivergente conciso. Estructura siempre en viñetas cortas y claras. Evita párrafos largos." }, { role: "user", content: texto }], temperature: 0.4 }) });
                 const data = await response.json(); document.getElementById('loadingMsg').remove();
                 if(data.choices) chatBox.innerHTML += `<div class="msg ai">${data.choices[0].message.content.replace(/\n/g, '<br>')}</div>`;
-            } catch (e) { if(document.getElementById('loadingMsg')) document.getElementById('loadingMsg').remove(); chatBox.innerHTML += `<div class="msg ai" style="color:var(--danger);">Error.</div>`; }
+            } catch (e) { if(document.getElementById('loadingMsg')) document.getElementById('loadingMsg').remove(); chatBox.innerHTML += `<div class="msg ai" style="color:var(--danger);">Error de conexión o clave inválida.</div>`; }
             chatBox.scrollTop = chatBox.scrollHeight;
         }
         function guardarConfig() { localStorage.setItem('nexus_groqkey', document.getElementById('apiKey').value); document.getElementById('configStatus').style.display = 'block'; setTimeout(() => document.getElementById('configStatus').style.display = 'none', 3000); }
@@ -412,21 +524,15 @@
             document.getElementById('iconTone').innerText = isPlayingTone ? "⏹️" : "🎛️";
         }
         function toggleRefugio() { const overlay = document.getElementById('refugio-overlay'); overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex'; }
-        function triturarPensamiento() { document.getElementById('obsInput').value = ''; if(navigator.vibrate) navigator.vibrate(100); }
-
-        // --- 10 FUNCIONES NUEVAS JS ---
-
-        // Oráculo
+        
+        // 10 FUNCIONES HERRAMIENTAS
         function girarOraculo() {
             const input = document.getElementById('oraculoInput').value; if(!input.trim()) return;
-            const opciones = input.split(',').map(o => o.trim()).filter(o => o);
-            if(opciones.length === 0) return;
-            const res = document.getElementById('oraculoResult');
-            res.innerText = "Pensando..."; res.style.display = "block";
+            const opciones = input.split(',').map(o => o.trim()).filter(o => o); if(opciones.length === 0) return;
+            const res = document.getElementById('oraculoResult'); res.innerText = "Pensando..."; res.style.display = "block";
             setTimeout(() => { res.innerText = "👉 " + opciones[Math.floor(Math.random() * opciones.length)]; }, 500);
         }
 
-        // Transición
         let transInterval;
         function startTransicion() {
             clearInterval(transInterval); let time = 120; const display = document.getElementById('transicionTime');
@@ -439,75 +545,44 @@
         }
         function stopTransicion() { clearInterval(transInterval); document.getElementById('transicionTime').innerText = "02:00"; document.getElementById('transicionTime').style.color = "var(--accent)"; }
 
-        // Rompe-Bucles
         let bucleInterval;
         function triggerRompeBucles() {
             const btn = document.getElementById('stopBucleBtn'); btn.style.display = "inline-block";
-            bucleInterval = setInterval(() => {
-                document.body.style.backgroundColor = document.body.style.backgroundColor === 'white' ? 'var(--bg-dark)' : 'white';
-                if(navigator.vibrate) navigator.vibrate(300);
-            }, 500);
+            bucleInterval = setInterval(() => { document.body.style.backgroundColor = document.body.style.backgroundColor === 'white' ? 'var(--bg-dark)' : 'white'; if(navigator.vibrate) navigator.vibrate(300); }, 500);
         }
-        function stopRompeBucles() {
-            clearInterval(bucleInterval); document.body.style.backgroundColor = 'var(--bg-dark)';
-            document.getElementById('stopBucleBtn').style.display = "none";
-        }
+        function stopRompeBucles() { clearInterval(bucleInterval); document.body.style.backgroundColor = 'var(--bg-dark)'; document.getElementById('stopBucleBtn').style.display = "none"; }
 
-        // Dopamina
         function obtenerDopamina(nivel) {
-            const dict = {
-                'baja': ["Cierra los ojos 1 minuto.", "Bebe un vaso de agua fría.", "Frota tus manos y ponlas sobre tus ojos."],
-                'media': ["Estira los brazos al techo.", "Lávate la cara con agua fresca.", "Pon 1 canción que te guste."],
-                'alta': ["Haz 10 sentadillas rápidas.", "Camina por la casa 2 minutos.", "Baila una canción intensamente."]
-            };
-            const opciones = dict[nivel];
-            const res = document.getElementById('dopaminaResult');
-            res.innerText = opciones[Math.floor(Math.random() * opciones.length)];
-            res.style.display = "block";
+            const dict = { 'baja': ["Cierra los ojos 1 minuto.", "Bebe un vaso de agua.", "Masajea tu sien 30s."], 'media': ["Lávate la cara con agua fría.", "Estira los brazos.", "Mira por la ventana a lo lejos."], 'alta': ["Haz 10 sentadillas.", "Camina por el pasillo.", "Baila 1 canción."] };
+            const res = document.getElementById('dopaminaResult'); res.innerText = dict[nivel][Math.floor(Math.random() * dict[nivel].length)]; res.style.display = "block";
         }
 
-        // Termómetro
         function evaluarSensorial() {
-            const l = parseInt(document.getElementById('sensoryLight').value);
-            const s = parseInt(document.getElementById('sensorySound').value);
-            const t = parseInt(document.getElementById('sensoryTouch').value);
-            const media = (l+s+t)/3;
-            const res = document.getElementById('sensoryResult');
-            res.style.display = "block";
-            if(media < 30) { res.innerText = "Estado regulado. Todo bien."; res.style.backgroundColor = "var(--panel-bg)"; res.style.color = "var(--text-main)"; }
-            else if(media < 70) { res.innerText = "Sobrecarga media. Ponte cascos o baja la luz."; res.style.backgroundColor = "var(--warning)"; res.style.color = "black"; }
-            else { res.innerText = "⚠️ PELIGRO SENSORIAL. Pulsa 'Apagón Sensorial' o sal de la habitación."; res.style.backgroundColor = "var(--danger)"; res.style.color = "white"; }
+            const media = (parseInt(document.getElementById('sensoryLight').value) + parseInt(document.getElementById('sensorySound').value) + parseInt(document.getElementById('sensoryTouch').value)) / 3;
+            const res = document.getElementById('sensoryResult'); res.style.display = "block";
+            if(media < 30) { res.innerText = "Regulado."; res.style.backgroundColor = "var(--panel-bg)"; res.style.color = "var(--text-main)"; }
+            else if(media < 70) { res.innerText = "Sobrecarga. Aisla sentidos."; res.style.backgroundColor = "var(--warning)"; res.style.color = "black"; }
+            else { res.innerText = "⚠️ PELIGRO. Apagón sensorial recomendado."; res.style.backgroundColor = "var(--danger)"; res.style.color = "white"; }
         }
 
-        // Escudos Sociales
-        function copiar(btn, text) {
-            navigator.clipboard.writeText(text); const o = btn.innerText;
-            btn.innerText = "¡Copiado!"; btn.style.backgroundColor = "var(--success)"; btn.style.color = "black";
-            setTimeout(() => { btn.innerText = o; btn.style.backgroundColor = "var(--panel-bg)"; btn.style.color = "var(--text-main)"; }, 2000);
-        }
+        function copiar(btn, text) { navigator.clipboard.writeText(text); const o = btn.innerText; btn.innerText = "¡Copiado!"; btn.style.backgroundColor = "var(--success)"; btn.style.color = "black"; setTimeout(() => { btn.innerText = o; btn.style.backgroundColor = "var(--panel-bg)"; btn.style.color = "var(--text-main)"; }, 2000); }
 
-        // Parálisis
         function cortarParalisis() {
-            const input = document.getElementById('paraInput').value; if(!input.trim()) return;
+            const i = document.getElementById('paraInput').value; if(!i.trim()) return;
             const res = document.getElementById('paraResult'); res.style.display = "block";
-            res.innerHTML = `<h4>Único paso permitido:</h4><p>Abre el archivo necesario y no escribas nada. Solo ábrelo. Luego ciérralo si quieres.</p>`;
+            res.innerHTML = `<h4>Único paso a dar:</h4><p>Abre el archivo/herramienta y no escribas NADA. Solo ábrelo y respira.</p>`;
         }
 
-        // Grounding
-        const groundingSteps = [
-            "Busca 5 cosas que puedas VER 👀",
-            "Busca 4 cosas que puedas TOCAR ✋",
-            "Busca 3 cosas que puedas OÍR 👂",
-            "Busca 2 cosas que puedas OLER 👃",
-            "Busca 1 cosa que puedas SABOREAR 👅 (o traga saliva)",
-            "✅ Terminado. Respira profundo."
-        ];
+        const groundingSteps = ["Busca 5 cosas que VER 👀", "Busca 4 cosas que TOCAR ✋", "Busca 3 cosas que OÍR 👂", "Busca 2 cosas que OLER 👃", "Busca 1 cosa que SABOREAR 👅", "✅ Terminado. Respira."];
         let groundIndex = 0;
-        function nextGrounding() {
-            groundIndex++; if(groundIndex >= groundingSteps.length) groundIndex = groundingSteps.length - 1;
-            document.getElementById('groundingText').innerText = groundingSteps[groundIndex];
-        }
+        function nextGrounding() { groundIndex++; if(groundIndex >= groundingSteps.length) groundIndex = groundingSteps.length - 1; document.getElementById('groundingText').innerText = groundingSteps[groundIndex]; }
         function resetGrounding() { groundIndex = 0; document.getElementById('groundingText').innerText = groundingSteps[0]; }
+
+        function triturarPensamiento() {
+            const input = document.getElementById('obsInput'); if(!input.value.trim()) return;
+            input.style.animation = "pulse 1s"; if(navigator.vibrate) navigator.vibrate(200);
+            setTimeout(() => { input.value = ''; input.style.animation = ""; }, 1000);
+        }
 
         // INIT
         window.onload = () => {
