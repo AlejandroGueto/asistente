@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Asistente Cognitivo</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --panel-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #818cf8;
+            --accent-hover: #6366f1;
+            --border: #334155;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background-color: rgba(129, 140, 248, 0.1);
+            color: var(--text-main);
+            border-left-color: var(--accent);
+        }
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .view {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .view.active { display: block; }
+        
+        h3 { border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 0; }
+        
+        /* Elements */
+        textarea, input[type="text"], input[type="password"] {
+            width: 100%;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        textarea { height: 120px; resize: vertical; }
+        
+        button {
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: var(--accent-hover); }
+        
+        /* Chat Box */
+        .chat-container {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .msg { padding: 10px 15px; border-radius: 8px; max-width: 80%; line-height: 1.4; }
+        .msg.user { background-color: var(--accent); align-self: flex-end; }
+        .msg.ai { background-color: var(--panel-bg); border: 1px solid var(--border); align-self: flex-start; }
+        
+        /* Task List */
+        .task-list { list-style: none; padding: 0; }
+        .task-list li {
+            background-color: var(--panel-bg);
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+        }
+        .delete-btn { background-color: #ef4444; padding: 5px 10px; font-size: 0.8rem; }
+        .delete-btn:hover { background-color: #dc2626; }
+        
+        .settings-box { background-color: var(--panel-bg); padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px dashed var(--border);}
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>NEXUS</h2>
+        <button class="nav-btn active" onclick="switchView('volcado')">🧠 Volcado Nocturno</button>
+        <button class="nav-btn" onclick="switchView('desglose')">⚡ Anti-Parálisis</button>
+        <button class="nav-btn" onclick="switchView('ia')">🤖 Asistente IA</button>
+        <button class="nav-btn" onclick="switchView('config')">⚙️ Configuración</button>
+    </div>
+
+    <div class="main-content">
+        
+        <!-- Vista: Volcado -->
+        <div id="volcado" class="view active">
+            <h3>Volcado Nocturno (Guardado Automático)</h3>
+            <p class="text-muted">Escribe aquí todo lo que tu mente no quiere olvidar. Al vaciarlo, le das permiso a tu cerebro para dormir.</p>
+            <textarea id="ramInput" placeholder="Ej: Configurar la consola de comisariado, generar bloque de preguntas en formato GIFT, actualizar el repositorio de Morfosys..."></textarea>
+            <button onclick="guardarRam()">Guardar y Cerrar Jornada</button>
+            <ul id="ramList" class="task-list" style="margin-top: 20px;"></ul>
+        </div>
+
+        <!-- Vista: Desglose -->
+        <div id="desglose" class="view">
+            <h3>Filtro Anti-Parálisis</h3>
+            <p class="text-muted">Introduce un proyecto abrumador y te daré el primer paso minúsculo para arrancar sin ansiedad.</p>
+            <input type="text" id="taskInput" placeholder="Ej: Preparar material para 4º de la ESO resistente a IA...">
+            <button onclick="desglosarTarea()">Extraer Micro-paso</button>
+            <div id="taskOutput" style="margin-top: 20px; padding: 20px; background: var(--panel-bg); border-radius: 8px; display: none;"></div>
+        </div>
+
+        <!-- Vista: Asistente IA -->
+        <div id="ia" class="view">
+            <h3>Chat de Asistencia Cognitiva</h3>
+            <div class="chat-container" id="chatBox">
+                <div class="msg ai">Hola. Soy tu entorno seguro. ¿Qué necesitas organizar, estructurar o vaciar de tu mente hoy?</div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="iaInput" placeholder="Escribe tu mensaje aquí..." onkeypress="if(event.key === 'Enter') enviarIA()">
+                <button onclick="enviarIA()">Enviar</button>
+            </div>
+        </div>
+
+        <!-- Vista: Configuración -->
+        <div id="config" class="view">
+            <h3>Configuración del Sistema</h3>
+            <div class="settings-box">
+                <p>Para que el asistente IA funcione, necesitas una clave API gratuita de Google Gemini (Google AI Studio).</p>
+                <input type="password" id="apiKey" placeholder="Pega tu API Key de Gemini aquí (Ej: AIzaSy...)">
+                <button onclick="guardarConfig()">Guardar Configuración</button>
+                <p id="configStatus" style="color: #4ade80; display: none; margin-top: 10px;">✅ Clave guardada de forma segura en tu navegador.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Cambiar entre pestañas
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Sistema de Volcado (Local Storage)
+        function cargarRam() {
+            const tareas = JSON.parse(localStorage.getItem('nexus_ram')) || [];
+            const lista = document.getElementById('ramList');
+            lista.innerHTML = '';
+            tareas.forEach((t, i) => {
+                lista.innerHTML += `<li><span>${t}</span> <button class="delete-btn" onclick="borrarRam(${i})">X</button></li>`;
+            });
+        }
+
+        function guardarRam() {
+            const input = document.getElementById('ramInput');
+            if(!input.value.trim()) return;
+            const tareas = JSON.parse(localStorage.getItem('nexus_ram')) || [];
+            tareas.push(input.value.trim());
+            localStorage.setItem('nexus_ram', JSON.stringify(tareas));
+            input.value = '';
+            cargarRam();
+        }
+
+        function borrarRam(index) {
+            const tareas = JSON.parse(localStorage.getItem('nexus_ram')) || [];
+            tareas.splice(index, 1);
+            localStorage.setItem('nexus_ram', JSON.stringify(tareas));
+            cargarRam();
+        }
+
+        // Filtro Anti-Parálisis
+        function desglosarTarea() {
+            const input = document.getElementById('taskInput').value;
+            const output = document.getElementById('taskOutput');
+            if(!input.trim()) return;
+            output.style.display = 'block';
+            output.innerHTML = `
+                <h4 style="color: var(--accent); margin-top: 0;">Tu único enfoque ahora mismo:</h4>
+                <p>Abre el documento o programa necesario. Solo escribe el título o la primera línea. Nada más.</p>
+                <p style="font-size: 0.9em; color: var(--text-muted);">El resto del proyecto no existe durante los próximos 5 minutos.</p>
+            `;
+        }
+
+        // Configuración API
+        function guardarConfig() {
+            const key = document.getElementById('apiKey').value;
+            localStorage.setItem('nexus_apikey', key);
+            document.getElementById('configStatus').style.display = 'block';
+            setTimeout(() => document.getElementById('configStatus').style.display = 'none', 3000);
+        }
+
+        // Asistente IA (Llamada a Gemini API)
+        async function enviarIA() {
+            const input = document.getElementById('iaInput');
+            const texto = input.value.trim();
+            if(!texto) return;
+
+            const apiKey = localStorage.getItem('nexus_apikey');
+            const chatBox = document.getElementById('chatBox');
+
+            // Añadir mensaje de usuario
+            chatBox.innerHTML += `<div class="msg user">${texto}</div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if(!apiKey) {
+                chatBox.innerHTML += `<div class="msg ai" style="color: #ef4444;">Error: Necesitas configurar tu API Key de Gemini en la pestaña de Configuración.</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+                return;
+            }
+
+            // Llamada a la API
+            try {
+                chatBox.innerHTML += `<div class="msg ai" id="loadingMsg">Estructurando información...</div>`;
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ 
+                            text: "Eres un asistente cognitivo diseñado para una persona con TDAH y Asperger. Tu objetivo es reducir la carga mental, estructurar ideas caóticas de forma clara y concisa, y ayudarle a bajar el ritmo de sus pensamientos. Responde a lo siguiente: " + texto 
+                        }] }]
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById('loadingMsg').remove();
+
+                if(data.candidates && data.candidates[0].content.parts[0].text) {
+                    const respuesta = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+                    chatBox.innerHTML += `<div class="msg ai">${respuesta}</div>`;
+                } else {
+                    chatBox.innerHTML += `<div class="msg ai">Hubo un problema al procesar la respuesta.</div>`;
+                }
+            } catch (error) {
+                document.getElementById('loadingMsg').remove();
+                chatBox.innerHTML += `<div class="msg ai" style="color: #ef4444;">Error de conexión. Revisa tu API Key o conexión a internet.</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Iniciar
+        window.onload = () => {
+            cargarRam();
+            const savedKey = localStorage.getItem('nexus_apikey');
+            if(savedKey) document.getElementById('apiKey').value = savedKey;
+        };
+    </script>
+</body>
+  </html>
+  
