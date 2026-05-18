@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | El Búho de Minerva</title>
+    <title>Nexus | El Búho de Minerva V2</title>
     <style>
         :root {
             --bg-dark: #000000; 
@@ -16,6 +16,8 @@
             --danger: #FF453A; 
             --success: #32D74B; 
             --warning: #FF9F0A; 
+            --medical: #0A84FF;
+            --family: #FF375F;
             --radius: 20px;
         }
         
@@ -41,6 +43,7 @@
         }
         textarea:focus, input:focus, select:focus { outline: none; background-color: var(--panel-hover); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow), inset 0 2px 4px rgba(0,0,0,0.2); }
         textarea { height: 120px; resize: none; }
+        select { cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 18px top 50%; background-size: 12px auto; }
         
         button {
             background: linear-gradient(135deg, var(--accent) 0%, #7B78FF 100%); color: #fff; border: none; padding: 16px 20px; border-radius: 16px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); width: 100%; margin-bottom: 10px; box-shadow: 0 4px 15px var(--accent-glow);
@@ -52,7 +55,7 @@
         button.danger { background: linear-gradient(135deg, var(--danger) 0%, #FF6B63 100%); box-shadow: 0 4px 15px rgba(255, 69, 58, 0.3); }
         
         .input-group { display: flex; gap: 10px; align-items: stretch; margin-bottom: 15px; }
-        .input-group textarea, .input-group input { margin-bottom: 0; flex: 1; }
+        .input-group textarea, .input-group input, .input-group select { margin-bottom: 0; flex: 1; }
         .icon-btn { width: 60px; height: auto; background-color: var(--panel-bg); color: var(--accent); border-radius: 16px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin-bottom: 0; transition: all 0.3s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .icon-btn:hover { background-color: var(--panel-hover); transform: translateY(-2px); color: #7B78FF; }
         .icon-btn.listening { background: var(--danger); color: white; animation: micPulse 1s infinite alternate; border-color: transparent; }
@@ -80,7 +83,6 @@
         .player-container { background: var(--panel-bg); border-radius: var(--radius); padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .embedIframe { border-radius: 12px; margin-top: 10px; display: none; width: 100%; height: 200px; border: none; }
 
-        /* Barra de navegación ultrarrápida y moderna */
         .bottom-bar {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; 
             background-color: rgba(28, 28, 30, 0.75); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
@@ -107,6 +109,8 @@
         .agenda-tags::-webkit-scrollbar { display: none; }
         .agenda-tags button { width: auto; padding: 10px 18px; border-radius: 20px; margin: 0; background: var(--panel-bg); color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05); box-shadow: none;}
         .agenda-tags button.active { background: linear-gradient(135deg, var(--accent) 0%, #7B78FF 100%); color: white; border-color: transparent; box-shadow: 0 4px 10px var(--accent-glow);}
+        .agenda-tags button[data-color="medical"].active { background: linear-gradient(135deg, var(--medical) 0%, #5AC8FA 100%); box-shadow: 0 4px 10px rgba(10, 132, 255, 0.4); }
+        .agenda-tags button[data-color="family"].active { background: linear-gradient(135deg, var(--family) 0%, #FF6482 100%); box-shadow: 0 4px 10px rgba(255, 55, 95, 0.4); }
 
         .progress-bar-container { width: 100%; background-color: rgba(255,255,255,0.05); border-radius: 10px; height: 10px; margin-bottom: 25px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);}
         .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--success) 0%, #50E3C2 100%); width: 0%; transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 0 10px rgba(50, 215, 75, 0.5);}
@@ -116,10 +120,9 @@
         .quick-prompts button { width: auto; font-size: 0.85rem; padding: 10px 16px; margin: 0; flex-shrink: 0; background: var(--panel-hover); border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); box-shadow: none; font-weight: 500;}
         .quick-prompts button:hover { background: var(--accent); color: white; }
 
-        /* --- EL BÚHO DE MINERVA (Draggable & Dinámico) --- */
+        /* --- EL BÚHO DE MINERVA --- */
         #floating-mentor {
             position: fixed; z-index: 1002;
-            /* Inicia en una posición por defecto, pero se sobrescribirá si se mueve */
             top: calc(100% - 150px); left: calc(100% - 75px);
             width: 60px; height: 60px; background: rgba(28, 28, 30, 0.8);
             border: 2px solid var(--warning); border-radius: 50%;
@@ -129,10 +132,7 @@
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; 
             user-select: none; -webkit-user-select: none; touch-action: none;
         }
-        /* Animación de "respiración estoica" 4s (solo se aplica si no se está arrastrando) */
-        #floating-mentor.breathing {
-            animation: breatheOwl 4s ease-in-out infinite;
-        }
+        #floating-mentor.breathing { animation: breatheOwl 4s ease-in-out infinite; }
         #floating-mentor:active { cursor: grabbing; transform: scale(0.95); }
         @keyframes breatheOwl { 0% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.02); } 100% { transform: translateY(0) scale(1); } }
         
@@ -164,7 +164,7 @@
         <button onclick="cerrarZen()" class="secondary" style="max-width: 300px; border: none; margin-top: 15px; background: transparent; color: var(--text-muted); box-shadow: none;">Salir del Modo Foco</button>
     </div>
 
-    <!-- EL BÚHO DE MINERVA (Draggable) -->
+    <!-- EL BÚHO FLOTANTE -->
     <div id="floating-mentor" class="breathing">🦉</div>
     <div id="mentor-bubble">
         <div class="mentor-text" id="mentorMessage"><strong>Salve, magister.</strong> La mente ansiosa sufre antes de que sea necesario. ¿Cómo puedo aligerar tu carga?</div>
@@ -178,43 +178,41 @@
 
     <div class="main-content">
         
-        <!-- GUÍA RÁPIDA -->
         <details id="guiaInstrucciones" style="margin-bottom: 25px; background: var(--panel-bg); padding: 18px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; backdrop-filter: blur(10px);">
             <summary style="font-weight: 700; color: var(--accent); font-size: 1.15rem; list-style: none; display: flex; align-items: center; gap: 10px;">📖 Manual de Nexus (Toca aquí)</summary>
             <ul style="margin-top: 18px; color: var(--text-main); font-size: 0.95em; padding-left: 20px; line-height: 1.6;">
-                <li style="margin-bottom: 8px;"><strong>🧠 Volcado:</strong> Escupe aquí todo lo que tu mente no quiere olvidar.</li>
-                <li style="margin-bottom: 8px;"><strong>📅 Agenda:</strong> Usa "Fricción Cero" si te abruma ver la lista. Usa ⏭️ para posponer.</li>
-                <li style="margin-bottom: 8px;"><strong>🤖 IA y 🎧 Audio:</strong> Asistente con botones rápidos y reproductor limpio.</li>
-                <li style="margin-bottom: 8px;"><strong>⚙️ Herramientas:</strong> Botiquín para bloqueos, sobreestimulación y plantillas de correo.</li>
-                <li><strong>🦉 El Búho Flotante:</strong> Arrástralo donde quieras. Tócalo para usar atajos estoicos.</li>
+                <li style="margin-bottom: 8px;"><strong>🧠 Volcado:</strong> Escupe aquí ideas o planificación suelta (rutas, sintaxis...).</li>
+                <li style="margin-bottom: 8px;"><strong>📅 Centro de Mando:</strong> Añade citas con <b>recurrencia automática</b> (semanal, quincenal, etc.). Usa "Fricción Cero" si te abruma ver la lista.</li>
+                <li style="margin-bottom: 8px;"><strong>🤖 Búho IA:</strong> Usa los botones rápidos para generar tareas anti-IA o adaptar textos clásicos.</li>
+                <li style="margin-bottom: 8px;"><strong>⚙️ Herramientas:</strong> Botiquín para bloqueos, sobreestimulación y plantillas de correo para familias.</li>
             </ul>
         </details>
 
-        <!-- 1. Volcado -->
+        <!-- 1. VOLCADO -->
         <div id="volcado" class="view active">
             <h3>🧠 Volcado de Memoria</h3>
-            <p class="desc">Descarga aquí las ideas sueltas o recordatorios. Tu cerebro puede dejar de gastar energía intentando retenerlos.</p>
+            <p class="desc">Descarga aquí las ideas sueltas. Tu cerebro puede dejar de gastar energía intentando retenerlas.</p>
             <div class="input-group">
-                <textarea id="ramInput" placeholder="Ej: Añadir declinaciones al escape room..."></textarea>
+                <textarea id="ramInput" placeholder="Ej: Añadir declinaciones al escape room, revisar sintaxis en Morfosys, planificar ruta por el Pinar del Abalario..."></textarea>
                 <button class="icon-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('ram')">Guardar Pensamiento en el Templo</button>
             <ul id="ramList" class="task-list" style="margin-top: 25px;"></ul>
         </div>
 
-        <!-- 2. Asistente IA (Búho de Minerva) -->
+        <!-- 2. IA (BÚHO DE MINERVA) -->
         <div id="ia" class="view">
             <h3>🦉 El Búho de Minerva (IA)</h3>
-            <p class="desc">Tu consejero analítico. Usa los botones rápidos si no tienes energía para teclear instrucciones.</p>
+            <p class="desc">Tu consejero analítico y filológico. Usa los botones rápidos para agilizar el trabajo docente.</p>
             
             <div class="quick-prompts">
-                <button onclick="usarPromptRapido('Desglosa este proyecto en pasos ridículamente pequeños y fáciles de hacer: ')">⚡ Desglosar</button>
-                <button onclick="usarPromptRapido('Resume este texto en 3 viñetas clave: ')">📝 Resumir</button>
-                <button onclick="usarPromptRapido('Reescribe este texto para que suene estoico, profesional y asertivo: ')">👔 Profesional</button>
+                <button onclick="usarPromptRapido('Modifica esta tarea/ejercicio para que requiera lógica humana, pensamiento crítico y no pueda ser resuelta simplemente copiando y pegando en una IA: ')">🛡️ Blindar Tarea (Anti-IA)</button>
+                <button onclick="usarPromptRapido('Adapta este texto clásico (latín/griego) para que el nivel sea adecuado para alumnos de 1º de Bachillerato, manteniendo la esencia pero simplificando la sintaxis compleja: ')">🏛️ Adaptar Texto Clásico</button>
+                <button onclick="usarPromptRapido('Desglosa este proyecto en pasos ridículamente pequeños y fáciles de hacer para Moodle/Genially: ')">⚡ Desglosar Misión</button>
             </div>
 
             <div class="chat-container" id="chatBox">
-                <div class="msg ai">Salve, magister. Soy tu consejero. Entorno de baja fricción activo. ¿Qué caos estructural vamos a ordenar hoy?</div>
+                <div class="msg ai">Salve, magister. Soy tu consejero. Entorno de baja fricción activo. ¿Qué estructura vamos a ordenar o qué texto vamos a analizar hoy?</div>
             </div>
             
             <div class="input-group">
@@ -223,10 +221,10 @@
             </div>
         </div>
 
-        <!-- 3. Integración Audio -->
+        <!-- 3. AUDIO -->
         <div id="audio" class="view">
             <h3>🎧 Biblioteca Acústica</h3>
-            <p class="desc">Reproduce audiolibros o música. Tus enlaces se guardarán en el historial abajo.</p>
+            <p class="desc">Reproduce audiolibros, podcasts de lingüística histórica o música de concentración.</p>
             
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <button id="btnTabIvoox" onclick="switchAudioTab('ivoox')" style="margin:0; box-shadow: none;">iVoox</button>
@@ -267,25 +265,37 @@
             <ul id="audiobooksList" class="task-list" style="margin-top: 20px;"></ul>
         </div>
 
-        <!-- 4. SÚPER AGENDA -->
+        <!-- 4. SÚPER AGENDA Y CENTRO DE MANDO -->
         <div id="agenda" class="view">
             <h3>📅 Centro de Mando</h3>
-            <p class="desc">Mira tu progreso diario y usa el modo "Fricción Cero" si te abruma ver la lista completa.</p>
+            <p class="desc">Gestiona tus clases, proyectos y citas recurrentes.</p>
             
             <div class="agenda-tags" id="tagsContainer">
                 <button class="tag-btn active" onclick="selectTag(this, '🏫 Clases')">🏫 Clases</button>
                 <button class="tag-btn" onclick="selectTag(this, '💻 Proyectos')">💻 Proyectos</button>
+                <button class="tag-btn" data-color="medical" onclick="selectTag(this, '🩺 Citas Médicas')">🩺 Citas Médicas</button>
+                <button class="tag-btn" data-color="family" onclick="selectTag(this, '👨‍👩‍👧‍👦 Familiar')">👨‍👩‍👧‍👦 Familiar</button>
                 <button class="tag-btn" onclick="selectTag(this, '🧘 Personal')">🧘 Personal</button>
                 <button class="tag-btn" onclick="selectTag(this, '⚠️ Urgente')" style="color: var(--danger); font-weight: bold;">⚠️ Urgente</button>
             </div>
             <input type="hidden" id="agendaTag" value="🏫 Clases">
 
-            <div style="display: flex; gap: 12px;">
-                <input type="date" id="agendaDate">
-                <input type="time" id="agendaTime">
+            <div style="display: flex; gap: 12px; margin-bottom: 15px;">
+                <input type="date" id="agendaDate" style="margin-bottom: 0;">
+                <input type="time" id="agendaTime" style="margin-bottom: 0;">
             </div>
+            
+            <!-- Selector de recurrencia -->
+            <select id="agendaRecurrencia" style="margin-bottom: 15px; font-weight: bold; color: var(--accent);">
+                <option value="none">🔄 Sin repetición (Evento único)</option>
+                <option value="daily">🔄 Repetir Diariamente</option>
+                <option value="weekly">🔄 Repetir Semanalmente (Ej: Clases de inglés)</option>
+                <option value="biweekly">🔄 Repetir Cada 2 Semanas (Ej: Psicóloga Aso.)</option>
+                <option value="monthly">🔄 Repetir Mensualmente</option>
+            </select>
+
             <div class="input-group">
-                <input type="text" id="agendaText" placeholder="Ej: Preparar material de LOMLOE...">
+                <input type="text" id="agendaText" placeholder="Ej: Preparar SDA Expediente Roma, Cita psicóloga...">
                 <button class="icon-btn" onclick="dictarVoz('agendaText', this)">🎙️</button>
             </div>
             <button onclick="guardarAgenda()">Añadir al Pergamino</button>
@@ -303,7 +313,7 @@
             <ul id="agendaHoyList" class="task-list"></ul>
 
             <h4 style="color: var(--text-muted); margin-top: 35px;">🔭 Próximamente</h4>
-            <ul id="agendaFuturoList" class="task-list" style="opacity: 0.5;"></ul>
+            <ul id="agendaFuturoList" class="task-list" style="opacity: 0.6;"></ul>
         </div>
 
         <!-- 5. HUB CENTRAL DE HERRAMIENTAS -->
@@ -332,7 +342,7 @@
 
                 <div class="menu-header">Cuerpo y Energía</div>
                 <div class="menu-item" onclick="switchView('bateriaSocial')"><span class="icon">🔋</span><span>Medidor de Batería Social</span></div>
-                <div class="menu-item" onclick="switchView('escudos')"><span class="icon">🛡️</span><span>Mis Escudos Sociales</span></div>
+                <div class="menu-item" onclick="switchView('escudos')"><span class="icon">🛡️</span><span>Mis Escudos Profesionales</span></div>
                 <div class="menu-item" onclick="switchView('intero')"><span class="icon">🪫</span><span>Escáner Corporal (Interocepción)</span></div>
                 <div class="menu-item" onclick="switchView('dopamina')"><span class="icon">💊</span><span>Menú de Dopamina Saludable</span></div>
                 
@@ -342,15 +352,14 @@
         </div>
 
         <!-- SUB-VISTAS (Herramientas) -->
-
         <div id="correo" class="view">
             <h3>✉️ Email Seguro y Plantillas</h3>
-            <p class="desc">Selecciona una plantilla o escribe. Se enviará directamente sin pasar por la bandeja de entrada, evitando distracciones.</p>
+            <p class="desc">Se enviará directamente sin pasar por la bandeja de entrada para evitar distracciones.</p>
             
             <select id="emailTemplate" onchange="cargarPlantillaCorreo()">
                 <option value="">-- Selecciona una plantilla (Opcional) --</option>
                 <option value="familias">Información para Familias / Tutoría</option>
-                <option value="material">Solicitud/Envío de Materiales</option>
+                <option value="material">Envío de Materiales (Moodle/Genially)</option>
                 <option value="limite">Respuesta posponiendo revisión (Protección)</option>
                 <option value="vacio">Correo en Blanco</option>
             </select>
@@ -368,23 +377,21 @@
 
         <div id="bateriaSocial" class="view">
             <h3>🔋 Batería Social</h3>
-            <p class="desc">Ajusta tu nivel de energía social actual. El sistema te avisará si intentas agendar algo estando en reserva.</p>
+            <p class="desc">Ajusta tu nivel de energía actual. El sistema te avisará si intentas agendar proyectos complejos estando en reserva.</p>
             <input type="range" id="socialBatterySlider" min="0" max="100" value="50" oninput="updateBateriaSocial()" style="accent-color: var(--accent);">
             <div id="socialBatteryStatus" style="text-align: center; font-size: 1.8rem; font-weight: bold; margin: 30px 0; color: var(--warning); text-shadow: 0 2px 10px rgba(255, 159, 10, 0.3);">Medio 😐</div>
             <button onclick="guardarBateriaSocial()">Actualizar Batería</button>
         </div>
 
         <div id="escudos" class="view">
-            <h3>🛡️ Mis Escudos Sociales</h3>
-            <p class="desc">Toca para copiar. Añade tus propias excusas/límites estoicos para tenerlos siempre a mano.</p>
+            <h3>🛡️ Mis Escudos Profesionales</h3>
+            <p class="desc">Toca para copiar. Límites estoicos predefinidos para correos de familias, alumnado o compañeros.</p>
             
-            <div id="escudosListContainer" style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- Se llenará con JS -->
-            </div>
+            <div id="escudosListContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
 
             <h4 style="margin-top: 35px;">Añadir nuevo escudo:</h4>
             <div class="input-group">
-                <input type="text" id="nuevoEscudoInput" placeholder="Ej: No atiendo correos el fin de semana...">
+                <input type="text" id="nuevoEscudoInput" placeholder="Ej: No atiendo tutorías fuera del horario...">
                 <button class="icon-btn" onclick="dictarVoz('nuevoEscudoInput', this)">🎙️</button>
             </div>
             <button onclick="guardarEscudoPersonal()">Forjar Escudo</button>
@@ -392,7 +399,6 @@
 
         <div id="alarma" class="view">
             <h3>⏰ Alarma Cognitiva</h3>
-            <p class="desc">Alarma que usa el tono puro de 432Hz y alertas visuales.</p>
             <input type="time" id="alarmTimeInput">
             <button onclick="setAlarma()">Activar Alarma</button>
             <button class="secondary" onclick="cancelAlarma()" style="border: 1px solid var(--danger); color: var(--danger); margin-top: 10px;">Cancelar</button>
@@ -401,7 +407,6 @@
 
         <div id="ermitano" class="view" style="text-align: center;">
             <h3>🔕 Modo Ermitaño</h3>
-            <p class="desc" style="text-align: left;">Protocolo estoico para salir del radar sin culpa.</p>
             <div style="background: var(--panel-bg); padding: 25px; border-radius: var(--radius); border-left: 5px solid var(--accent); margin-bottom: 25px; text-align: left; backdrop-filter: blur(10px);">
                 <ol style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 20px; font-size: 0.95em;">
                     <li>Desliza el dedo desde arriba de tu pantalla.</li>
@@ -409,14 +414,13 @@
                     <li>El mundo no caerá como el Imperio Romano en 2 horas.</li>
                 </ol>
             </div>
-            <button onclick="copiarTextoRapido('Salve. He activado mi modo de trabajo profundo (Sin notificaciones) para avanzar. Responderé cuando vuelva a conectarme. Un saludo.', this)" class="secondary" style="border: 1px dashed var(--text-muted);">Copiar respuesta de ausencia</button>
+            <button onclick="copiarTextoRapido('Salve. He activado mi modo de trabajo profundo para avanzar con las evaluaciones. Responderé cuando vuelva a conectarme. Un saludo.', this)" class="secondary" style="border: 1px dashed var(--text-muted);">Copiar respuesta de ausencia</button>
         </div>
 
         <div id="migas" class="view">
             <h3>🍞 Migas de Pan</h3>
-            <p class="desc">Para retomar el contexto exacto tras una interrupción.</p>
             <div class="input-group">
-                <input type="text" id="migaInput" placeholder="Estaba buscando el error en el código...">
+                <input type="text" id="migaInput" placeholder="Estaba adaptando el texto de Cicerón para SDA II...">
                 <button class="icon-btn" onclick="dictarVoz('migaInput', this)">🎙️</button>
             </div>
             <button onclick="guardarDato('migas')">Dejar rastro</button>
@@ -425,8 +429,7 @@
 
         <div id="oraculo" class="view">
             <h3>🎲 Oráculo Ejecutivo</h3>
-            <p class="desc">Introduce opciones separadas por comas. Que los dioses decidan.</p>
-            <textarea id="oraculoInput" placeholder="Ej: Revisar correos, empezar sintaxis..."></textarea>
+            <textarea id="oraculoInput" placeholder="Ej: Corregir exámenes de griego, programar repositorio en GitHub..."></textarea>
             <button onclick="girarOraculo()">Consultar a los Dioses</button>
             <div id="oraculoResult" style="margin-top: 25px; padding: 25px; background: var(--panel-bg); border-radius: var(--radius); text-align: center; font-size: 1.3rem; display: none; color: var(--accent); font-weight: bold; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(94, 92, 230, 0.2);"></div>
         </div>
@@ -440,7 +443,6 @@
 
         <div id="rompebucles" class="view" style="text-align: center; padding-top: 40px;">
             <h3>🚨 Rompe-Bucles</h3>
-            <p class="desc">Forzará estímulos visuales intensos para sacarte del letargo o hiperfoco tóxico.</p>
             <button class="danger" style="height: 160px; font-size: 1.6rem; border-radius: 50px; margin-top: 20px; box-shadow: 0 10px 30px rgba(255, 69, 58, 0.5);" onclick="triggerRompeBucles()">SACARME DE AQUÍ</button>
             <button class="secondary" id="stopBucleBtn" style="display: none; margin-top: 30px; border-radius: 30px;" onclick="stopRompeBucles()">Ya estoy fuera</button>
         </div>
@@ -477,7 +479,7 @@
         <div id="paralisis" class="view">
             <h3>🔪 Cortador de Parálisis</h3>
             <div class="input-group">
-                <input type="text" id="paraInput" placeholder="Dicta el proyecto enorme aquí...">
+                <input type="text" id="paraInput" placeholder="Ej: Programar el escape room entero en eXelearning...">
                 <button class="icon-btn" onclick="dictarVoz('paraInput', this)">🎙️</button>
             </div>
             <button onclick="cortarParalisis()">Reducir al absurdo</button>
@@ -505,7 +507,6 @@
 
         <div id="config" class="view">
             <h3>🔑 Configuración API</h3>
-            <p class="desc">Necesaria para activar el Búho de Minerva (Groq IA).</p>
             <input type="password" id="apiKey" placeholder="gsk_...">
             <button onclick="guardarConfig()">Guardar en dispositivo</button>
             <p id="configStatus" style="color: var(--success); display: none; text-align: center; margin-top: 15px; font-weight: bold;">Guardado con éxito.</p>
@@ -526,142 +527,85 @@
         // --- DRAGGABLE OWL (Búho de Minerva) ---
         const owl = document.getElementById('floating-mentor');
         const bubble = document.getElementById('mentor-bubble');
-        let isDragging = false;
-        let wasDragged = false;
-        let dragStartX, dragStartY;
-        let owlStartX, owlStartY;
+        let isDragging = false; let wasDragged = false;
+        let dragStartX, dragStartY, owlStartX, owlStartY;
 
         function startDrag(e) {
-            if (e.type === 'touchstart') {
-                dragStartX = e.touches[0].clientX;
-                dragStartY = e.touches[0].clientY;
-            } else {
-                dragStartX = e.clientX;
-                dragStartY = e.clientY;
-            }
-            owlStartX = owl.offsetLeft;
-            owlStartY = owl.offsetTop;
-            isDragging = true;
-            wasDragged = false;
+            if (e.type === 'touchstart') { dragStartX = e.touches[0].clientX; dragStartY = e.touches[0].clientY; } 
+            else { dragStartX = e.clientX; dragStartY = e.clientY; }
+            owlStartX = owl.offsetLeft; owlStartY = owl.offsetTop;
+            isDragging = true; wasDragged = false;
             
-            // Remove CSS constraints to allow free movement
-            owl.style.bottom = 'auto';
-            owl.style.right = 'auto';
-            owl.style.transition = 'none'; 
-            owl.classList.remove('breathing');
-            
-            // If bubble is open, hide it during drag to avoid visual mess
-            if(bubble.style.display === 'block') {
-                bubble.style.display = 'none';
-            }
+            owl.style.bottom = 'auto'; owl.style.right = 'auto';
+            owl.style.transition = 'none'; owl.classList.remove('breathing');
+            if(bubble.style.display === 'block') bubble.style.display = 'none';
         }
 
         function moveDrag(e) {
-            if (!isDragging) return;
-            e.preventDefault(); // Prevent scrolling while dragging owl
-            
+            if (!isDragging) return; e.preventDefault(); 
             let clientX, clientY;
-            if (e.type === 'touchmove') {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
+            if (e.type === 'touchmove') { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; } 
+            else { clientX = e.clientX; clientY = e.clientY; }
+            let dx = clientX - dragStartX; let dy = clientY - dragStartY;
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) wasDragged = true;
 
-            let dx = clientX - dragStartX;
-            let dy = clientY - dragStartY;
-
-            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-                wasDragged = true;
-            }
-
-            let newLeft = owlStartX + dx;
-            let newTop = owlStartY + dy;
-
-            // Boundaries
+            let newLeft = owlStartX + dx; let newTop = owlStartY + dy;
             newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - owl.offsetWidth));
             newTop = Math.max(0, Math.min(newTop, window.innerHeight - owl.offsetHeight));
 
-            owl.style.left = newLeft + 'px';
-            owl.style.top = newTop + 'px';
+            owl.style.left = newLeft + 'px'; owl.style.top = newTop + 'px';
         }
 
         function endDrag() {
-            if(!isDragging) return;
-            isDragging = false;
+            if(!isDragging) return; isDragging = false;
             owl.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s';
             owl.classList.add('breathing');
         }
 
-        owl.addEventListener('mousedown', startDrag);
-        document.addEventListener('mousemove', moveDrag, {passive: false});
-        document.addEventListener('mouseup', endDrag);
-
-        owl.addEventListener('touchstart', startDrag, {passive: false});
-        document.addEventListener('touchmove', moveDrag, {passive: false});
-        document.addEventListener('touchend', endDrag);
+        owl.addEventListener('mousedown', startDrag); document.addEventListener('mousemove', moveDrag, {passive: false}); document.addEventListener('mouseup', endDrag);
+        owl.addEventListener('touchstart', startDrag, {passive: false}); document.addEventListener('touchmove', moveDrag, {passive: false}); document.addEventListener('touchend', endDrag);
 
         function positionBubble() {
             const owlRect = owl.getBoundingClientRect();
-            // Default position: Top-Left of the owl
             let bTop = owlRect.top - bubble.offsetHeight - 15;
             let bLeft = owlRect.left - bubble.offsetWidth + owl.offsetWidth;
             
-            // Adjust if out of bounds
-            if (bTop < 10) bTop = owlRect.bottom + 15; // Put below if hits top
-            if (bLeft < 10) bLeft = 10; // Pad from left
+            if (bTop < 10) bTop = owlRect.bottom + 15; 
+            if (bLeft < 10) bLeft = 10; 
             if (bLeft + bubble.offsetWidth > window.innerWidth) bLeft = window.innerWidth - bubble.offsetWidth - 10;
             
-            bubble.style.top = bTop + 'px';
-            bubble.style.left = bLeft + 'px';
-            bubble.style.bottom = 'auto';
-            bubble.style.right = 'auto';
+            bubble.style.top = bTop + 'px'; bubble.style.left = bLeft + 'px';
+            bubble.style.bottom = 'auto'; bubble.style.right = 'auto';
         }
 
-        // --- COMPORTAMIENTO DEL MENTOR FLOTANTE (EL BÚHO) ---
         const frasesEstoicas = [
             '<strong>Séneca:</strong> "La mente que está ansiosa por el futuro es miserable. Estructura el ahora."',
             '<strong>Epicteto:</strong> "No nos afecta lo que sucede, sino lo que pensamos de lo que sucede. Respira."',
-            '<strong>Marco Aurelio:</strong> "Tienes poder sobre tu mente, no sobre los eventos externos. Date cuenta de esto, y encontrarás la fuerza."',
-            '<strong>Séneca:</strong> "Ningún viento es favorable para el barco que no sabe a qué puerto se dirige. Decide tu próximo paso."',
-            'Roma no se construyó en un día, ni se estructuró en una noche. Detente si estás agotado.',
+            '<strong>Marco Aurelio:</strong> "Tienes poder sobre tu mente, no sobre los eventos externos. Date cuenta de esto."',
+            'Roma no se construyó en un día, ni se programó en una noche. Detente si estás agotado.',
             '<strong>Ovidio:</strong> "El descanso es el mejor remedio para la mente fatigada."'
         ];
 
-        // Override click to prevent opening if just dragging
         owl.onclick = function(e) {
-            if (wasDragged) {
-                e.preventDefault();
-                return;
-            }
+            if (wasDragged) { e.preventDefault(); return; }
             toggleMentor();
         };
 
         function toggleMentor() {
             const b = document.getElementById('mentor-bubble');
-            if(b.style.display === 'block') {
-                cerrarMentor();
-            } else {
+            if(b.style.display === 'block') cerrarMentor();
+            else {
                 b.style.display = 'block';
                 document.getElementById('mentorMessage').innerHTML = frasesEstoicas[Math.floor(Math.random() * frasesEstoicas.length)];
-                positionBubble(); // Position relative to current owl location
+                positionBubble(); 
                 if(navigator.vibrate) navigator.vibrate(50);
             }
         }
         
-        function cerrarMentor() {
-            document.getElementById('mentor-bubble').style.display = 'none';
-        }
+        function cerrarMentor() { document.getElementById('mentor-bubble').style.display = 'none'; }
+        function mentorAction(action) { cerrarMentor(); switchView(action); }
 
-        function mentorAction(action) {
-            cerrarMentor();
-            if(action === 'oraculo') switchView('oraculo');
-            if(action === 'trituradora') switchView('trituradora');
-            if(action === 'respirar') switchView('grounding');
-        }
-
-        // --- VOZ (Reconocimiento y TTS) ---
+        // --- VOZ ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
         if (SpeechRecognition) { recognition = new SpeechRecognition(); recognition.lang = 'es-ES'; recognition.continuous = false; }
@@ -683,8 +627,7 @@
             if(!window.speechSynthesis) return alert("Text-to-Speech no soportado.");
             window.speechSynthesis.cancel();
             currentUtterance = new SpeechSynthesisUtterance(decodeURIComponent(texto));
-            currentUtterance.lang = 'es-ES';
-            currentUtterance.rate = 1.0;
+            currentUtterance.lang = 'es-ES'; currentUtterance.rate = 1.0;
             window.speechSynthesis.speak(currentUtterance);
         }
         function leerTexto(inputId) {
@@ -698,7 +641,6 @@
             document.getElementById(id).classList.add('active');
             if(btn) { document.querySelectorAll('.bottom-bar .nav-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
             if(id !== 'volcado') { const guia = document.getElementById('guiaInstrucciones'); if(guia) guia.removeAttribute("open"); }
-            
             cerrarMentor();
         }
 
@@ -731,7 +673,7 @@
             datos.splice(index, 1); localStorage.setItem(`nexus_${tipo}`, JSON.stringify(datos)); cargarDatos();
         }
 
-        // --- SÚPER AGENDA Y MODO ZEN ---
+        // --- SÚPER AGENDA RECURRENTE ---
         function setTodayDefault() {
             const tz = (new Date()).getTimezoneOffset() * 60000;
             const local = (new Date(Date.now() - tz)).toISOString().slice(0, 10);
@@ -767,6 +709,10 @@
                 let bgTag = 'var(--panel-hover)'; let colorTag = 'var(--text-muted)';
                 if(item.tag && item.tag.includes('Urgente')) { bgTag = 'var(--danger)'; colorTag = 'white'; }
                 else if(item.tag && item.tag.includes('Proyectos')) { bgTag = 'rgba(94, 92, 230, 0.3)'; colorTag = 'var(--accent)'; }
+                else if(item.tag && item.tag.includes('Médicas')) { bgTag = 'rgba(10, 132, 255, 0.3)'; colorTag = 'var(--medical)'; }
+                else if(item.tag && item.tag.includes('Familiar')) { bgTag = 'rgba(255, 55, 95, 0.3)'; colorTag = 'var(--family)'; }
+                
+                const recIcon = item.isRecurring ? '🔁 ' : '';
                 const tagStr = item.tag ? `<span style="font-size: 0.75em; background: ${bgTag}; color: ${colorTag}; padding: 4px 10px; border-radius: 12px; margin-right: 8px;">${item.tag}</span>` : '';
                 
                 const isCompleted = item.completed ? 'text-decoration: line-through; opacity: 0.4; filter: grayscale(1);' : '';
@@ -782,8 +728,8 @@
                     <div style="display:flex; align-items:flex-start; gap: 12px; width: 100%;">
                         <input type="checkbox" ${checkedAttr} onchange="toggleCompletarAgenda(${index})" style="margin-top: 5px; transform: scale(1.4); accent-color: var(--accent);">
                         <div style="flex: 1;">
-                            <div style="font-size:0.85em; margin-bottom:8px; display:flex; align-items:center;">${tagStr}${timeStr}<span style="color:var(--text-muted)">${d}/${m}/${y}</span></div>
-                            <div style="line-height:1.4;">${item.text}</div>
+                            <div style="font-size:0.85em; margin-bottom:8px; display:flex; align-items:center; flex-wrap:wrap; gap:5px;">${tagStr}${timeStr}<span style="color:var(--text-muted)">${d}/${m}/${y}</span></div>
+                            <div style="line-height:1.4;"><strong>${recIcon}</strong>${item.text}</div>
                         </div>
                         <div style="display:flex; flex-direction:column; gap:8px; justify-content:center; padding-left: 5px; border-left: 1px solid rgba(255,255,255,0.05);">
                             <button class="delete-btn" onclick="posponerAgenda(${index})" style="color: var(--warning); font-size: 1.2rem; padding: 5px;" title="Posponer a mañana">⏭️</button>
@@ -812,17 +758,44 @@
         function guardarAgenda() {
             const tag = document.getElementById('agendaTag').value;
             const bat = parseInt(document.getElementById('socialBatterySlider').value);
+            
             if(bat <= 20 && (tag.includes('Clases') || tag.includes('Proyectos'))) {
-                if(!confirm("⚠️ El Búho advierte: Tienes la batería social muy baja. ¿Seguro que quieres agendar esto?")) return;
+                if(!confirm("⚠️ El Búho advierte: Tienes la batería social muy baja. ¿Seguro que quieres agendar esto hoy?")) return;
             }
 
-            const date = document.getElementById('agendaDate').value, time = document.getElementById('agendaTime').value, text = document.getElementById('agendaText').value;
-            if(!date || !text.trim()) return;
+            const dateStr = document.getElementById('agendaDate').value;
+            const time = document.getElementById('agendaTime').value;
+            const text = document.getElementById('agendaText').value;
+            const recurrencia = document.getElementById('agendaRecurrencia').value;
+            
+            if(!dateStr || !text.trim()) return;
+            
             const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; 
-            agenda.push({ date, time, text: text.trim(), tag, completed: false }); 
+            const repeticiones = recurrencia === 'none' ? 1 : 12; // Genera 12 eventos futuros para la recurrencia
+
+            for(let i=0; i<repeticiones; i++) {
+                let dateObj = new Date(dateStr);
+                if(recurrencia === 'daily') dateObj.setDate(dateObj.getDate() + i);
+                if(recurrencia === 'weekly') dateObj.setDate(dateObj.getDate() + (i * 7));
+                if(recurrencia === 'biweekly') dateObj.setDate(dateObj.getDate() + (i * 14));
+                if(recurrencia === 'monthly') dateObj.setMonth(dateObj.getMonth() + i);
+                
+                const fechaCalculada = dateObj.toISOString().slice(0, 10);
+                agenda.push({ 
+                    date: fechaCalculada, 
+                    time: time, 
+                    text: text.trim(), 
+                    tag: tag, 
+                    completed: false,
+                    isRecurring: recurrencia !== 'none'
+                });
+            }
+
             localStorage.setItem('nexus_agenda', JSON.stringify(agenda));
-            document.getElementById('agendaText').value = ''; cargarAgenda();
+            document.getElementById('agendaText').value = ''; 
+            cargarAgenda();
         }
+
         function borrarAgenda(index) {
             const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || []; agenda.splice(index, 1); 
             localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); cargarAgenda();
@@ -838,7 +811,7 @@
             localStorage.setItem('nexus_agenda', JSON.stringify(agenda)); if(navigator.vibrate) navigator.vibrate(100); cargarAgenda();
         }
 
-        // MODO ZEN
+        // --- MODO ZEN ---
         function iniciarModoZen() {
             const agenda = JSON.parse(localStorage.getItem('nexus_agenda')) || [];
             const tz = (new Date()).getTimezoneOffset() * 60000;
@@ -864,12 +837,9 @@
             }
             cerrarZen();
         }
-        function cerrarZen() { 
-            document.getElementById('zen-overlay').style.display = 'none'; 
-            owl.style.display = 'flex';
-        }
+        function cerrarZen() { document.getElementById('zen-overlay').style.display = 'none'; owl.style.display = 'flex'; }
 
-        // --- AUDIO (iVoox, YouTube e Historial) ---
+        // --- AUDIO ---
         function switchAudioTab(tab) {
             document.getElementById('btnTabIvoox').className = tab === 'ivoox' ? '' : 'secondary';
             document.getElementById('btnTabYt').className = tab === 'yt' ? '' : 'secondary';
@@ -915,27 +885,26 @@
                 ul.innerHTML += `<li style="padding:15px; cursor:pointer;" onclick="reusarAudio('${h.url}')"><span style="color:var(--accent); font-weight:bold; margin-right: 10px;">${h.tipo}</span> <span style="word-break:break-all; color: var(--text-muted); font-size: 0.9em;">${h.label}</span></li>`;
             });
         }
-        
         function reusarAudio(url) {
             if(url.includes('ivoox')) { document.getElementById('ivooxUrl').value = url; switchAudioTab('ivoox'); cargarIvoox(); }
             else { document.getElementById('ytUrl').value = url; switchAudioTab('yt'); cargarYoutube(); }
         }
 
-        // --- EMAILS DOCENTES/PROFESIONALES ---
+        // --- EMAILS DOCENTES ---
         function cargarPlantillaCorreo() {
             const val = document.getElementById('emailTemplate').value;
             const sub = document.getElementById('emailSubject');
             const body = document.getElementById('emailBody');
             
             if(val === 'familias') {
-                sub.value = "Información sobre el progreso académico";
-                body.value = "Estimada familia:\n\nMe pongo en contacto con ustedes para comentarles la evolución de [Nombre del alumno/a] en la asignatura de [Asignatura].\n\n[Escribir detalles brevemente].\n\nQuedo a su disposición para cualquier aclaración por esta vía.\n\nUn cordial saludo,\n[Tu Nombre]";
+                sub.value = "Información sobre el progreso académico (Latín/Griego)";
+                body.value = "Estimada familia:\n\nMe pongo en contacto con ustedes para comentarles la evolución de [Nombre] en la asignatura.\n\n[Escribir detalles brevemente].\n\nQuedo a su disposición para cualquier aclaración.\n\nUn cordial saludo,\n[Tu Nombre]";
             } else if (val === 'material') {
-                sub.value = "Solicitud/Entrega de Materiales";
-                body.value = "Hola,\n\nAdjunto los materiales correspondientes a la unidad solicitada para su revisión/uso.\n\nQuedo a la espera de confirmación de recepción.\n\nUn saludo,";
+                sub.value = "Materiales Digitales (Moodle / Genially)";
+                body.value = "Hola,\n\nAdjunto los materiales interactivos correspondientes a la unidad solicitada para su revisión o integración en plataforma.\n\nQuedo a la espera de confirmación de recepción.\n\nUn saludo,";
             } else if (val === 'limite') {
                 sub.value = "Acuse de recibo y revisión";
-                body.value = "Hola,\n\nConfirmo la recepción de tu correo. Debido a mi actual carga de tareas y evaluación, lo revisaré con atención y te enviaré una respuesta estructurada a la mayor brevedad posible (habitualmente en 24/48h lectivas).\n\nGracias por la paciencia.\n\nUn saludo,";
+                body.value = "Hola,\n\nConfirmo la recepción de tu correo. Debido a la corrección actual de evaluaciones, lo revisaré con atención y te enviaré una respuesta a la mayor brevedad posible (habitualmente en 48h lectivas).\n\nGracias por la paciencia.\n\nUn saludo,";
             } else if (val === 'vacio') {
                 sub.value = ""; body.value = "";
             }
@@ -950,7 +919,7 @@
             window.open(link, '_blank');
         }
 
-        // --- GROQ IA (EL BÚHO) ---
+        // --- GROQ IA ---
         function usarPromptRapido(prompt) {
             document.getElementById('iaInput').value = prompt; document.getElementById('iaInput').focus();
         }
@@ -967,7 +936,7 @@
                     body: JSON.stringify({ 
                         model: "llama3-70b-8192", 
                         messages: [
-                            { role: "system", content: "Eres 'El Búho de Minerva', un sabio estoico y asistente neurodivergente conciso para un profesor de Latín y Griego. Estructura SIEMPRE en viñetas cortas. Usa un tono calmado, ocasionalmente usando referencias muy sutiles a la antigua Roma/Grecia o el estoicismo para centrar la mente. Evita párrafos largos." }, 
+                            { role: "system", content: "Eres 'El Búho de Minerva', un sabio estoico y asistente neurodivergente conciso para un profesor de Latín, Griego y Lengua Española en Bachillerato. Estructura SIEMPRE en viñetas cortas. Usa un tono calmado. Evita párrafos largos. Ayuda a evitar que los alumnos usen IA para resolver tareas." }, 
                             { role: "user", content: texto }
                         ], 
                         temperature: 0.4 
@@ -988,11 +957,11 @@
         }
         function guardarConfig() { localStorage.setItem('nexus_groqkey', document.getElementById('apiKey').value); document.getElementById('configStatus').style.display = 'block'; setTimeout(() => document.getElementById('configStatus').style.display = 'none', 3000); }
 
-        // --- ESCUDOS SOCIALES PERSONALIZABLES ---
+        // --- ESCUDOS SOCIALES ---
         const escudosDefault = [
-            "Te agradezco que hayas pensado en mí. Ahora mismo mi carga de proyectos me impide asumir tareas nuevas.",
-            "He recibido tu información. Déjame revisarlo con calma y te doy una respuesta estructurada mañana.",
-            "Para poder procesar esto y ser eficiente, ¿podrías pasarme exactamente lo que necesitas en una lista de puntos por escrito?"
+            "Te agradezco el mensaje. Ahora mismo mi carga docente me impide asumir nuevos proyectos extracurriculares.",
+            "He recibido la información. Déjame revisarlo con calma tras mis clases y te doy una respuesta estructurada.",
+            "Para poder procesar esto y ser eficiente, ¿podrías pasarme exactamente lo que necesitas en una lista de puntos por escrito (email)?"
         ];
 
         function cargarEscudos() {
@@ -1025,19 +994,18 @@
         function updateBateriaSocial() {
             const val = document.getElementById('socialBatterySlider').value;
             const status = document.getElementById('socialBatteryStatus');
-            if(val < 30) { status.innerText = "Crítica 🔴 (No agendar reuniones)"; status.style.color = "var(--danger)"; }
+            if(val < 30) { status.innerText = "Crítica 🔴 (No agendar reuniones extra)"; status.style.color = "var(--danger)"; }
             else if(val < 70) { status.innerText = "Media 🟡 (Solo lo imprescindible)"; status.style.color = "var(--warning)"; }
             else { status.innerText = "Óptima 🟢 (Tengo energía social)"; status.style.color = "var(--success)"; }
         }
         function guardarBateriaSocial() {
             localStorage.setItem('nexus_socialBattery', document.getElementById('socialBatterySlider').value);
             const status = document.getElementById('socialBatteryStatus');
-            const og = status.innerText;
-            status.innerText += " (Guardado)";
+            const og = status.innerText; status.innerText += " (Guardado)";
             setTimeout(() => { status.innerText = og; }, 1500);
         }
 
-        // --- HERRAMIENTAS ORIGINALES MANTENIDAS ---
+        // --- HERRAMIENTAS ORIGINALES ---
         let alarmIntervalTimer;
         function setAlarma() {
             const time = document.getElementById('alarmTimeInput').value; if(!time) return;
@@ -1111,7 +1079,7 @@
         function cortarParalisis() {
             const i = document.getElementById('paraInput').value; if(!i.trim()) return;
             const res = document.getElementById('paraResult'); res.style.display = "block";
-            res.innerHTML = `<h4 style="margin-top:0; color:var(--accent);">Único paso a dar:</h4><p style="margin-bottom:0;">Abre el archivo/herramienta y no escribas NADA. Solo ábrelo y respira.</p>`;
+            res.innerHTML = `<h4 style="margin-top:0; color:var(--accent);">Único paso a dar:</h4><p style="margin-bottom:0;">Abre el archivo o herramienta y no escribas NADA. Solo ábrelo y respira.</p>`;
         }
 
         const groundingSteps = ["Busca 5 cosas que VER 👀", "Busca 4 cosas que TOCAR ✋", "Busca 3 cosas que OÍR 👂", "Busca 2 cosas que OLER 👃", "Busca 1 cosa que SABOREAR 👅", "✅ Terminado. Respira."];
@@ -1121,14 +1089,9 @@
 
         function triturarPensamiento() {
             const input = document.getElementById('obsInput'); if(!input.value.trim()) return;
-            input.style.transform = "scale(0.9) translateY(10px)";
-            input.style.filter = "blur(5px)";
+            input.style.transform = "scale(0.9) translateY(10px)"; input.style.filter = "blur(5px)";
             if(navigator.vibrate) navigator.vibrate(200);
-            setTimeout(() => { 
-                input.value = ''; 
-                input.style.transform = "none";
-                input.style.filter = "none";
-            }, 600);
+            setTimeout(() => { input.value = ''; input.style.transform = "none"; input.style.filter = "none"; }, 600);
         }
 
         // INIT
