@@ -396,7 +396,7 @@
         <details id="guiaInstrucciones" style="margin-bottom: 25px; background: var(--panel-bg); padding: 18px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; backdrop-filter: blur(10px);">
             <summary style="font-weight: 700; color: var(--accent); font-size: 1.15rem; list-style: none; display: flex; align-items: center; gap: 10px;">📖 Manual de Nexus (Toca aquí)</summary>
             <ul style="margin-top: 18px; color: var(--text-main); font-size: 0.95em; padding-left: 20px; line-height: 1.6;">
-                <li style="margin-bottom: 8px;"><strong>🧠 Volcado:</strong> Escupe aquí ideas, rutas por Doñana, código, o tareas sueltas.</li>
+                <li style="margin-bottom: 8px;"><strong>🧠 Volcado:</strong> Escupe aquí ideas.</li>
                 <li style="margin-bottom: 8px;"><strong>📅 Centro de Mando:</strong> Añade citas con <b>recurrencia automática</b> (semanal, quincenal para la asociación, etc.). Edítalas con el botón ✏️. Las completadas se guardan en los pergaminos sellados abajo.</li>
                 <li style="margin-bottom: 8px;"><strong>🦉 IA & Desbloqueo:</strong> Usa el <b>Desbloqueador</b> si te paralizas evaluando o programando. Usa los botones para generar tareas anti-IA o adaptar a Cicerón.</li>
                 <li style="margin-bottom: 8px;"><strong>⚙️ Herramientas:</strong> Botiquín completo (Oráculo, Trituradora, Batería Social, Modo Ermitaño, etc.).</li>
@@ -408,9 +408,9 @@
         <div id="volcado" class="view active">
             <h3>🧠 Volcado de Memoria</h3>
             <div class="glass-panel" style="padding: 20px; margin-bottom: 25px;">
-                <p class="desc" style="margin-bottom: 15px; border:none; padding:0; background:none;">Saca de tu cabeza cualquier idea, ruta por Matalascañas o corrección de sintaxis. Libera la RAM cerebral.</p>
+                <p class="desc" style="margin-bottom: 15px; border:none; padding:0; background:none;">Saca de tu cabeza cualquier idea. Libera la RAM cerebral.</p>
                 <div class="input-group">
-                    <textarea id="ramInput" placeholder="Ej: Añadir declinaciones al escape room de Genially, revisar SDA II..."></textarea>
+                    <textarea id="ramInput" placeholder="Ej: Editar escape room, estudiar, revisar SDA..."></textarea>
                     <button class="icon-btn" onclick="dictarVoz('ramInput', this)">🎙️</button>
                 </div>
                 <button onclick="guardarDato('ram')" style="margin-bottom: 0;">Guardar Pensamiento en el Templo</button>
